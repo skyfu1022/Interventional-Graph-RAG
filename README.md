@@ -42,12 +42,12 @@ export NEO4J_PASSWORD= your NEO4J_PASSWORD
 ### 2. Construct the graph (use "mimic_ex" dataset as an example)
 1. Download mimic_ex [here](https://huggingface.co/datasets/Morson/mimic_ex), put that under your data path, like ./dataset/mimic_ex
 
-2. python run.py -dataset mimic_ex -data_path ./dataset/mimic_ex(where you put the dataset) -grained_chunk True -ingraphmerge True -construct_graph True
+2. python run.py -dataset mimic_ex -data_path ./dataset/mimic_ex(where you put the dataset) -grained_chunk -ingraphmerge -construct_graph
 
 ### 3. Model Inference
 1. put your prompt to ./prompt.txt
 
-2. python run.py -dataset mimic_ex -data_path ./dataset/mimic_ex(where you put the dataset) -inference True
+2. python run.py -dataset mimic_ex -data_path ./dataset/mimic_ex(where you put the dataset) -inference
 
 ## Acknowledgement
 We are building on [CAMEL](https://github.com/camel-ai/camel), an awesome framework for construcing multi-agent pipeline.

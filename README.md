@@ -3,6 +3,13 @@ We build a Graph RAG System specifically for the medical domain.
 
 Check our paper here: https://arxiv.org/abs/2408.04187
 
+## Demo
+a docker demo is here: https://hub.docker.com/repository/docker/jundewu/medrag-post/general
+ 
+Use it by: docker run -it --rm --storage-opt size=10G -p 7860:7860 \ -e OPENAI_API_KEY= your_key -e NCBI_API_KEY= your_key medrag-post
+
+this demo used web-based searches on PubMed instead of locally storing medical papers and textbooks to detour the license wall.
+
 ## Quick Start (Baseline: a simple Graph RAG pipeline on medical data)
 1. conda env create -f medgraphrag.yml
 

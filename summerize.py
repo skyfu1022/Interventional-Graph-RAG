@@ -1,4 +1,5 @@
 import openai
+from openai import OpenAI
 from concurrent.futures import ThreadPoolExecutor
 import tiktoken
 import os
@@ -32,7 +33,11 @@ Each category should be addressed only if relevant to the content of the medical
 """
 
 def call_openai_api(chunk):
-    response = openai.chat.completions.create(
+    client = OpenAI(
+        api_key=os.getenv("OPENAI_API_KEY"),
+        base_url=os.getenv("OPENAI_API_BASE_URL")
+    )
+    response = client.chat.completions.create(
         model="gpt-4-1106-preview",
         messages=[
             {"role": "system", "content": sum_prompt},

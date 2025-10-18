@@ -19,7 +19,10 @@ Modify the response to the question using the provided references. Include preci
 openai_api_key = os.getenv("OPENAI_API_KEY")
 
 def get_embedding(text, mod = "text-embedding-3-small"):
-    client = OpenAI(api_key = os.getenv("OPENAI_API_KEY"))
+    client = OpenAI(
+        api_key=os.getenv("OPENAI_API_KEY"),
+        base_url=os.getenv("OPENAI_API_BASE_URL")
+    )
 
     response = client.embeddings.create(
         input=text,
@@ -80,7 +83,11 @@ def add_sum(n4j,content,gid):
     return s
 
 def call_llm(sys, user):
-    response = openai.chat.completions.create(
+    client = OpenAI(
+        api_key=os.getenv("OPENAI_API_KEY"),
+        base_url=os.getenv("OPENAI_API_BASE_URL")
+    )
+    response = client.chat.completions.create(
         model="gpt-4-1106-preview",
         messages=[
             {"role": "system", "content": sys},

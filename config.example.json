@@ -1,0 +1,52 @@
+{
+  "_comment": "Medical Graph RAG 配置文件示例。复制此文件为 config.json 并填写实际配置。",
+
+  "workspace": "medical",
+
+  "openai_api_key": "sk-your-api-key-here",
+  "openai_api_base": null,
+  "llm_model": "gpt-4o-mini",
+  "embedding_model": "text-embedding-3-large",
+
+  "neo4j_uri": "bolt://localhost:7687",
+  "neo4j_username": "neo4j",
+  "neo4j_password": "password",
+
+  "milvus_uri": "http://localhost:19530",
+  "milvus_token": null,
+  "milvus_api_key": null,
+
+  "rag_working_dir": "./data/rag_storage",
+  "rag_workspace": "medical",
+
+  "medical_entity_types": [
+    "DISEASE",
+    "MEDICINE",
+    "SYMPTOM",
+    "ANATOMICAL_STRUCTURE",
+    "BODY_FUNCTION",
+    "LABORATORY_DATA",
+    "PROCEDURE"
+  ],
+
+  "_usage": {
+    "step1": "复制此文件：cp config.example.json config.json",
+    "step2": "编辑 config.json，填写真实的 API 密钥和配置",
+    "step3": "在代码中使用：from src.sdk import MedGraphClient; client = MedGraphClient.from_config('config.json')"
+  },
+
+  "_env_vars": {
+    "OPENAI_API_KEY": "OpenAI API 密钥（必需）",
+    "OPENAI_API_BASE": "OpenAI API 基础 URL（可选）",
+    "LLM_MODEL": "语言模型名称（可选）",
+    "EMBEDDING_MODEL": "嵌入模型名称（可选）",
+    "NEO4J_URI": "Neo4j 连接 URI（必需）",
+    "NEO4J_USERNAME": "Neo4j 用户名（可选）",
+    "NEO4J_PASSWORD": "Neo4j 密码（可选）",
+    "MILVUS_URI": "Milvus 连接 URI（必需）",
+    "MILVUS_TOKEN": "Milvus 认证令牌（可选）",
+    "MILVUS_API_KEY": "Milvus API 密钥（可选）",
+    "RAG_WORKING_DIR": "RAG 工作目录（可选）",
+    "env_usage": "设置环境变量后使用：client = MedGraphClient.from_env()"
+  }
+}

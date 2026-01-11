@@ -1,0 +1,22 @@
+// 查询工作流
+// Converted from Mermaid format
+digraph workflow {
+    rankdir=TD;
+    node [shape=box, style=rounded];
+
+    ---
+    config:
+    flowchart:
+    curve: linear
+    ---
+    __start__ [shape=ellipse, label="<p>__start__</p>"]:::first
+    analyze_query(analyze_query)
+    retrieve(retrieve)
+    generate_answer(generate_answer)
+    __end__ [shape=ellipse, label="<p>__end__</p>"]:::last
+    __start__ -> analyze_query;
+    analyze_query -. &nbsp;simple&nbsp; .-> generate_answer;
+    analyze_query -> [style=dashed] retrieve;
+    retrieve -> generate_answer;
+    generate_answer -> __end__;
+}

@@ -1,0 +1,280 @@
+# Medical Graph RAG - Docker Compose 配置
+#
+# 完整的服务编排配置，包含：
+# - Medical Graph RAG 主应用
+# - Neo4j 图数据库
+# - Milvus 向量数据库（含 etcd 和 MinIO 依赖）
+# - 可选的 Nginx 反向代理
+#
+# 作者: Medical Graph RAG Team
+# 版本: 1.0.0
+# 更新时间: 2026-01-11
+#
+# 使用方法:
+#   1. 复制 .env.example 为 .env 并填写配置
+#   2. 启动所有服务: docker-compose up -d
+#   3. 查看日志: docker-compose logs -f
+#   4. 停止服务: docker-compose down
+
+version: "3.8"
+
+# ============================================
+# 服务定义
+# ============================================
+services:
+  # ------------------------------------------
+  # Neo4j 图数据库
+  # ------------------------------------------
+  neo4j:
+    image: neo4j:5.23-community
+    container_name: medgraphrag-neo4j
+    restart: unless-stopped
+    ports:
+      # Bolt 协议端口（应用连接）
+      - "7687:7687"
+      # HTTP 协议端口（可选）
+      - "7474:7474"
+      # HTTPS 协议端口（可选）
+      - "7473:7473"
+    environment:
+      # Neo4j 认证配置
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:-password}
+      # Neo4j 内存配置（根据服务器资源调整）
+      NEO4J_dbms_memory_heap_initial__size: 512m
+      NEO4J_dbms_memory_heap_max__size: 2G
+      NEO4J_dbms_memory_pagecache_size: 1G
+      # 启用 Apoc 插件（用于图算法）
+      NEO4J_PLUGINS: '["apoc"]'
+    volumes:
+      # Neo4j 数据持久化
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+      - neo4j_import:/var/lib/neo4j/import
+      - neo4j_plugins:/plugins
+    networks:
+      - medgraphrag_network
+    healthcheck:
+      test: ["CMD", "cypher-shell", "-u", "neo4j", "-p", "${NEO4J_PASSWORD:-password}", "RETURN 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  # ------------------------------------------
+  # etcd（Milvus 依赖）
+  # ------------------------------------------
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.5
+    container_name: medgraphrag-etcd
+    restart: unless-stopped
+    environment:
+      # etcd 配置
+      ETCD_AUTO_COMPACTION_MODE: revision
+      ETCD_AUTO_COMPACTION_RETENTION: "1000"
+      ETCD_QUOTA_BACKEND_BYTES: "4294967296"
+      ETCD_SNAPSHOT_COUNT: "50000"
+      # 监听地址
+      ETCD_LISTEN_PEER_URLS: http://0.0.0.0:2380
+      ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
+      ETCD_ADVERTISE_CLIENT_URLS: http://etcd:2379
+    volumes:
+      - etcd_data:/etcd
+    command: etcd -advertise-client-urls=http://etcd:2379 -listen-client-urls http://0.0.0.0:2379 -data-dir /etcd
+    networks:
+      - medgraphrag_network
+    healthcheck:
+      test: ["CMD", "etcdctl", "endpoint", "health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # ------------------------------------------
+  # MinIO（Milvus 依赖，用于对象存储）
+  # ------------------------------------------
+  minio:
+    image: minio/minio:RELEASE.2024-01-16T16-07-38Z
+    container_name: medgraphrag-minio
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    ports:
+      - "9001:9001"
+      - "9000:9000"
+    volumes:
+      - minio_data:/minio_data
+    command: minio server /minio_data --console-address ":9001"
+    networks:
+      - medgraphrag_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # ------------------------------------------
+  # Milvus 向量数据库
+  # ------------------------------------------
+  milvus:
+    image: milvusdb/milvus:v2.4.5
+    container_name: medgraphrag-milvus
+    restart: unless-stopped
+    ports:
+      # Milvus gRPC 端口
+      - "19530:19530"
+      # Milvus 管理 REST API 端口
+      - "9091:9091"
+    environment:
+      # etcd 配置
+      ETCD_ENDPOINTS: etcd:2379
+      # MinIO 配置
+      MINIO_ADDRESS: minio:9000
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      # Milvus 存储配置
+      COMMON_STORAGETYPE: minio
+      # Milvus 索引配置
+      INDEX_BUILD_GPU: "0"
+    volumes:
+      - milvus_data:/var/lib/milvus
+    networks:
+      - medgraphrag_network
+    depends_on:
+      etcd:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # ------------------------------------------
+  # Medical Graph RAG 主应用
+  # ------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: medgraphrag-app
+    restart: unless-stopped
+    ports:
+      # FastAPI 应用端口
+      - "${API_PORT:-8000}:8000"
+    environment:
+      # OpenAI API 配置
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_API_BASE: ${OPENAI_API_BASE:-https://api.openai.com/v1}
+      LLM_MODEL: ${LLM_MODEL:-gpt-4o-mini}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-text-embedding-3-large}
+
+      # Neo4j 配置
+      NEO4J_URI: neo4j://neo4j:7687
+      NEO4J_USERNAME: ${NEO4J_USERNAME:-neo4j}
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD:-password}
+
+      # Milvus 配置
+      MILVUS_URI: http://milvus:19530
+      MILVUS_TOKEN: ${MILVUS_TOKEN:-}
+
+      # RAG-Anything 配置
+      RAG_WORKING_DIR: /app/data/rag_storage
+      RAG_WORKSPACE: ${RAG_WORKSPACE:-medical}
+
+      # API 认证配置
+      API_KEYS: ${API_KEYS:-}
+
+      # API 速率限制配置
+      RATE_LIMIT_ENABLED: ${RATE_LIMIT_ENABLED:-true}
+      RATE_LIMIT_REQUESTS: ${RATE_LIMIT_REQUESTS:-100}
+      RATE_LIMIT_WINDOW: ${RATE_LIMIT_WINDOW:-60}
+
+      # 日志配置
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    volumes:
+      # 数据持久化
+      - rag_storage:/app/data/rag_storage
+      - logs:/app/logs
+      - output:/app/output
+    networks:
+      - medgraphrag_network
+    depends_on:
+      neo4j:
+        condition: service_healthy
+      milvus:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ------------------------------------------
+  # Nginx 反向代理（可选）
+  # ------------------------------------------
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: medgraphrag-nginx
+    restart: unless-stopped
+    ports:
+      # HTTP 端口
+      - "80:80"
+      # HTTPS 端口（需要配置 SSL 证书）
+      # - "443:443"
+    volumes:
+      # Nginx 配置文件
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      # SSL 证书目录（可选）
+      # - ./ssl:/etc/nginx/ssl:ro
+    networks:
+      - medgraphrag_network
+    depends_on:
+      - app
+    profiles:
+      # 使用 --profile nginx 启用 Nginx
+      - nginx
+
+# ============================================
+# 网络定义
+# ============================================
+networks:
+  medgraphrag_network:
+    driver: bridge
+    name: medgraphrag_network
+
+# ============================================
+# 数据卷定义
+# ============================================
+volumes:
+  # Neo4j 数据
+  neo4j_data:
+    name: medgraphrag_neo4j_data
+  neo4j_logs:
+    name: medgraphrag_neo4j_logs
+  neo4j_import:
+    name: medgraphrag_neo4j_import
+  neo4j_plugins:
+    name: medgraphrag_neo4j_plugins
+
+  # etcd 数据
+  etcd_data:
+    name: medgraphrag_etcd_data
+
+  # MinIO 数据
+  minio_data:
+    name: medgraphrag_minio_data
+
+  # Milvus 数据
+  milvus_data:
+    name: medgraphrag_milvus_data
+
+  # 应用数据
+  rag_storage:
+    name: medgraphrag_rag_storage
+  logs:
+    name: medgraphrag_logs
+  output:
+    name: medgraphrag_output

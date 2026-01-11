@@ -1,0 +1,59 @@
+# Medical Graph RAG 配置文件示例
+# 复制此文件为 config.yaml 并填写实际配置
+
+# ========== 工作空间配置 ==========
+workspace: "medical"
+
+# ========== OpenAI 配置 ==========
+openai_api_key: "sk-your-api-key-here"  # 必需：OpenAI API 密钥
+openai_api_base: null  # 可选：使用自定义 API 端点
+llm_model: "gpt-4o-mini"  # 可选：语言模型名称
+embedding_model: "text-embedding-3-large"  # 可选：嵌入模型名称
+
+# ========== Neo4j 配置（图存储）==========
+neo4j_uri: "bolt://localhost:7687"  # 必需：Neo4j 连接 URI
+neo4j_username: "neo4j"  # 可选：Neo4j 用户名
+neo4j_password: "password"  # 可选：Neo4j 密码
+
+# ========== Milvus 配置（向量存储）==========
+milvus_uri: "http://localhost:19530"  # 必需：Milvus 连接 URI
+milvus_token: null  # 可选：使用 Token 认证（Milvus Cloud）
+milvus_api_key: null  # 可选：Zilliz Cloud API Key
+
+# ========== RAG-Anything 配置 ==========
+rag_working_dir: "./data/rag_storage"  # 可选：RAG 工作目录
+rag_workspace: "medical"  # 可选：RAG 工作空间名称
+
+# ========== 医学领域实体类型 ==========
+medical_entity_types:
+  - "DISEASE"                # 疾病/问题
+  - "MEDICINE"               # 药物
+  - "SYMPTOM"                # 症状
+  - "ANATOMICAL_STRUCTURE"   # 解剖结构
+  - "BODY_FUNCTION"          # 身体功能
+  - "LABORATORY_DATA"        # 实验室数据
+  - "PROCEDURE"              # 医疗程序
+
+# ========== 使用说明 ==========
+#
+# 1. 复制此文件：
+#    cp config.example.yaml config.yaml
+#
+# 2. 编辑 config.yaml，填写真实的 API 密钥和配置
+#
+# 3. 在代码中使用：
+#    from src.sdk import MedGraphClient
+#    client = MedGraphClient.from_config("config.yaml")
+#
+# ========== 环境变量方式 ==========
+#
+# 如果不使用配置文件，也可以通过环境变量设置配置：
+#
+# export OPENAI_API_KEY="sk-..."
+# export NEO4J_URI="bolt://localhost:7687"
+# export NEO4J_USERNAME="neo4j"
+# export NEO4J_PASSWORD="password"
+# export MILVUS_URI="http://localhost:19530"
+#
+# 然后在代码中使用：
+# client = MedGraphClient.from_env()

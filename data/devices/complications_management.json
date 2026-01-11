@@ -1,0 +1,615 @@
+{
+  "schema_version": "1.0.0",
+  "title": "Interventional Procedure Complications Management",
+  "last_updated": "2026-01-11",
+  "metadata": {
+    "scope": "Carotid and Coronary Interventions",
+    "data_sources": ["ACC/AHA Guidelines", "Clinical Trials", "Expert Consensus"],
+    "disclaimer": "This is for educational purposes. Clinical judgment should always guide individual patient care."
+  },
+  "complications_by_category": {
+    "cerebral_neurological": {
+      "peri_procedural_stroke": {
+        "overview": {
+          "incidence": "3-5% for CAS, <1% for elective PCI",
+          "morbidity": "High - major cause of procedural disability",
+          "types": ["Ischemic (embolic) - 80%", "Hemorrhagic - 20%"],
+          "timing": "Intraoperative or early postoperative (<48 hours)"
+        },
+        "risk_factors": {
+          "patient_related": [
+            "Age >70 years",
+            "Symptomatic status (prior TIA/stroke)",
+            "Diabetes mellitus",
+            "Contralateral carotid occlusion",
+            "Poor collateral circulation"
+          ],
+          "anatomical": [
+            "Complex aortic arch (Type III)",
+            "Severe vessel tortuosity",
+            "Long lesion (>15mm)",
+            "Thrombus-containing plaque",
+            "Ulcerated plaque",
+            "Tandem lesions"
+          ],
+          "procedural": [
+            "No EPD use",
+            "Multiple pre-dilatations",
+            "High-pressure post-dilatation",
+            "Operator inexperience"
+          ]
+        },
+        "prevention": {
+          "mandatory_measures": {
+            "embolic_protection": {
+              "class": "Class I",
+              "evidence": "Level A",
+              "description": "Use EPD in all CAS procedures",
+              "technique": "Deploy before any intervention, retrieve after completion"
+            },
+            "dual_antiplatelet_therapy": {
+              "class": "Class I",
+              "evidence": "Level A",
+              "aspirin": "81-325 mg daily (start ≥24h before)",
+              "clopidogrel": "75 mg daily (loading 300-600mg ≥24h before)",
+              "alternative": "Ticagrelor 90mg BID if high thrombotic risk"
+            },
+            "careful_technique": {
+              "minimal_manipulation": "Avoid excessive wire and catheter manipulation",
+              "gentle_dilatation": "Use low pressure, avoid multiple inflations",
+              "heparinization": "ACT >250 seconds throughout procedure"
+            }
+          },
+          "optional_measures": {
+            "proximal_protection": {
+              "indication": "High-risk anatomy, failed distal filter",
+              "benefit": "Protection before lesion crossing"
+            },
+            "ivus_guidance": {
+              "indication": "Complex lesions, suboptimal angiographic result",
+              "benefit": "Optimize stent expansion without excessive pressure"
+            }
+          }
+        },
+        "recognition": {
+          "immediate_signs": [
+            "Sudden neurological deficit during procedure",
+            "Loss of consciousness",
+            "Seizure activity",
+            "New focal neurological deficit"
+          ],
+          "postoperative_signs": [
+            "Headache",
+            "Confusion",
+            "Visual changes",
+            "Weakness or numbness",
+            "Speech difficulty",
+            "Coordination problems"
+          ],
+          "diagnostic_tests": [
+            "Emergent non-contrast CT head (rule out hemorrhage)",
+            "CT angiography (assess vessel patency)",
+            "MRI brain with diffusion (identify acute infarct)",
+            "Transcranial Doppler (detect microemboli)"
+          ]
+        },
+        "management": {
+          "intra_procedure": {
+            "steps": [
+              "Stop procedure immediately",
+              "Administer IV heparin (maintain ACT >300)",
+              "Obtain angiography to identify occlusion",
+              "Consider emergent neurological consult",
+              "Do NOT give fibrinolytics (high bleeding risk)"
+            ],
+            "interventions": {
+              "embolic_occlusion": {
+                "options": [
+                  "Gentle aspiration with Export catheter",
+                  "Low-pressure balloon angioplasty",
+                  "Intra-arterial tPA (consider if no hemorrhage, <6 hours)",
+                  "Mechanical thrombectomy (if available)"
+                ]
+              },
+              "dissection": {
+                "options": [
+                  "Stent placement if flow compromised",
+                  "Medical management if minor"
+                ]
+              }
+            }
+          },
+          "post_procedure": {
+            "ischemic_stroke": {
+              "acute_management": [
+                "Neurology consultation emergent",
+                "Head CT to rule out hemorrhage",
+                "Consider tPA if within window and no contraindications",
+                "Thrombectomy if large vessel occlusion",
+                "Admit to stroke unit/ICU",
+                "BP management (permissive hypertension if no tPA)"
+              ],
+              "secondary_prevention": [
+                "Continue DAPT (balance bleeding risk)",
+                "High-intensity statin",
+                "Aggressive risk factor modification",
+                "Consider anticoagulation if cardioembolic source"
+              ]
+            },
+            "hemorrhagic_stroke": {
+              "acute_management": [
+                "Neurosurgery consultation",
+                "Reverse anticoagulation",
+                "Control BP (SBP <140 mmHg)",
+                "ICU admission",
+                "Mannitol or hypertonic saline if cerebral edema",
+                "Neurological monitoring"
+              ],
+              "contraindications": [
+                "Do NOT continue DAPT",
+                "Do NOT give fibrinolytics",
+                "Avoid antiplatelets until hemorrhage resolved"
+              ]
+            }
+          }
+        },
+        "prognosis": {
+          "mild_strokes": "Most patients recover well with rehab",
+          "severe_strokes": "Significant disability, high mortality",
+          "mortality_rate": "20-30% for major peri-procedural stroke"
+        }
+      },
+      "hyperperfusion_syndrome": {
+        "overview": {
+          "incidence": "1-2% after CAS",
+          "pathophysiology": "Impaired cerebral autoregulation + increased flow",
+          "onset": "Hours to days post-procedure (usually 24-72 hours)",
+          "severity": "Can be life-threatening if not recognized"
+        },
+        "risk_factors": [
+          "High-grade stenosis (>90%)",
+          "Poor collateral circulation",
+          "Contralateral carotid occlusion",
+          "Poorly controlled hypertension",
+          "Recent ipsilateral stroke (<6 weeks)",
+          "Long-standing severe stenosis"
+        ],
+        "clinical_manifestations": {
+          "early": [
+            " ipsilateral throbbing headache",
+            "Facial or eye pain",
+            "Nausea and vomiting"
+          ],
+          "progressive": [
+            "Worsening headache",
+            "Confusion or altered mental status",
+            "Seizures",
+            "Focal neurological deficit",
+            "Intracerebral hemorrhage (worst case)"
+          ]
+        },
+        "prevention": {
+          "bp_control": {
+            "target": "SBP <140 mmHg (strict control)",
+            "class": "Class I",
+            "evidence": "Level A",
+            "duration": "Continue for at least 72 hours post-procedure"
+          },
+          "patient_monitoring": {
+            "setting": "Inpatient observation for 18-24 hours",
+            "frequency": "Neuro checks hourly for first 6-12 hours",
+            "education": "Warn patient to report headache symptoms"
+          },
+          "risk_stratification": {
+            "high_risk": "Keep BP <120-130 mmHg for high-risk patients",
+            "consider_icp_monitoring": "Severe stenosis with contralateral occlusion"
+          }
+        },
+        "management": {
+          "mild_cases": {
+            "bp_target": "SBP 120-140 mmHg",
+            "medications": ["Labetalol", "Nicardipine infusion", "Clevidipine infusion"],
+            "monitoring": "Continuous cardiac and neurological monitoring",
+            "environment": "Quiet, dark room to reduce stimulation"
+          },
+          "moderate_to_severe": {
+            "bp_target": "SBP <120 mmHg (aggressive control)",
+            "icu_admission": "Mandatory",
+            "medications": [
+              "Nicardipine infusion (5-15 mg/hr)",
+              "Labetalol infusion or IV pushes",
+              "Clevidipine infusion (1-21 mg/hr)",
+              "Consider adding second agent if needed"
+            ],
+            "additional_measures": [
+              "Neurosurgery consultation",
+              "Consider MRI to rule out early hemorrhage",
+              "Seizure prophylaxis if seizures occur",
+              "Head CT if neurological deterioration"
+            ]
+          },
+          "intracerebral_hemorrhage": {
+            "emergency_measures": [
+              "Neurosurgery emergent consultation",
+              "ICU admission",
+              "Reverse antiplatelet effect (platelet transfusion if needed)",
+              "Aggressive BP control (SBP <120 mmHg)",
+              "Mannitol 1g/kg IV for cerebral edema",
+              "Consider hemicraniectomy if massive edema",
+              "Do NOT restart DAPT until resolved (may be never)"
+            ]
+          }
+        },
+        "prognosis": {
+          "mild_cases": "Usually self-limited with proper BP control",
+          "hemorrhage": "High mortality (up to 50%), significant disability",
+          "prevention_key": "Strict BP control prevents most cases"
+        }
+      },
+      "cranial_nerve_injury": {
+        "overview": {
+          "incidence": "<1% for CAS (vs 5-10% for CEA)",
+          "mechanism": "Nerve compression or stretch during procedure",
+          "nerves_involved": [
+            "Hypoglossal (XII) - most common",
+            "Recurrent laryngeal (vagus branch)",
+            "Marginal mandibular (facial branch)",
+            "Glossopharyngeal (IX)"
+          ]
+        },
+        "clinical_features": {
+          "hypoglossal": [
+            "Ipsilateral tongue deviation",
+            "Difficulty speaking or swallowing",
+            "Tongue protrudes toward affected side"
+          ],
+          "recurrent_laryngeal": [
+            "Hoarseness",
+            "Weak voice",
+            "Aspiration risk"
+          ],
+          "marginal_mandibular": [
+            "Lower lip asymmetry",
+            "Difficulty with facial expressions"
+          ]
+        },
+        "prevention": {
+          "technique": [
+            "Careful wire and catheter manipulation",
+            "Avoid excessive balloon inflation near nerve paths",
+            "Minimize instrument exchanges"
+          ]
+        },
+        "management": {
+          "immediate": [
+            "Recognize and document deficit",
+            "Speech therapy consultation if hoarseness or dysphagia",
+            "ENT consultation for persistent symptoms"
+          ],
+          "supportive_care": [
+            "Speech therapy if needed",
+            " swallowing precautions if dysphagia",
+            "Time - most injuries are temporary"
+          ]
+        },
+        "prognosis": {
+          "recovery_rate": ">90% recover within 3-6 months",
+          "permanent_injury": "Rare (<5%)"
+        }
+      }
+    },
+    "cardiovascular": {
+      "myocardial_infarction": {
+        "overview": {
+          "incidence": "0.5-1% for CAS (lower than CEA)",
+          "definition": "Troponin elevation with symptoms or ECG changes",
+          "timing": "Usually within 24 hours"
+        },
+        "risk_factors": [
+          "Known coronary artery disease",
+          "Recent cardiac stress",
+          "Procedure-related hypotension",
+          "Prolonged procedure"
+        ],
+        "prevention": {
+          "preoperative_assessment": [
+            "Cardiac clearance for high-risk patients",
+            "Stress test if active cardiac symptoms",
+            "Optimize medical therapy pre-procedure"
+          ],
+          "intraoperative": [
+            "Maintain hemodynamic stability",
+            "Promptly treat bradycardia (atropine)",
+            "Promptly treat hypotension",
+            "Limit procedure duration"
+          ],
+          "postoperative": [
+            "Monitor cardiac enzymes",
+            "Continuous telemetry",
+            "ECG if symptoms"
+          ]
+        },
+        "management": {
+          "type_1_mi": [
+            "Cardiology consultation",
+            "Treat according to MI protocol",
+            "Consider coronary angiography if hemodynamically unstable"
+          ],
+          "type_2_mi": [
+            "Optimize hemodynamics",
+            "Treat underlying cause (hypotension, anemia, etc.)",
+            "Medical management with serial enzymes"
+          ]
+        }
+      },
+      "arrhythmias": {
+        "bradycardia": {
+          "cause": "Carotid sinus stimulation during balloon inflation",
+          "incidence": "10-15% (often transient)",
+          "prevention": "Atropine 0.5-1mg available before balloon inflation",
+          "management": "Atropine 0.5-1mg IV, may repeat to total 3mg"
+        },
+        "hypotension": {
+          "cause": "Carotid sinus reflex, vasovagal reaction",
+          "incidence": "10-20%",
+          "prevention": "Gentle technique, adequate hydration",
+          "management": "Phenylephrine 100-200 mcg IV, IV fluids bolus"
+        }
+      }
+    },
+    "access_site_complications": {
+      "overview": {
+        "incidence": "5-7%",
+        "access_sites": ["Femoral (most common)", "Radial (lower complication rate)", "Brachial"],
+        "timing": "Usually immediate or within 24 hours"
+      },
+      "types": {
+        "hematoma": {
+          "incidence": "3-5%",
+          "presentation": "Swelling, pain, bruising at access site",
+          "prevention": [
+            "Ultrasound-guided access",
+            "Adequate hemostasis",
+            "Proper sheath management"
+          ],
+          "management": [
+            "Observation for small hematomas",
+            "Compression for moderate",
+            "Intervention if expanding (see below)"
+          ]
+        },
+        "retroperitoneal_hemorrhage": {
+          "incidence": "0.2-0.5%",
+          "risk_factors": [
+            "High femoral puncture",
+            "Multiple arterial punctures",
+            "Large sheath size",
+            "Anticoagulation"
+          ],
+          "presentation": [
+            "Back/flank pain",
+            "Hypotension",
+            "Anemia",
+            "Abdominal distension"
+          ],
+          "diagnosis": "CT abdomen with contrast",
+          "management": [
+            "Aggressive fluid resuscitation",
+            "Blood transfusion as needed",
+            "Interventional radiology embolization",
+            "Surgical vascular repair if refractory"
+          ]
+        },
+        "pseudoaneurysm": {
+          "incidence": "0.5-1%",
+          "presentation": [
+            "Pulsatile mass",
+            "Bruit on auscultation",
+            "Pain or tenderness"
+          ],
+          "diagnosis": "Duplex ultrasound",
+          "management": {
+            "small_<2cm": "Observation (many thrombose spontaneously)",
+            "moderate_2-3cm": "Ultrasound-guided compression or thrombin injection",
+            "large_>3cm_or_symptomatic": "Thrombin injection (first-line) or surgical repair"
+          }
+        },
+        "arteriovenous_fistula": {
+          "incidence": "0.1-0.2%",
+          "presentation": [
+            "Continuous bruit",
+            "Thrill",
+            "Possible distal ischemia"
+          ],
+          "diagnosis": "Duplex ultrasound",
+          "management": [
+            "Observation if small and asymptomatic",
+            "Ultrasound-guided compression",
+            "Surgical repair if large or symptomatic"
+          ]
+        }
+      },
+      "prevention_strategies": {
+        "access_technique": [
+          "Ultrasound guidance (Class I, Level A)",
+          "Micropuncture needle technique",
+          "Optimal imaging to identify puncture site",
+          "Target common femoral artery (not SFA or profunda)"
+        ],
+        "sheath_management": [
+          "Use smallest sheath possible",
+          "Minimize procedure time",
+          "Remove sheath when ACT <150-170"
+        ],
+        "hemostasis": {
+          "manual_compression": "Standard for most cases",
+          "closure_device": "Consider for large sheaths (>7F) or high bleeding risk"
+        }
+      }
+    },
+    "bleeding_complications": {
+      "overview": {
+        "incidence": "2-5%",
+        "major_bleeding_definition": [
+          "Hemoglobin drop >3 g/dL",
+          "Requires transfusion",
+          "Life-threatening location (intracranial, retroperitoneal)",
+          "Requires surgical intervention"
+        ]
+      },
+      "risk_factors": [
+        "Advanced age",
+        "Low body weight",
+        "Renal insufficiency",
+        "Triple antithrombotic therapy",
+        "Excessive anticoagulation",
+        "Femoral access (vs radial)"
+      ],
+      "prevention": {
+        "access_site": "Radial preferred over femoral (Class I, Level A)",
+        "medication": "Weight-based dosing of anticoagulants",
+        "bleeding_risk_assessment": "Use risk scores (CRUSADE, ACUITY)"
+      },
+      "management": {
+        "minor_bleeding": [
+          "Local pressure",
+          "Supportive care",
+          "Continue antiplatelets if possible"
+        ],
+        "major_bleeding": [
+          "Stop anticoagulation",
+          "Reverse if possible (protamine for heparin)",
+          "Transfuse blood products as indicated",
+          "Consider holding antiplatelets temporarily",
+          "Restart antiplatelets when bleeding controlled"
+        ]
+      }
+    },
+    "contrast_induced_nephropathy": {
+      "overview": {
+        "incidence": "2-5% in general population, up to 50% in high-risk",
+        "definition": "≥25% increase in creatinine or ≥0.5 mg/dL rise within 48-72 hours",
+        "onset": "24-72 hours post-procedure",
+        "peak": "3-5 days",
+        "recovery": "Usually within 1-2 weeks"
+      },
+      "risk_factors": [
+        "Pre-existing CKD (eGFR <60)",
+        "Diabetes mellitus",
+        "Volume depletion",
+        "Advanced age",
+        "High contrast volume (>100-150 mL)",
+        "Multiple contrast exposures within 72 hours"
+      ],
+      "prevention": {
+        "patient_selection": [
+          "Identify high-risk patients (eGFR calculation)",
+          "Consider alternative imaging (Doppler, MRA without contrast)"
+        ],
+        "hydration": {
+          "protocol": "Isotonic saline 1 mL/kg/hr for 6-12 hours pre and post",
+          "class": "Class I",
+          "evidence": "Level A"
+        },
+        "contrast_minimization": {
+          "target": "<3 × baseline creatinine or <100 mL if possible",
+          "strategies": [
+            "Use low-osmolar contrast",
+            "Avoid multiple injections",
+            "Use biplane angiography",
+            "Limit cine acquisition",
+            "Pre-procedure planning to minimize contrast"
+          ]
+        },
+        "pharmacologic": {
+          "n-acetylcysteine": {
+            "evidence": "Controversial",
+            "dose": "600 mg PO BID day before and day of procedure",
+            "consideration": "May be reasonable in high-risk patients"
+          },
+          "statins": {
+            "evidence": "May reduce CIN risk",
+            "recommendation": "Continue high-intensity statin"
+          }
+        }
+      },
+      "management": [
+        "Monitor renal function daily for 3-5 days",
+        "Continue hydration",
+        "Avoid nephrotoxic medications",
+        "Delay contrast exposure for at least 72 hours",
+        "Consult nephrology if severe or requiring dialysis"
+      ]
+    }
+  },
+  "emergency_algorithms": {
+    "intra_procedural_stroke": {
+      "steps": [
+        "STOP procedure immediately",
+        "Assess neurological status",
+        "Call for help (stroke team emergent)",
+        "Check vital signs and stabilize",
+        "Heparinize (ACT >300)",
+        "Obtain emergent angiography",
+        "Identify occlusion or dissection",
+        "Consider intervention (aspiration, thrombectomy, IA tPA)",
+        "Post-procedure: CT head, neurology consult, ICU admission"
+      ]
+    },
+    "severe_hypotension": {
+      "steps": [
+        "Check for bleeding (retroperitoneal, access site)",
+        "Fluid bolus (500-1000 mL isotonic)",
+        "Phenylephrine 100-200 mcg IV (repeat)",
+        "Consider vasopressor infusion",
+        "Stop anticoagulation if bleeding",
+        "Reverse heparin (protamine) if needed",
+        "Obtain stat hemoglobin",
+        "Prepare for transfusion if needed"
+      ]
+    },
+    "contrast_reaction": {
+      "mild": {
+        "symptoms": ["Limited urticaria", "Mild flushing"],
+        "treatment": ["Diphenhydramine 25-50 mg IV/PO", "Observe"]
+      },
+      "moderate": {
+        "symptoms": ["Diffuse urticaria", "Facial edema", "Dyspnea"],
+        "treatment": [
+          "Diphenhydramine 50 mg IV",
+          "Hydrocortisone 100-200 mg IV",
+          "Albuterol nebulization if wheezing",
+          "Observe 4-6 hours"
+        ]
+      },
+      "severe_anaphylaxis": {
+        "symptoms": ["Hypotension", "Bronchospasm", "Laryngeal edema", "Cardiac arrest"],
+        "treatment": [
+          "CALL FOR HELP",
+          "Epinephrine 0.1-0.5 mg IM (repeat q5-15min)",
+          "Airway management (intubation if needed)",
+          "Aggressive fluid resuscitation",
+          "Hydrocortisone 200 mg IV",
+          "Consider vasopressors",
+          "Transfer to ICU"
+        ]
+      }
+    }
+  },
+  "quality_metrics": {
+    "benchmark_rates": {
+      "cas": {
+        "stroke_death": "<6% symptomatic, <3% asymptomatic",
+        "myocardial_infarction": "<1%",
+        "major_bleeding": "<3%",
+        "access_complications": "<5%"
+      },
+      "pci": {
+        "stroke": "<0.5%",
+        "mortality": "<1% elective, <5% STEMI",
+        "major_bleeding": "<2%",
+        "aki_stage_3": "<1%"
+      }
+    }
+  }
+}

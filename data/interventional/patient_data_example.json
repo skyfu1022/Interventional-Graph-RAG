@@ -1,0 +1,392 @@
+{
+  "schema_version": "1.0.0",
+  "graph_mode": "local",
+  "description": "患者数据图谱示例 - 使用 local 模式构建，专注于单个患者的临床数据、病史、检查结果等",
+  "metadata": {
+    "created_date": "2026-01-11",
+    "patient_id": "PATIENT-001",
+    "data_source": "Hospital Information System",
+    "last_updated": "2026-01-11"
+  },
+  "entities": [
+    {
+      "entity_id": "patient-001",
+      "entity_name": "Patient John Doe",
+      "entity_type": "PATIENT",
+      "description": "76岁男性患者，症状性颈动脉狭窄",
+      "age": 76,
+      "gender": "Male",
+      "comorbidities": [
+        "Hypertension",
+        "Hyperlipidemia",
+        "Type 2 Diabetes Mellitus",
+        "Coronary Artery Disease"
+      ],
+      "medications": [
+        "Aspirin 81mg daily",
+        "Atorvastatin 40mg daily",
+        "Metformin 1000mg BID",
+        "Lisinopril 20mg daily"
+      ],
+      "allergies": [
+        "Penicillin"
+      ],
+      "social_history": [
+        "Former smoker (quit 10 years ago, 30 pack-years)",
+        "Social alcohol use"
+      ],
+      "metadata": {
+        "patient_id": "PATIENT-001",
+        "admission_date": "2026-01-10",
+        "primary_physician": "Dr. Smith"
+      }
+    },
+    {
+      "entity_id": "anatomy-left-ica",
+      "entity_name": "Left Internal Carotid Artery",
+      "entity_type": "ANATOMY",
+      "description": "左侧颈内动脉",
+      "location": "Neck",
+      "laterality": "Left",
+      "dimensions": {
+        "proximal_diameter_mm": 4.2,
+        "distal_diameter_mm": 4.8,
+        "lesion_length_mm": 15.0
+      },
+      "variant": null,
+      "metadata": {
+        "segment": "C1 (Cervical segment)",
+        "dominance": "Dominant vessel"
+      }
+    },
+    {
+      "entity_id": "pathology-severe-stenosis",
+      "entity_name": "Severe ICA Stenosis",
+      "entity_type": "PATHOLOGY",
+      "description": "左侧颈内动脉起始部重度狭窄",
+      "severity": "Severe",
+      "stenosis_percentage": 85.0,
+      "morphology": "Ulcerated plaque with irregular surface",
+      "location": "Left ICA origin",
+      "chronicity": "Chronic",
+      "metadata": {
+        "nascet_method": "True",
+        "ecst_method": "78%",
+        "plaque_characteristics": "Soft plaque with lipid-rich necrotic core"
+      }
+    },
+    {
+      "entity_id": "pathology-tia-history",
+      "entity_name": "Transient Ischemic Attack History",
+      "entity_type": "PATHOLOGY",
+      "description": "既往 TIA 病史",
+      "severity": "Moderate",
+      "location": "Left middle cerebral artery territory",
+      "chronicity": "Recurrent",
+      "metadata": {
+        "number_of_events": 3,
+        "last_event_date": "2025-12-20",
+        "symptoms": "Right-sided weakness, slurred speech, lasting 30 minutes"
+      }
+    },
+    {
+      "entity_id": "risk-factor-age",
+      "entity_name": "Age > 70",
+      "entity_type": "RISK_FACTOR",
+      "description": "高龄风险因素",
+      "category": "Patient",
+      "severity": "High",
+      "modifiable": false,
+      "impact": "Increased procedural risk, higher complication rate",
+      "mitigation_strategy": "Careful patient selection, optimize comorbidities",
+      "metadata": {
+        "age_value": 76,
+        "risk_multiplier": 1.5
+      }
+    },
+    {
+      "entity_id": "risk-factor-hypertension",
+      "entity_name": "Hypertension",
+      "entity_type": "RISK_FACTOR",
+      "description": "高血压病史",
+      "category": "Patient",
+      "severity": "Medium",
+      "modifiable": true,
+      "impact": "Increased risk of cardiovascular events",
+      "mitigation_strategy": "BP control < 140/90 mmHg pre-procedure",
+      "metadata": {
+        "duration": "15 years",
+        "current_bp": "142/88 mmHg",
+        "controlled": "Partially"
+      }
+    },
+    {
+      "entity_id": "risk-factor-active-plaque",
+      "entity_name": "Active Plaque",
+      "entity_type": "RISK_FACTOR",
+      "description": "活动性斑块（超声显示）",
+      "category": "Anatomy",
+      "severity": "High",
+      "modifiable": false,
+      "impact": "Increased risk of peri-procedural stroke",
+      "mitigation_strategy": "Embolic protection device mandatory",
+      "metadata": {
+        "ultrasound_features": "Hypoechoic, thin fibrous cap, intra-plaque neovascularization",
+        "stroke_risk": "High"
+      }
+    },
+    {
+      "entity_id": "exam-cta",
+      "entity_name": "CT Angiography",
+      "entity_type": "IMAGE",
+      "description": "CT血管造影显示左侧颈内动脉重度狭窄",
+      "image_type": "CT Angiography",
+      "acquisition_date": "2026-01-09",
+      "findings": [
+        "85% stenosis at left ICA origin",
+        "Ulcerated plaque morphology",
+        "Distal flow preserved",
+        "No significant intracranial stenosis"
+      ],
+      "pathology_seen": [
+        "Severe stenosis",
+        "Plaque ulceration"
+      ],
+      "quality": "Excellent",
+      "metadata": {
+        "contrast_agent": "Iodinated contrast",
+        "radiation_dose": "5 mSv",
+        "reporting_radiologist": "Dr. Johnson"
+      }
+    },
+    {
+      "entity_id": "exam-doppler",
+      "entity_name": "Carotid Doppler Ultrasound",
+      "entity_type": "IMAGE",
+      "description": "颈动脉多普勒超声",
+      "image_type": "Doppler Ultrasound",
+      "acquisition_date": "2026-01-08",
+      "findings": [
+        "Peak systolic velocity 380 cm/s",
+        "End diastolic velocity 150 cm/s",
+        "ICA/CCA ratio 4.5",
+        "Plaque echolucency present"
+      ],
+      "pathology_seen": [
+        "Severe stenosis (>70%)",
+        "Vulnerable plaque features"
+      ],
+      "quality": "Good",
+      "metadata": {
+        "technologist": "Tech. Williams",
+        "accredited_lab": true
+      }
+    },
+    {
+      "entity_id": "exam-lab",
+      "entity_name": "Laboratory Results",
+      "entity_type": "IMAGE",
+      "description": "术前实验室检查",
+      "image_type": "Laboratory",
+      "acquisition_date": "2026-01-10",
+      "findings": [
+        "Creatinine 1.1 mg/dL (normal)",
+        "Platelets 220,000/mm³ (normal)",
+        "INR 1.0 (normal)",
+        "HbA1c 7.2%",
+        "LDL 85 mg/dL"
+      ],
+      "pathology_seen": [
+        "Well-controlled diabetes",
+        "Adequate renal function"
+      ],
+      "quality": "Excellent",
+      "metadata": {
+        "fasting_status": "Fasting",
+        "laboratory": "Hospital Central Lab"
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "relation_id": "rel-patient-risk-age",
+      "source_entity_id": "patient-001",
+      "target_entity_id": "risk-factor-age",
+      "relation_type": "HAS_RISK",
+      "description": "患者年龄 > 70 岁",
+      "severity": "High",
+      "impact_on_outcome": "Increased risk of complications",
+      "modifiable": false,
+      "clinical_significance": "Age is independent risk factor for CAS complications",
+      "weight": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "relation_id": "rel-patient-risk-htn",
+      "source_entity_id": "patient-001",
+      "target_entity_id": "risk-factor-hypertension",
+      "relation_type": "HAS_RISK",
+      "description": "患者有高血压病史",
+      "severity": "Medium",
+      "impact_on_outcome": "Requires careful BP management",
+      "modifiable": true,
+      "clinical_significance": "Hypertension increases cardiovascular risk",
+      "weight": 0.8,
+      "confidence": 1.0
+    },
+    {
+      "relation_id": "rel-patient-risk-plaque",
+      "source_entity_id": "patient-001",
+      "target_entity_id": "risk-factor-active-plaque",
+      "relation_type": "HAS_RISK",
+      "description": "患者存在活动性斑块",
+      "severity": "High",
+      "impact_on_outcome": "High risk of embolization",
+      "modifiable": false,
+      "clinical_significance": "Active plaque is strong indication for EPD use",
+      "weight": 1.0,
+      "confidence": 0.9
+    },
+    {
+      "relation_id": "rel-anatomy-stenosis",
+      "source_entity_id": "anatomy-left-ica",
+      "target_entity_id": "pathology-severe-stenosis",
+      "relation_type": "HAS_RISK",
+      "description": "左侧颈内动脉存在重度狭窄",
+      "severity": "Severe",
+      "impact_on_outcome": "Indication for revascularization",
+      "modifiable": true,
+      "clinical_significance": "Severe stenosis with symptoms = Class I indication",
+      "weight": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "relation_id": "rel-patient-tia",
+      "source_entity_id": "patient-001",
+      "target_entity_id": "pathology-tia-history",
+      "relation_type": "HAS_RISK",
+      "description": "患者有反复 TIA 病史",
+      "severity": "High",
+      "impact_on_outcome": "High recurrent stroke risk without intervention",
+      "modifiable": false,
+      "clinical_significance": "Symptomatic status strengthens CAS indication",
+      "weight": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "relation_id": "rel-patient-exam-cta",
+      "source_entity_id": "patient-001",
+      "target_entity_id": "exam-cta",
+      "relation_type": "HAS_EXAM_RESULT",
+      "description": "患者完成 CTA 检查",
+      "exam_type": "Imaging",
+      "exam_date": "2026-01-09",
+      "abnormal": true,
+      "clinical_implication": "Confirms severe stenosis, shows plaque morphology",
+      "weight": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "relation_id": "rel-patient-exam-doppler",
+      "source_entity_id": "patient-001",
+      "target_entity_id": "exam-doppler",
+      "relation_type": "HAS_EXAM_RESULT",
+      "description": "患者完成多普勒超声检查",
+      "exam_type": "Imaging",
+      "exam_date": "2026-01-08",
+      "abnormal": true,
+      "clinical_implication": "Non-invasive confirmation of stenosis severity",
+      "weight": 0.9,
+      "confidence": 1.0
+    },
+    {
+      "relation_id": "rel-patient-exam-lab",
+      "source_entity_id": "patient-001",
+      "target_entity_id": "exam-lab",
+      "relation_type": "HAS_EXAM_RESULT",
+      "description": "患者完成术前实验室检查",
+      "exam_type": "Laboratory",
+      "exam_date": "2026-01-10",
+      "abnormal": false,
+      "clinical_implication": "Adequate for procedure, no contraindications",
+      "weight": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "relation_id": "rel-cta-shows-stenosis",
+      "source_entity_id": "exam-cta",
+      "target_entity_id": "pathology-severe-stenosis",
+      "relation_type": "SHOWS",
+      "description": "CTA 显示重度狭窄",
+      "visibility": "Clear",
+      "image_region": "Left ICA origin",
+      "quantitative_measures": {
+        "stenosis_percent": 85,
+        "plaque_volume": "120 mm³"
+      },
+      "description_of_finding": "High-grade stenosis with ulcerated plaque",
+      "weight": 1.0,
+      "confidence": 0.95
+    },
+    {
+      "relation_id": "rel-doppler-shows-stenosis",
+      "source_entity_id": "exam-doppler",
+      "target_entity_id": "pathology-severe-stenosis",
+      "relation_type": "SHOWS",
+      "description": "多普勒超声显示血流动力学显著狭窄",
+      "visibility": "Clear",
+      "image_region": "Left ICA",
+      "quantitative_measures": {
+        "psv": 380,
+        "edv": 150,
+        "ratio": 4.5
+      },
+      "description_of_finding": "Elevated velocities consistent with >70% stenosis",
+      "weight": 0.9,
+      "confidence": 0.9
+    },
+    {
+      "relation_id": "rel-stenosis-measures",
+      "source_entity_id": "exam-doppler",
+      "target_entity_id": "anatomy-left-ica",
+      "relation_type": "MEASURES",
+      "description": "多普勒测量颈内动脉流速",
+      "measurement_type": "Velocity",
+      "value": 380.0,
+      "unit": "cm/s",
+      "method": "Doppler Ultrasound",
+      "normal_range": "<125 cm/s",
+      "clinical_significance": "Elevated velocities indicate significant stenosis",
+      "weight": 1.0,
+      "confidence": 0.95
+    }
+  ],
+  "graph_statistics": {
+    "total_entities": 10,
+    "total_relationships": 11,
+    "entity_types": {
+      "PATIENT": 1,
+      "ANATOMY": 1,
+      "PATHOLOGY": 2,
+      "RISK_FACTOR": 3,
+      "IMAGE": 3
+    },
+    "relationship_types": {
+      "HAS_RISK": 5,
+      "HAS_EXAM_RESULT": 3,
+      "SHOWS": 2,
+      "MEASURES": 1
+    }
+  },
+  "usage_notes": {
+    "graph_mode": "local",
+    "retrieval_pattern": "Focus on patient-specific data, local context",
+    "query_examples": [
+      "What are this patient's risk factors for CAS?",
+      "What imaging studies has this patient undergone?",
+      "What is the severity of carotid stenosis?",
+      "Is this patient symptomatic or asymptomatic?"
+    ],
+    "integration": "This graph should be queried using 'local' mode in LightRAG for patient-specific context"
+  }
+}

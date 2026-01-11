@@ -1,0 +1,553 @@
+{
+  "schema_version": "1.0.0",
+  "graph_mode": "global",
+  "description": "医学文献图谱示例 - 使用 global 模式构建，包含权威临床指南、系统评价和循证医学证据",
+  "metadata": {
+    "created_date": "2026-01-11",
+    "data_source": "PubMed, Cochrane Library, ACC/AHA Guidelines",
+    "last_updated": "2026-01-11",
+    "coverage": "Carotid Artery Stenting (CAS) and Percutaneous Coronary Intervention (PCI)"
+  },
+  "entities": [
+    {
+      "entity_id": "guideline-acc-aha-cas-2021",
+      "entity_name": "2021 ACC/AHA Guideline for Carotid Artery Stenting",
+      "entity_type": "GUIDELINE",
+      "description": "美国心脏病学会/美国心脏协会发布的颈动脉支架植入术指南",
+      "organization": "ACC/AHA",
+      "year": 2021,
+      "version": "2021 Update",
+      "url": "https://www.acc.org/guidelines",
+      "recommendation_class": "Multiple",
+      "evidence_level": "Variable",
+      "indications": [
+        "Symptomatic carotid stenosis >50% (NASCET)",
+        "Asymptomatic carotid stenosis >70%",
+        "High surgical risk patients"
+      ],
+      "contraindications": [
+        "Non-disabling stroke with modified Rankin >2",
+        "Severe dementia",
+        "Life expectancy <2 years",
+        "Anatomical unsuitability"
+      ],
+      "metadata": {
+        "doi": "10.1161/CIR.0000000000001025",
+        "chair": "Dr. Brott",
+        "panel_size": 22,
+        "systematic_review": true
+      }
+    },
+    {
+      "entity_id": "guideline-esc-2020",
+      "entity_name": "2020 ESC Guidelines for the Diagnosis and Treatment of Carotid Artery Disease",
+      "entity_type": "GUIDELINE",
+      "description": "欧洲心脏病学会颈动脉疾病诊断和治疗指南",
+      "organization": "European Society of Cardiology",
+      "year": 2020,
+      "version": "2020",
+      "url": "https://www.escardio.org/guidelines",
+      "recommendation_class": "Multiple",
+      "evidence_level": "Variable",
+      "metadata": {
+        "doi": "10.1093/eurheartj/ehaa490",
+        "regional_focus": "Europe"
+      }
+    },
+    {
+      "entity_id": "guideline-acc-aha-pci-2021",
+      "entity_name": "2021 ACC/AHA/SCAI Guideline for Percutaneous Coronary Intervention",
+      "entity_type": "GUIDELINE",
+      "description": "美国经皮冠状动脉介入治疗指南",
+      "organization": "ACC/AHA/SCAI",
+      "year": 2021,
+      "version": "2021",
+      "url": "https://www.acc.org/guidelines",
+      "indications": [
+        "Stable ischemic heart disease",
+        "Unstable angina/NSTEMI",
+        "STEMI",
+        "Cardiogenic shock"
+      ],
+      "metadata": {
+        "doi": "10.1161/CIR.0000000000001027"
+      }
+    },
+    {
+      "entity_id": "study-crest-1",
+      "entity_name": "CREST Trial (Carotid Revascularization Endarterectomy vs. Stenting Trial)",
+      "entity_type": "GUIDELINE",
+      "description": "颈动脉血运重建内膜剥脱术与支架植入术对比试验",
+      "organization": "NIH/NINDS",
+      "year": 2010,
+      "version": "Primary Results",
+      "url": "https://wwwclinicaltrialsgov/ct2/show/NCT00004732",
+      "recommendation_class": "Class I",
+      "evidence_level": "Level A",
+      "metadata": {
+        "study_design": "Randomized Controlled Trial",
+        "sample_size": 2502,
+        "follow_up": "10 years",
+        "primary_endpoint": "Stroke, death, MI within 30 days + ipsilateral stroke up to 4 years",
+        "conclusion": "CAS and CEA have similar long-term outcomes, CAS safer in patients <70, CEA safer in patients >70"
+      }
+    },
+    {
+      "entity_id": "study-crest-2",
+      "entity_name": "CREST-2 Trial",
+      "entity_type": "GUIDELINE",
+      "description": "颈动脉血运重建与药物治疗对比试验（进行中）",
+      "organization": "NIH/NINDS",
+      "year": 2016,
+      "version": "Ongoing",
+      "url": "https://wwwclinicaltrialsgov/ct2/show/NCT02089217",
+      "metadata": {
+        "study_design": "Randomized Controlled Trial",
+        "target_sample_size": 2480,
+        "primary_completion": "2024",
+        "objective": "Compare CAS vs medical therapy in asymptomatic stenosis"
+      }
+    },
+    {
+      "entity_id": "study-nascet",
+      "entity_name": "NASCET (North American Symptomatic Carotid Endarterectomy Trial)",
+      "entity_type": "GUIDELINE",
+      "description": "北美有症状颈动脉内膜剥脱术试验",
+      "organization": "NIH/NINDS",
+      "year": 1991,
+      "version": " landmark trial",
+      "evidence_level": "Level A",
+      "metadata": {
+        "study_design": "Randomized Controlled Trial",
+        "sample_size": 659,
+        "stenosis_method": "NASCET method",
+        "key_finding": "CEA beneficial for symptomatic patients with >70% stenosis"
+      }
+    },
+    {
+      "entity_id": "procedure-cas-standard",
+      "entity_name": "Standard Carotid Artery Stenting",
+      "entity_type": "PROCEDURE",
+      "description": "标准颈动脉支架植入术流程",
+      "procedure_category": "Therapeutic",
+      "indication": "Carotid artery stenosis",
+      "technique": "Endovascular stenting with embolic protection",
+      "duration": 60,
+      "steps": [
+        "Femoral or carotid access",
+        "Guidewire navigation across lesion",
+        "Embolie protection device deployment",
+        "Pre-dilatation (optional)",
+        "Stent deployment",
+        "Post-dilatation (if needed)",
+        "Final angiography",
+        "Device removal"
+      ],
+      "alternative_options": [
+        "Carotid endarterectomy (CEA)",
+        "Medical therapy alone",
+        "Transcarotid artery revascularization (TCAR)"
+      ],
+      "metadata": {
+        "success_rate": "95%",
+        "major_complication_rate": "<6%"
+      }
+    },
+    {
+      "entity_id": "device-epd",
+      "entity_name": "Embolic Protection Device",
+      "entity_type": "DEVICE",
+      "description": "栓子保护装置，用于捕获术中的血栓和斑块碎片",
+      "device_category": "Embolic Protection",
+      "manufacturer": "Multiple (Abbott, Medtronic, etc.)",
+      "size": {
+        "diameter_range": "3-8 mm",
+        "length": "Various"
+      },
+      "material": "Nitinol mesh/polyurethane filter",
+      "fda_status": "FDA approved for CAS",
+      "contraindications": [
+        "Severe vessel tortuosity",
+        "Inability to cross lesion",
+        "Vessel diameter <3 mm"
+      ],
+      "metadata": {
+        "types": [
+          "Distal filter (most common)",
+          "Proximal occlusion",
+          "Distal occlusion"
+        ],
+        "capture_efficiency": "95%"
+      }
+    },
+    {
+      "entity_id": "device-closed-cell-stent",
+      "entity_name": "Closed-cell Carotid Stent",
+      "entity_type": "DEVICE",
+      "description": "闭环设计颈动脉支架，提供更好的覆盖和支撑",
+      "device_category": "Stent",
+      "manufacturer": "Multiple",
+      "size": {
+        "diameter_range": "5-10 mm",
+        "length_range": "20-40 mm"
+      },
+      "material": "Nitinol (self-expanding) or stainless steel",
+      "fda_status": "FDA approved",
+      "contraindications": [
+        "Vessel diameter outside range",
+        "Allergy to materials"
+      ],
+      "metadata": {
+        "advantages": [
+          "Better plaque coverage",
+          "Lower embolization risk",
+          "Good radial strength"
+        ],
+        "disadvantages": [
+          "Less flexible",
+          "Harder to navigate tortuous vessels"
+        ]
+      }
+    },
+    {
+      "entity_id": "complication-stroke",
+      "entity_name": "Peri-procedural Stroke",
+      "entity_type": "COMPLICATION",
+      "description": "围手术期卒中",
+      "severity": "Life-threatening",
+      "incidence": 3.5,
+      "onset_time": "Intraoperative/Postoperative",
+      "prevention_strategy": "Embolic protection device, careful technique, dual antiplatelet therapy",
+      "treatment": "Immediate thrombectomy, supportive care, rehabilitation",
+      "metadata": {
+        "types": [
+          "Ischemic (embolic)",
+          "Hemorrhagic (hyperperfusion)"
+        ],
+        "risk_factors": [
+          "Age >70",
+          "Symptomatic status",
+          "Complex anatomy",
+          "Long lesions"
+        ]
+      }
+    },
+    {
+      "entity_id": "complication-hyperperfusion",
+      "entity_name": "Cerebral Hyperperfusion Syndrome",
+      "entity_type": "COMPLICATION",
+      "description": "脑过度灌注综合征",
+      "severity": "Severe",
+      "incidence": 1.5,
+      "onset_time": "Postoperative (hours to days)",
+      "prevention_strategy": "Careful BP control (<140/90 mmHg)",
+      "treatment": "Strict BP management, neurological monitoring",
+      "metadata": {
+        "symptoms": [
+          "Headache",
+          "Facial pain",
+          "Seizures",
+          "Altered mental status"
+        ],
+        "duration": "Usually self-limited (days to weeks)"
+      }
+    },
+    {
+      "entity_id": "complication-access-site",
+      "entity_name": "Access Site Complications",
+      "entity_type": "COMPLICATION",
+      "description": "穿刺部位并发症",
+      "severity": "Moderate",
+      "incidence": 5.0,
+      "onset_time": "Postoperative",
+      "prevention_strategy": "Ultrasound-guided access, proper closure device",
+      "treatment": "Compression, thrombin injection, surgical repair if needed",
+      "metadata": {
+        "types": [
+          "Hematoma",
+          "Pseudoaneurysm",
+          "Arteriovenous fistula",
+          "Retroperitoneal bleeding"
+        ]
+      }
+    },
+    {
+      "entity_id": "care-dapt",
+      "entity_name": "Dual Antiplatelet Therapy",
+      "entity_type": "CARE_PLAN",
+      "description": "双联抗血小板治疗方案",
+      "duration": "At least 1 month",
+      "medications": [
+        "Aspirin 81-325 mg daily lifelong",
+        "Clopidogrel 75 mg daily for at least 4 weeks"
+      ],
+      "follow_up_schedule": [
+        "30-day clinic visit",
+        "6-month duplex ultrasound",
+        "Annual ultrasound thereafter"
+      ],
+      "monitoring_parameters": [
+        "Bleeding symptoms",
+        "Stent thrombosis signs",
+        "Restenosis on ultrasound"
+      ],
+      "lifestyle_modifications": [
+        "Smoking cessation",
+        "Blood pressure control",
+        "Lipid management",
+        "Diabetes control"
+      ],
+      "metadata": {
+        "evidence": "Class I recommendation",
+        "alternative": "Ticagrelor or prasugrel in selected patients"
+      }
+    },
+    {
+      "entity_id": "event-stent-deployment",
+      "entity_name": "Stent Deployment",
+      "entity_type": "EVENT",
+      "description": "支架释放操作",
+      "event_type": "Action",
+      "timestamp": "Step 5",
+      "outcome": "Successful stent expansion and apposition",
+      "required_response": "Confirm optimal deployment with angiography",
+      "alternative_actions": [
+        "Post-dilatation if underexpanded",
+        "Additional stent if inadequate coverage"
+      ],
+      "metadata": {
+        "key_points": [
+          "Cover entire lesion with 5-10mm margins",
+          "Avoid stent oversizing",
+          "Verify EPD position before deployment"
+        ]
+      }
+    },
+    {
+      "entity_id": "event-epd-failure",
+      "entity_name": "EPD Deployment Failure",
+      "entity_type": "EVENT",
+      "description": "栓子保护装置部署失败",
+      "event_type": "Complication",
+      "outcome": "Unable to deploy EPD across lesion",
+      "required_response": "Consider alternative strategies or abort procedure",
+      "alternative_actions": [
+        "Convert to proximal protection",
+        "Proceed without EPD (high risk)",
+        "Abort and refer for CEA"
+      ],
+      "metadata": {
+        "incidence": "2-5%",
+        "risk_factors": [
+          "Tortuous anatomy",
+          "Calcified lesions",
+          "Vessel spasm"
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "relation_id": "rel-cas-based-crest",
+      "source_entity_id": "procedure-cas-standard",
+      "target_entity_id": "guideline-acc-aha-cas-2021",
+      "relation_type": "BASED_ON_GUIDELINE",
+      "description": "CAS 手术方案基于 ACC/AHA 指南和 CREST 试验证据",
+      "recommendation_class": "Class I",
+      "evidence_level": "Level A",
+      "guideline_year": 2021,
+      "applicability": "Symptomatic patients >50% stenosis",
+      "specific_conditions": [
+        "High surgical risk",
+        "Previous neck surgery",
+        "Radiation-induced stenosis",
+        "Contralateral carotid occlusion"
+      ],
+      "strength_of_recommendation": "Strong",
+      "weight": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "relation_id": "rel-cas-step-1",
+      "source_entity_id": "procedure-cas-standard",
+      "target_entity_id": "event-stent-deployment",
+      "relation_type": "HAS_STEP",
+      "description": "CAS 包含支架释放步骤",
+      "step_order": 5,
+      "step_type": "Execution",
+      "duration": 15,
+      "critical": true,
+      "prerequisites": [
+        "EPD deployed",
+        "Lesion crossed",
+        "Adequate pre-dilatation"
+      ],
+      "potential_complications": [
+        "Stent thrombosis",
+        "Dissection",
+        "Embolization"
+      ],
+      "weight": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "relation_id": "rel-cas-uses-epd",
+      "source_entity_id": "procedure-cas-standard",
+      "target_entity_id": "device-epd",
+      "relation_type": "USES_DEVICE",
+      "description": "CAS 使用栓子保护装置",
+      "usage_phase": "Intraoperative (mandatory)",
+      "quantity": 1,
+      "specifications": {
+        "size": "Appropriate to vessel diameter",
+        "type": "Distal filter preferred"
+      },
+      "device_preparation": "Check device integrity, flush with heparinized saline",
+      "usage_technique": "Deploy 2-3 cm distal to lesion, retrieve after stent deployment",
+      "weight": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "relation_id": "rel-cas-uses-stent",
+      "source_entity_id": "procedure-cas-standard",
+      "target_entity_id": "device-closed-cell-stent",
+      "relation_type": "USES_DEVICE",
+      "description": "CAS 使用闭环支架",
+      "usage_phase": "Intraoperative",
+      "quantity": 1,
+      "specifications": {
+        "diameter": "1-2 mm larger than normal vessel",
+        "length": "Cover lesion with 5-10 mm margins"
+      },
+      "device_preparation": "Prepare appropriate size based on angiography",
+      "usage_technique": "Deploy under fluoroscopic guidance, verify position",
+      "weight": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "relation_id": "rel-cas-leads-stroke",
+      "source_entity_id": "procedure-cas-standard",
+      "target_entity_id": "complication-stroke",
+      "relation_type": "LEADS_TO_COMPLICATION",
+      "description": "CAS 可能导致围手术期卒中",
+      "likelihood": "Uncommon",
+      "severity": "Life-threatening",
+      "timing": "Intraoperative/Postoperative (30 days)",
+      "risk_factors": [
+        "Age >70",
+        "Symptomatic status",
+        "No EPD use",
+        "Complex anatomy"
+      ],
+      "prevention_methods": [
+        "Universal EPD use",
+        "Careful technique",
+        "Pre-procedure DAPT",
+        "Operator experience"
+      ],
+      "weight": 0.8,
+      "confidence": 0.9
+    },
+    {
+      "relation_id": "rel-epd-failure-rescue",
+      "source_entity_id": "event-epd-failure",
+      "target_entity_id": "procedure-cas-standard",
+      "relation_type": "REQUIRES_RESCUE",
+      "description": "EPD 部署失败需要应急处理",
+      "trigger_condition": "Unable to cross lesion or deploy EPD",
+      "urgency": "High",
+      "success_rate": 70.0,
+      "time_window": "Immediate",
+      "required_resources": [
+        "Alternative EPD types",
+        "Proximal protection system",
+        "Surgical backup"
+      ],
+      "decision_criteria": [
+        "Vessel anatomy",
+        "Lesion characteristics",
+        "Patient symptoms",
+        "Operator experience"
+      ],
+      "weight": 1.0,
+      "confidence": 0.9
+    },
+    {
+      "relation_id": "rel-stroke-prevention-epd",
+      "source_entity_id": "device-epd",
+      "target_entity_id": "complication-stroke",
+      "relation_type": "CONTRAINDICATES",
+      "description": "使用 EPD 可预防卒中（反向关系 - 使用可预防）",
+      "contraindication_type": "Preventive",
+      "severity": "Critical",
+      "clinical_rationale": "Captures embolic debris before reaching cerebral circulation",
+      "alternative_options": [
+        "Proximal occlusion",
+        "No protection (high risk, not recommended)"
+      ],
+      "warning_level": "Mandatory",
+      "weight": 1.0,
+      "confidence": 0.95
+    },
+    {
+      "relation_id": "rel-cas-prescribes-dapt",
+      "source_entity_id": "procedure-cas-standard",
+      "target_entity_id": "care-dapt",
+      "relation_type": "PRESCRIBES",
+      "description": "CAS 术后处方双联抗血小板治疗",
+      "medication_type": "Antiplatelet",
+      "dosage": "Aspirin 81-325 mg + Clopidogrel 75 mg",
+      "frequency": "Daily",
+      "duration": "4 weeks minimum",
+      "route": "Oral",
+      "indications": [
+        "Prevent stent thrombosis",
+        "Reduce embolic risk"
+      ],
+      "contraindications": [
+        "Active bleeding",
+        "Allergy"
+      ],
+      "side_effects": [
+        "Bleeding",
+        "Bruising",
+        "Dyspepsia"
+      ],
+      "weight": 1.0,
+      "confidence": 1.0
+    }
+  ],
+  "graph_statistics": {
+    "total_entities": 15,
+    "total_relationships": 8,
+    "entity_types": {
+      "GUIDELINE": 5,
+      "PROCEDURE": 1,
+      "DEVICE": 2,
+      "COMPLICATION": 3,
+      "CARE_PLAN": 1,
+      "EVENT": 2
+    },
+    "relationship_types": {
+      "BASED_ON_GUIDELINE": 1,
+      "HAS_STEP": 1,
+      "USES_DEVICE": 2,
+      "LEADS_TO_COMPLICATION": 1,
+      "REQUIRES_RESCUE": 1,
+      "CONTRAINDICATES": 1,
+      "PRESCRIBES": 1
+    }
+  },
+  "usage_notes": {
+    "graph_mode": "global",
+    "retrieval_pattern": "Focus on general medical knowledge, guidelines, and evidence",
+    "query_examples": [
+      "What are the guideline indications for CAS?",
+      "What is the evidence level for CAS in symptomatic patients?",
+      "What devices are recommended for CAS?",
+      "What are the major complications of CAS?",
+      "What is the recommended postoperative care?"
+    ],
+    "integration": "This graph should be queried using 'global' mode in LightRAG for broad medical knowledge and guideline retrieval"
+  }
+}

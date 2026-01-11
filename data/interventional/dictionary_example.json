@@ -1,0 +1,711 @@
+{
+  "schema_version": "1.0.0",
+  "graph_mode": "hybrid",
+  "description": "医学词典图谱示例 - 使用 hybrid 模式构建，包含医学术语定义、器械规格、标准操作流程等参考数据",
+  "metadata": {
+    "created_date": "2026-01-11",
+    "data_source": "Medical Dictionaries, Device Catalogs, Clinical Protocols",
+    "last_updated": "2026-01-11",
+    "coverage": "Interventional Cardiology and Radiology Terminology"
+  },
+  "entities": [
+    {
+      "entity_id": "term-cas",
+      "entity_name": "Carotid Artery Stenting (CAS)",
+      "entity_type": "PROCEDURE",
+      "description": "颈动脉支架植入术 - 一种微创血管内治疗方法，用于治疗颈动脉狭窄",
+      "procedure_category": "Therapeutic",
+      "indication": "Carotid artery atherosclerotic disease",
+      "technique": "Endovascular deployment of stent across stenotic lesion",
+      "duration": "60-120 minutes",
+      "steps": [
+        "Vascular access",
+        "Catheter navigation",
+        "Lesion crossing",
+        "Embolie protection",
+        "Stent deployment",
+        "Hemostasis"
+      ],
+      "alternative_options": [
+        "Carotid endarterectomy",
+        "Medical management",
+        "TCAR"
+      ],
+      "metadata": {
+        "synonyms": [
+          "Carotid stenting",
+          "Carotid angioplasty and stenting",
+          "CAS"
+        ],
+        "cpt_code": "37215",
+        "introduced_year": 1994
+      }
+    },
+    {
+      "entity_id": "term-pci",
+      "entity_name": "Percutaneous Coronary Intervention (PCI)",
+      "entity_type": "PROCEDURE",
+      "description": "经皮冠状动脉介入治疗 - 使用导管技术治疗冠状动脉狭窄",
+      "procedure_category": "Therapeutic",
+      "indication": "Coronary artery disease",
+      "technique": "Balloon angioplasty with or without stent placement",
+      "duration": "30-120 minutes",
+      "steps": [
+        "Arterial access (femoral/radial)",
+        "Guidewire insertion",
+        "Balloon angioplasty",
+        "Stent deployment",
+        "Final angiography"
+      ],
+      "alternative_options": [
+        "CABG surgery",
+        "Medical therapy"
+      ],
+      "metadata": {
+        "synonyms": [
+          "Coronary angioplasty",
+          "PTCA",
+          "Coronary stenting"
+        ],
+        "cpt_codes": [
+          "92920",
+          "92928",
+          "92929"
+        ]
+      }
+    },
+    {
+      "entity_id": "term-tavi",
+      "entity_name": "Transcatheter Aortic Valve Implantation (TAVI)",
+      "entity_type": "PROCEDURE",
+      "description": "经导管主动脉瓣植入术 - 微创主动脉瓣置换技术",
+      "procedure_category": "Therapeutic",
+      "indication": "Severe aortic stenosis",
+      "technique": "Transcatheter delivery and deployment of prosthetic aortic valve",
+      "duration": "90-180 minutes",
+      "alternative_options": [
+        "Surgical aortic valve replacement (SAVR)"
+      ],
+      "metadata": {
+        "synonyms": [
+          "TAVR",
+          "Transcatheter aortic valve replacement"
+        ],
+        "cpt_code": "33361"
+      }
+    },
+    {
+      "entity_id": "anatomy-ica",
+      "entity_name": "Internal Carotid Artery (ICA)",
+      "entity_type": "ANATOMY",
+      "description": "颈内动脉 - 供应大脑半球和眼球的主要血管",
+      "location": "Neck and Skull",
+      "laterality": "Bilateral",
+      "dimensions": {
+        "normal_diameter_mm": 4.5,
+        "length_mm": 600
+      },
+      "variant": "Can have tortuosity, kinking, or coiling",
+      "metadata": {
+        "segments": [
+          "C1: Cervical",
+          "C2: Petrous",
+          "C3: Lacerum",
+          "C4: Cavernous",
+          "C5: Clinoid",
+          "C6: Ophthalmic",
+          "C7: Communicating"
+        ],
+        "branches": [
+          "Ophthalmic artery",
+          "Posterior communicating artery",
+          "Anterior choroidal artery",
+          "Anterior cerebral artery",
+          "Middle cerebral artery"
+        ]
+      }
+    },
+    {
+      "entity_id": "anatomy-cca",
+      "entity_name": "Common Carotid Artery (CCA)",
+      "entity_type": "ANATOMY",
+      "description": "颈总动脉 - 供应头部和颈部的主要血管",
+      "location": "Neck",
+      "laterality": "Bilateral",
+      "dimensions": {
+        "normal_diameter_mm": 7.0,
+        "length_mm": 100
+      },
+      "variant": "Bifurcation level varies (C2-C5)",
+      "metadata": {
+        "branches": [
+          "Internal carotid artery",
+          "External carotid artery"
+        ],
+        "access_site_common": true
+      }
+    },
+    {
+      "entity_id": "pathology-stenosis",
+      "entity_name": "Arterial Stenosis",
+      "entity_type": "PATHOLOGY",
+      "description": "动脉狭窄 - 血管腔径变窄，通常由动脉粥样硬化引起",
+      "severity": "Variable (Mild <50%, Moderate 50-69%, Severe >70%)",
+      "stenosis_percentage": null,
+      "morphology": "Atherosclerotic plaque, fibromuscular dysplasia, radiation-induced",
+      "location": "Any artery",
+      "chronicity": "Chronic progressive",
+      "metadata": {
+        "measurement_methods": [
+          "NASCET method",
+          "ECST method",
+          "Area stenosis",
+          "Doppler velocities"
+        ],
+        "clinical_significance": "Can cause ischemia, thrombosis, distal embolization"
+      }
+    },
+    {
+      "entity_id": "pathology-plaque",
+      "entity_name": "Atherosclerotic Plaque",
+      "entity_type": "PATHOLOGY",
+      "description": "动脉粥样硬化斑块 - 血管壁内的脂质沉积",
+      "severity": "Variable",
+      "morphology": "Fibrous cap, lipid core, calcification, hemorrhage",
+      "location": "Arterial wall",
+      "chronicity": "Chronic",
+      "metadata": {
+        "plaque_types": [
+          "Fibrous (stable)",
+          "Lipid-rich (vulnerable)",
+          "Calcified (stable)",
+          "Thin-cap fibroatheroma (high risk)"
+        ],
+        "imaging_characteristics": [
+          "Ultrasound: echogenicity",
+          "CT: Hounsfield units",
+          "MRI: plaque composition"
+        ]
+      }
+    },
+    {
+      "entity_id": "device-filterwire",
+      "entity_name": "FilterWire Embolic Protection System",
+      "entity_type": "DEVICE",
+      "description": "FilterWire 栓子保护系统 - 远端滤网保护装置",
+      "device_category": "Embolic Protection",
+      "manufacturer": "Boston Scientific",
+      "model": "FilterWire EZ",
+      "size": {
+        "filter_diameter_mm": [3.5, 4.5, 5.5, 6.5],
+        "shaft_length_cm": 190,
+        "wire_inch": 0.014
+      },
+      "material": "Nitinol framework with polyurethane membrane",
+      "fda_status": "FDA approved",
+      "contraindications": [
+        "Vessel diameter <3.5 mm",
+        "Severe tortuosity",
+        "Inability to cross lesion"
+      ],
+      "metadata": {
+        "pore_size": "110 microns",
+        "deployment": "Constrain, advance, deploy, retract",
+        "retrieval": "Capture in sheath"
+      }
+    },
+    {
+      "entity_id": "device-precise",
+      "entity_name": "PRECISE Pro Rx Carotid Stent",
+      "entity_type": "DEVICE",
+      "description": "PRECISE 颈动脉支架 - 镍钛合金自膨式支架",
+      "device_category": "Stent",
+      "manufacturer": "Cordis (a Cardinal Health company)",
+      "model": "PRECISE PRO RX",
+      "size": {
+        "diameter_mm": [6, 7, 8, 9, 10],
+        "length_mm": [20, 30, 40]
+      },
+      "material": "Nitinol (Nickel-Titanium alloy)",
+      "fda_status": "FDA approved",
+      "contraindications": [
+        "Patients allergic to nickel or titanium"
+      ],
+      "metadata": {
+        "design": "Open-cell",
+        "flexibility": "High",
+        "radial_strength": "Moderate",
+        "conformability": "Excellent",
+        "delivery_system": "6F compatible"
+      }
+    },
+    {
+      "entity_id": "device-wallstent",
+      "entity_name": "Wallstent Carotid Stent",
+      "entity_type": "DEVICE",
+      "description": "Wallstent 颈动脉支架 - 镍钛合金编织自膨式支架",
+      "device_category": "Stent",
+      "manufacturer": "Boston Scientific",
+      "model": "Wallstent",
+      "size": {
+        "diameter_mm": [6, 7, 8, 9, 10],
+        "length_mm": [20, 30, 40]
+      },
+      "material": "Nitinol braided mesh",
+      "fda_status": "FDA approved",
+      "contraindications": [
+        "Patients allergic to nickel"
+      ],
+      "metadata": {
+        "design": "Closed-cell (braided)",
+        "flexibility": "Moderate",
+        "radial_strength": "High",
+        "conformability": "Good",
+        "visibility": "High radiopacity"
+      }
+    },
+    {
+      "entity_id": "device-angioplasty-balloon",
+      "entity_name": "Angioplasty Balloon Catheter",
+      "entity_type": "DEVICE",
+      "description": "球囊扩张导管 - 用于预扩张和后扩张",
+      "device_category": "Balloon",
+      "manufacturer": "Multiple",
+      "size": {
+        "diameter_mm": [2, 3, 4, 5, 6],
+        "length_mm": [20, 40],
+        "balloon_length_mm": [10, 15, 20, 30, 40]
+      },
+      "material": "Compliant, semi-compliant, or non-compliant polymer",
+      "fda_status": "FDA approved",
+      "contraindications": [
+        "Unable to cross lesion",
+        "Vessel diameter mismatch"
+      ],
+      "metadata": {
+        "types": [
+          "Monorail",
+          "Over-the-wire",
+          "Rapid exchange"
+        ],
+        "compliance": [
+          "Compliant (soft lesions)",
+          "Semi-compliant (most common)",
+          "Non-compliant (calcified lesions)"
+        ]
+      }
+    },
+    {
+      "entity_id": "term-class-i",
+      "entity_name": "Class I Recommendation",
+      "entity_type": "GUIDELINE",
+      "description": "I 类推荐 - 强烈推荐，证据明确有益",
+      "organization": "ACC/AHA",
+      "recommendation_class": "Class I",
+      "evidence_level": null,
+      "indications": [
+        "Procedure/treatment should be performed/administered"
+      ],
+      "contraindications": [],
+      "metadata": {
+        "meaning": "Strong recommendation, benefit >>> risk",
+        "evidence_requirements": [
+          "Level A: Multiple RCTs or meta-analyses",
+          "Level B: Single RCT or non-randomized studies",
+          "Level C: Expert opinion"
+        ],
+        "examples": [
+          "CAS for symptomatic >50% stenosis",
+          "Aspirin for CAD",
+          "Statins for atherosclerosis"
+        ]
+      }
+    },
+    {
+      "entity_id": "term-class-iia",
+      "entity_name": "Class IIa Recommendation",
+      "entity_type": "GUIDELINE",
+      "description": "IIa 类推荐 - 中等推荐，证据倾向于有益",
+      "organization": "ACC/AHA",
+      "recommendation_class": "Class IIa",
+      "evidence_level": null,
+      "indications": [
+        "Additional studies needed, procedure/treatment generally acceptable"
+      ],
+      "contraindications": [],
+      "metadata": {
+        "meaning": "Moderate recommendation, benefit >> risk",
+        "phrasing": "Should be considered",
+        "examples": [
+          "CAS for asymptomatic >70% stenosis",
+          "Complex PCI with CTO"
+        ]
+      }
+    },
+    {
+      "entity_id": "term-level-a",
+      "entity_name": "Level of Evidence A",
+      "entity_type": "GUIDELINE",
+      "description": "A 级证据 - 最高质量证据",
+      "organization": "ACC/AHA",
+      "recommendation_class": null,
+      "evidence_level": "Level A",
+      "indications": [],
+      "contraindications": [],
+      "metadata": {
+        "definition": "Data derived from multiple randomized clinical trials or meta-analyses",
+        "sample_size": "Large (>1000)",
+        "study_types": [
+          "Multiple RCTs",
+          "Meta-analyses",
+          "Systematic reviews"
+        ],
+        "certainty": "High certainty",
+        "examples": [
+          "CREST trial",
+          "NASCET trial",
+          "ECST trial"
+        ]
+      }
+    },
+    {
+      "entity_id": "term-level-b",
+      "entity_name": "Level of Evidence B",
+      "entity_type": "GUIDELINE",
+      "description": "B 级证据 - 中等质量证据",
+      "organization": "ACC/AHA",
+      "recommendation_class": null,
+      "evidence_level": "Level B",
+      "indications": [],
+      "contraindications": [],
+      "metadata": {
+        "definition": "Data derived from a single randomized trial or non-randomized studies",
+        "sample_size": "Limited",
+        "study_types": [
+          "Single RCT",
+          "Observational studies",
+          "Registry data"
+        ],
+        "certainty": "Moderate certainty",
+        "examples": [
+          "Single-center studies",
+          "Prospective registries"
+        ]
+      }
+    },
+    {
+      "entity_id": "term-nascet-method",
+      "entity_name": "NASCET Stenosis Measurement Method",
+      "entity_type": "GUIDELINE",
+      "description": "北美症状性颈动脉内膜剥脱试验狭窄测量法",
+      "organization": "NASCET Trial",
+      "recommendation_class": "Standard",
+      "evidence_level": "Level A",
+      "indications": [
+        "Standard method for measuring carotid stenosis"
+      ],
+      "contraindications": [],
+      "metadata": {
+        "formula": "(1 - [minimal luminal diameter / distal ICA diameter]) × 100%",
+        "reference_point": "Distal normal ICA segment",
+        "grading": [
+          "Mild: <50%",
+          "Moderate: 50-69%",
+          "Severe: 70-99%"
+        ],
+        "advantages": [
+          "Reproducible",
+          "Widely adopted",
+          "Used in major trials"
+        ]
+      }
+    },
+    {
+      "entity_id": "risk-diabetes",
+      "entity_name": "Diabetes Mellitus",
+      "entity_type": "RISK_FACTOR",
+      "description": "糖尿病 - 糖代谢异常的慢性疾病",
+      "category": "Patient",
+      "severity": "Medium",
+      "modifiable": true,
+      "impact": "Increases cardiovascular risk, affects wound healing",
+      "mitigation_strategy": "Glycemic control (HbA1c <7%)",
+      "metadata": {
+        "types": [
+          "Type 1",
+          "Type 2",
+          "Gestational"
+        ],
+        "complications": [
+          "Accelerated atherosclerosis",
+          "Renal dysfunction",
+          "Neuropathy",
+          "Retinopathy"
+        ],
+        "perioperative_risk": "Increased infection, contrast nephropathy"
+      }
+    },
+    {
+      "entity_id": "risk-renal-insufficiency",
+      "entity_name": "Chronic Kidney Disease",
+      "entity_type": "RISK_FACTOR",
+      "description": "慢性肾脏病 - 肾功能持续减退",
+      "category": "Patient",
+      "severity": "Medium to High",
+      "modifiable": "Partial",
+      "impact": "Increased contrast nephropathy risk, medication clearance issues",
+      "mitigation_strategy": "Hydration, minimize contrast, consider alternative imaging",
+      "metadata": {
+        "stages": [
+          "Stage 1: GFR >90",
+          "Stage 2: GFR 60-89",
+          "Stage 3: GFR 30-59",
+          "Stage 4: GFR 15-29",
+          "Stage 5: GFR <15 or dialysis"
+        ],
+        "contrast_limit": "<3× baseline creatinine or <100 mL contrast if possible"
+      }
+    },
+    {
+      "entity_id": "term-tia",
+      "entity_name": "Transient Ischemic Attack (TIA)",
+      "entity_type": "PATHOLOGY",
+      "description": "短暂性脑缺血发作 - 短暂的局灶性神经功能缺损",
+      "severity": "Moderate to Severe",
+      "location": "Brain territory",
+      "chronicity": "Acute episode, recurrent risk",
+      "metadata": {
+        "duration": "<24 hours (typically <1 hour)",
+        "symptoms": [
+          "Hemiparesis",
+          "Aphasia",
+          "Hemianopia",
+          "Vertigo",
+          "Dysarthria"
+        ],
+        "abcD2_score": [
+          "Age >60",
+          "BP >140/90",
+          "Clinical features",
+          "Duration >60 min",
+          "Diabetes"
+        ],
+        "stroke_risk": "10-20% at 90 days without treatment"
+      }
+    },
+    {
+      "entity_id": "procedure-dapt-loading",
+      "entity_name": "Dual Antiplatelet Loading Protocol",
+      "entity_type": "CARE_PLAN",
+      "description": "双联抗血小板负荷给药方案",
+      "duration": "Pre-procedure loading",
+      "medications": [
+        "Aspirin 325 mg loading, then 81 mg daily",
+        "Clopidogrel 300-600 mg loading, then 75 mg daily"
+      ],
+      "follow_up_schedule": [
+        "Verify loading before procedure",
+        "Check compliance at discharge"
+      ],
+      "monitoring_parameters": [
+        "Bleeding signs",
+        "Platelet function testing (optional)"
+      ],
+      "lifestyle_modifications": [],
+      "metadata": {
+        "timing": "Aspirin: at least 24h before, Clopidogrel: 24-72h before",
+        "alternatives": [
+          "Ticagrelor 180 mg loading",
+          "Prasugrel 60 mg loading (contraindicated in prior stroke/TIA)"
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "relation_id": "rel-cas-definition",
+      "source_entity_id": "term-cas",
+      "target_entity_id": "anatomy-ica",
+      "relation_type": "LINKED_TO",
+      "description": "CAS 针对颈内动脉狭窄",
+      "link_type": "Therapeutic target",
+      "strength": "Strong",
+      "temporal": null,
+      "directionality": "Unidirectional",
+      "context": "CAS treats ICA stenosis",
+      "weight": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "relation_id": "rel-cas-uses-filterwire",
+      "source_entity_id": "term-cas",
+      "target_entity_id": "device-filterwire",
+      "relation_type": "USES_DEVICE",
+      "description": "CAS 常使用 FilterWire 保护装置",
+      "usage_phase": "Intraoperative",
+      "quantity": 1,
+      "specifications": {
+        "standard_device": true,
+        "alternative": "Other EPD systems available"
+      },
+      "device_preparation": "Flush and check before use",
+      "usage_technique": "Deploy distal to lesion before intervention",
+      "weight": 0.9,
+      "confidence": 0.95
+    },
+    {
+      "relation_id": "rel-cas-uses-precise",
+      "source_entity_id": "term-cas",
+      "target_entity_id": "device-precise",
+      "relation_type": "USES_DEVICE",
+      "description": "CAS 可使用 PRECISE 支架",
+      "usage_phase": "Intraoperative",
+      "quantity": 1,
+      "alternative_devices": [
+        "Wallstent",
+        "Xact",
+        "Cristallo Ideale"
+      ],
+      "weight": 0.8,
+      "confidence": 0.9
+    },
+    {
+      "relation_id": "rel-stenosis-located-ica",
+      "source_entity_id": "anatomy-ica",
+      "target_entity_id": "pathology-stenosis",
+      "relation_type": "HAS_RISK",
+      "description": "颈内动脉可发生狭窄",
+      "severity": "Variable",
+      "impact_on_outcome": "Location determines symptoms and treatment",
+      "modifiable": true,
+      "clinical_significance": "ICA stenosis can cause anterior circulation stroke",
+      "weight": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "relation_id": "rel-plaque-causes-stenosis",
+      "source_entity_id": "pathology-plaque",
+      "target_entity_id": "pathology-stenosis",
+      "relation_type": "LINKED_TO",
+      "description": "斑块导致血管狭窄",
+      "link_type": "Causal",
+      "strength": "Strong",
+      "directionality": "Unidirectional",
+      "context": "Atherosclerotic plaque narrows arterial lumen",
+      "weight": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "relation_id": "rel-diabetes-risk-factor",
+      "source_entity_id": "risk-diabetes",
+      "target_entity_id": "pathology-stenosis",
+      "relation_type": "LEADS_TO_COMPLICATION",
+      "description": "糖尿病加速动脉粥样硬化",
+      "likelihood": "Likely",
+      "severity": "Medium",
+      "timing": "Chronic",
+      "risk_factors": [],
+      "prevention_methods": [
+        "Glycemic control",
+        "Lipid management",
+        "Blood pressure control"
+      ],
+      "treatment": "Risk factor modification",
+      "weight": 0.8,
+      "confidence": 0.9
+    },
+    {
+      "relation_id": "rel-class-i-nascet",
+      "source_entity_id": "term-class-i",
+      "target_entity_id": "term-nascet-method",
+      "relation_type": "LINKED_TO",
+      "description": "I 类推荐使用 NASCET 方法测量",
+      "link_type": "Methodological",
+      "strength": "Strong",
+      "context": "Standardized measurement improves consistency",
+      "weight": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "relation_id": "rel-nascet-level-a",
+      "source_entity_id": "term-nascet-method",
+      "target_entity_id": "term-level-a",
+      "relation_type": "BASED_ON_GUIDELINE",
+      "description": "NASCET 方法有 A 级证据支持",
+      "recommendation_class": "Standard",
+      "evidence_level": "Level A",
+      "guideline_year": 1991,
+      "applicability": "All carotid interventions",
+      "strength_of_recommendation": "Strong",
+      "weight": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "relation_id": "rel-tia-symptomatic",
+      "source_entity_id": "term-tia",
+      "target_entity_id": "pathology-stenosis",
+      "relation_type": "SHOWS",
+      "description": "TIA 提示症状性颈动脉狭窄",
+      "visibility": "Clear",
+      "description_of_finding": "TIA in carotid territory indicates symptomatic stenosis",
+      "weight": 1.0,
+      "confidence": 1.0
+    },
+    {
+      "relation_id": "rel-dapt-standard",
+      "source_entity_id": "procedure-dapt-loading",
+      "target_entity_id": "term-cas",
+      "relation_type": "PRESCRIBES",
+      "description": "CAS 需要双联抗血小板预处理",
+      "medication_type": "Dual antiplatelet",
+      "dosage": "Aspirin + Clopidogrel loading dose",
+      "frequency": "Daily",
+      "duration": "Loading before procedure, continue 4+ weeks after",
+      "route": "Oral",
+      "indications": [
+        "Prevent stent thrombosis",
+        "Reduce peri-procedural events"
+      ],
+      "contraindications": [
+        "Active bleeding",
+        "Allergy"
+      ],
+      "weight": 1.0,
+      "confidence": 1.0
+    }
+  ],
+  "graph_statistics": {
+    "total_entities": 20,
+    "total_relationships": 10,
+    "entity_types": {
+      "PROCEDURE": 4,
+      "ANATOMY": 2,
+      "PATHOLOGY": 3,
+      "DEVICE": 4,
+      "GUIDELINE": 4,
+      "RISK_FACTOR": 2,
+      "CARE_PLAN": 1
+    },
+    "relationship_types": {
+      "LINKED_TO": 3,
+      "USES_DEVICE": 2,
+      "HAS_RISK": 1,
+      "LEADS_TO_COMPLICATION": 1,
+      "BASED_ON_GUIDELINE": 1,
+      "SHOWS": 1,
+      "PRESCRIBES": 1
+    }
+  },
+  "usage_notes": {
+    "graph_mode": "hybrid",
+    "retrieval_pattern": "Combines local specificity with global knowledge - balances patient context with medical definitions",
+    "query_examples": [
+      "What is the definition of NASCET stenosis measurement?",
+      "What devices are commonly used for CAS?",
+      "What are the classes of recommendations in guidelines?",
+      "What is the standard DAPT protocol for CAS?",
+      "What anatomical structures are involved in CAS?"
+    ],
+    "integration": "This graph should be queried using 'hybrid' mode in LightRAG for optimal balance of definitions and relationships"
+  }
+}

@@ -1,0 +1,530 @@
+{
+  "schema_version": "1.0.0",
+  "title": "Interventional Cardiology and Radiology Devices Catalog",
+  "last_updated": "2026-01-11",
+  "metadata": {
+    "scope": "Carotid, Coronary, and Structural Heart Interventions",
+    "data_sources": ["FDA", "Manufacturer Catalogs", "Clinical Trial Data"],
+    "disclaimer": "This catalog is for educational purposes. Always consult manufacturer instructions and local regulations."
+  },
+  "device_categories": {
+    "embolic_protection": {
+      "description": "Devices designed to capture embolic debris during endovascular procedures",
+      "devices": [
+        {
+          "device_id": "epd-filterwire-ez",
+          "name": "FilterWire EZ Embolic Protection System",
+          "manufacturer": "Boston Scientific",
+          "fda_status": "FDA Approved",
+          "approval_year": 2006,
+          "ce_mark": true,
+          "description": "Distal filter embolic protection device with low-profile delivery system",
+          "specifications": {
+            "filter_sizes_mm": [3.5, 4.5, 5.5, 6.5],
+            "pore_size_microns": 110,
+            "shaft_length_cm": 190,
+            "wire_size": "0.014 inch",
+            "sheat_compatibility": "6F compatible",
+            "deployment": "Constrain-Advance-Deploy-Retract mechanism"
+          },
+          "advantages": [
+            "Low profile (3.2F)",
+            "Excellent trackability",
+            "High debris capture efficiency (>95%)",
+            "Ease of deployment",
+            "Familiar to operators"
+          ],
+          "limitations": [
+            "Cannot cross tight stenosis in 3-5% of cases",
+            "Filter not deployed until past lesion (vulnerable period)",
+            "Potential for vessel trauma during retrieval",
+            "Limited to vessels 3.5-6.5mm diameter"
+          ],
+          "indications": [
+            "Carotid artery stenting (primary indication)",
+            "Saphenous vein graft interventions",
+            "Renal artery interventions"
+          ],
+          "contraindications": [
+            "Vessel diameter <3.5mm",
+            "Severe vessel tortuosity preventing passage",
+            "Inability to cross lesion",
+            "Known allergy to device materials (nickel-titanium, polyurethane)"
+          ],
+          "technical_tips": [
+            "Flush device with heparinized saline before use",
+            "Deploy in straight vessel segment 2-3cm beyond lesion",
+            "Avoid deployment in bifurcations or tortuous segments",
+            "Retrieve carefully with sheath to prevent debris loss",
+            "Do not force if resistance encountered"
+          ],
+          "pricing": {
+            "average_cost_usd": 1500,
+            "cpt_code": "37215 (included in CAS procedure)"
+          }
+        },
+        {
+          "device_id": "epd-emboshield-nav6",
+          "name": "Emboshield NAV6 Embolic Protection System",
+          "manufacturer": "Abbott",
+          "fda_status": "FDA Approved",
+          "ce_mark": true,
+          "description": "Distal filter with bare-wire proximal segment for better visibility",
+          "specifications": {
+            "filter_sizes_mm": [3.3, 4.0, 5.5, 7.0],
+            "pore_size_microns": 140,
+            "shaft_length_cm": 190,
+            "wire_size": "0.014 inch",
+            "unique_features": ["Bare-wire design for better fluoroscopic visibility", "Low-profile 3.4F"]
+          },
+          "advantages": [
+            "Better fluoroscopic visibility (bare-wire segment)",
+            "Low profile",
+            "Good flexibility",
+            "Multiple filter sizes available"
+          ],
+          "limitations": [
+            "Larger pore size (140 vs 110 microns) - may miss small debris",
+            "Similar crossing limitations as other filters"
+          ],
+          "indications": ["Carotid artery stenting"],
+          "pricing": {
+            "average_cost_usd": 1500
+          }
+        },
+        {
+          "device_id": "epd-guardwire",
+          "name": "GuardWire Plus Temporary Occlusion and Aspiration System",
+          "manufacturer": "Medtronic",
+          "fda_status": "FDA Approved",
+          "ce_mark": true,
+          "description": "Proximal balloon occlusion device with aspiration capability",
+          "specifications": {
+            "balloon_sizes_mm": [3, 4, 5, 6],
+            "shaft_length_cm": 190,
+            "wire_size": "0.018 inch",
+            "occlusion_time": "Limited to <7 minutes"
+          },
+          "advantages": [
+            "Protection starts before lesion crossing",
+            "Captures particles of all sizes (no mesh limitation)",
+            "Effective in saphenous vein grafts",
+            "Aspiration of stagnant blood"
+          ],
+          "limitations": [
+            "Interrupts cerebral blood flow (patient may not tolerate)",
+            "7-minute time limit for occlusion",
+            "Requires 0.018 wire (larger than standard)",
+            "More complex than filter devices",
+            "Patient discomfort during occlusion"
+          ],
+          "indications": [
+            "SVG intervention (strongest indication)",
+            "Carotid stenting (alternative when filter fails)",
+            "Renal interventions"
+          ],
+          "contraindications": [
+            "Poor collateral circulation",
+            "Inability to tolerate temporary flow interruption"
+          ],
+          "technical_tips": [
+            "Test balloon inflation before advancing",
+            "Ensure patient can tolerate occlusion before stent deployment",
+            "Aspirate aggressively before balloon deflation",
+            "Do not exceed 7 minutes occlusion time",
+            "Have atropine ready for bradycardia"
+          ],
+          "pricing": {
+            "average_cost_usd": 1400
+          }
+        },
+        {
+          "device_id": "epd-moma",
+          "name": "MO.MA Proximal Cerebral Protection Device",
+          "manufacturer": "Medtronic (formerly InspireMD)",
+          "fda_status": "FDA Approved",
+          "ce_mark": true,
+          "description": "External balloon occlusion of common and external carotid arteries",
+          "specifications": {
+            "balloon_sizes_mm": [8, 9, 10, 11],
+            "sheat_compatibility": "8F required",
+            "mechanism": "External flow reversal"
+          },
+          "advantages": [
+            "Protection before lesion crossing",
+            "No need to navigate past lesion",
+            "Effective for all embolic sizes",
+            "Good for failed distal filter cases",
+            "Suitable for complex anatomy"
+          ],
+          "limitations": [
+            "Requires larger sheath (8F)",
+            "More complex setup",
+            "Interrupts flow (patient discomfort)",
+            "Two balloons to manage",
+            "Limited to carotid procedures"
+          ],
+          "indications": [
+            "Carotid stenting with failed distal filter attempt",
+            "Complex or tortuous anatomy",
+            "Large thrombus burden"
+          ],
+          "technical_tips": [
+            "Ensure adequate common carotid length for balloon positioning",
+            "Inflate external carotid balloon first",
+            "Verify flow cessation before lesion crossing",
+            "Aspirate from sheath before balloon deflation"
+          ],
+          "pricing": {
+            "average_cost_usd": 2000
+          }
+        }
+      ]
+    },
+    "carotid_stents": {
+      "description": "Self-expanding nitinol stents designed for carotid artery use",
+      "devices": [
+        {
+          "device_id": "stent-precise-pro-rx",
+          "name": "PRECISE PRO RX Carotid Stent System",
+          "manufacturer": "Cordis (Cardinal Health)",
+          "fda_status": "FDA Approved",
+          "ce_mark": true,
+          "description": "Open-cell nitinol self-expanding stent with high flexibility",
+          "specifications": {
+            "diameters_mm": [6, 7, 8, 9, 10],
+            "lengths_mm": [20, 30, 40],
+            "material": "Nitinol (Nickel-Titanium alloy)",
+            "design": "Open-cell",
+            "delivery_system": "6F compatible",
+            "strut_thickness": "Variable (tapered)",
+            "radial_strength": "Moderate to high",
+            "flexibility": "High",
+            "conformability": "Excellent"
+          },
+          "advantages": [
+            "High flexibility - excellent for tortuous anatomy",
+            "Excellent conformability to vessel curves",
+            "Good visibility under fluoroscopy (tantalum markers)",
+            "Proven in CREST trial",
+            "Low chronic outward force (less vessel trauma)"
+          ],
+          "limitations": [
+            "Open cell design allows some plaque prolapse",
+            "Moderate radial strength",
+            "May not cover all ulcerated plaque areas",
+            "Less precise sizing than closed-cell"
+          ],
+          "indications": [
+            "Carotid artery stenting for atherosclerotic disease",
+            "Tortuous vessel anatomy (ideal use case)",
+            "Long lesions requiring conformability"
+          ],
+          "contraindications": [
+            "Patients allergic to nickel or titanium",
+            "Vessel diameter outside 5-11mm range",
+            "Inability to tolerate antiplatelet therapy"
+          ],
+          "selection_criteria": [
+            "Choose diameter 1-2mm larger than normal distal ICA",
+            "Choose length to cover lesion with 5-10mm margins",
+            "Consider open-cell for tortuous anatomy",
+            "Consider closed-cell for ulcerated plaque"
+          ],
+          "technical_tips": [
+            "Pre-dilate if >80% stenosis or calcified",
+            "Deploy slowly to ensure accurate positioning",
+            "Consider post-dilatation if underexpanded (use caution)",
+            "Overlapping stents should be minimized",
+            "Avoid stenting across bifurcation into ECA if possible"
+          ],
+          "clinical_evidence": {
+            "crest_trial": "Primary CAS stent in CREST trial",
+            "outcomes": "Excellent long-term patency (>95% at 10 years)",
+            "restenosis_rate": "<5% at 2 years"
+          },
+          "pricing": {
+            "average_cost_usd": 2500
+          }
+        },
+        {
+          "device_id": "stent-wallstent",
+          "name": "Wallstent Carotid Stent",
+          "manufacturer": "Boston Scientific",
+          "fda_status": "FDA Approved",
+          "ce_mark": true,
+          "description": "Braided closed-cell nitinol stent with high radial strength",
+          "specifications": {
+            "diameters_mm": [6, 7, 8, 9, 10],
+            "lengths_mm": [20, 30, 40],
+            "material": "Nitinol braided mesh",
+            "design": "Closed-cell (braided)",
+            "delivery_system": "6-7F depending on size",
+            "radial_strength": "High",
+            "flexibility": "Moderate",
+            "shortening": "Significant (30-40%)"
+          },
+          "advantages": [
+            "Closed-cell braided design - excellent plaque coverage",
+            "High radial strength - good for resistant lesions",
+            "High visibility (radiopaque)",
+            "Lower embolization risk due to better coverage",
+            "Proven long-term track record"
+          ],
+          "limitations": [
+            "Significant shortening - requires positioning adjustment",
+            "Moderate flexibility - not ideal for tortuous anatomy",
+            "Can be difficult to deliver in tight lesions",
+            "Higher outward force may increase vessel trauma"
+          ],
+          "indications": [
+            "Carotid artery stenting",
+            "Ulcerated plaque (better coverage)",
+            "Lesions requiring high radial strength",
+            "Restenosis after prior stent"
+          ],
+          "selection_criteria": [
+            "Choose for ulcerated plaques needing good coverage",
+            "Good for straight vessel segments",
+            "Consider shortening when positioning (advance as it deploys)"
+          ],
+          "technical_tips": [
+            "Account for shortening during deployment",
+            "Must advance stent as it deploys to maintain position",
+            "May require larger sheath for larger sizes",
+            "Good coverage of ulcerated plaque",
+            "Consider alternative for tortuous vessels"
+          ],
+          "pricing": {
+            "average_cost_usd": 2400
+          }
+        },
+        {
+          "device_id": "stent-xact",
+          "name": "Xact Stent",
+          "manufacturer": "Abbott",
+          "fda_status": "FDA Approved",
+          "ce_mark": true,
+          "description": "Closed-cell nitinol stent with adaptive cell architecture",
+          "specifications": {
+            "diameters_mm": [7, 8, 9, 10],
+            "lengths_mm": [20, 30, 40],
+            "material": "Nitinol",
+            "design": "Closed-cell with adaptive cells",
+            "delivery_system": "6F compatible"
+          },
+          "advantages": [
+            "Closed-cell design for good plaque coverage",
+            "Adaptive cells provide flexibility",
+            "Good balance of flexibility and coverage",
+            "Minimal shortening",
+            "Excellent scaffolding"
+          ],
+          "limitations": [
+            "Less flexible than PRECISE",
+            "Relatively newer platform"
+          ],
+          "indications": [
+            "Carotid stenting requiring good coverage",
+            "Need for balance of flexibility and strength"
+          ],
+          "pricing": {
+            "average_cost_usd": 2600
+          }
+        },
+        {
+          "device_id": "stent-cristallo-ideale",
+          "name": "Cristallo Ideale",
+          "manufacturer": "Invatec (Medtronic)",
+          "fda_status": "Investigational (CE Mark in Europe)",
+          "ce_mark": true,
+          "description": "Tapered stent with different proximal and distal diameters",
+          "specifications": {
+            "diameters_mm": ["7-9", "7-10", "8-10", "8-11", "9-11"],
+            "lengths_mm": [30, 40],
+            "material": "Nitinol",
+            "design": "Tapered (conical)",
+            "unique_feature": "Proximal-distal diameter difference mimics natural anatomy"
+          },
+          "advantages": [
+            "Tapered design matches carotid anatomy (larger ICA, smaller CCA)",
+            "Better seal at proximal end",
+            "Reduced metal mass at distal end",
+            "Natural vessel conformity"
+          ],
+          "limitations": [
+            "Not available in US",
+            "More complex sizing decisions",
+            "Limited length options"
+          ],
+          "indications": [
+            "Carotid stenting (Europe)",
+            "Tapered anatomy requiring conformability"
+          ],
+          "pricing": {
+            "average_cost_usd": 2800
+          }
+        }
+      ]
+    },
+    "angioplasty_balloons": {
+      "description": "Balloon catheters for pre- and post-dilatation",
+      "devices": [
+        {
+          "device_id": "balloon-avitar-plus",
+          "name": "Avitar Plus Balloon Dilatation Catheter",
+          "manufacturer": "Abbott",
+          "fda_status": "FDA Approved",
+          "description": "Semi-compliant balloon for carotid and peripheral use",
+          "specifications": {
+            "diameters_mm": [2, 3, 4, 5, 6, 7, 8],
+            "lengths_mm": [20, 40],
+            "balloon_lengths_mm": [10, 15, 20, 30, 40],
+            "material": "Nylon (semi-compliant)",
+            "shaft": "Rapid exchange (monorail)"
+          },
+          "advantages": [
+            "Semi-compliant - predictable sizing",
+            "Good trackability",
+            "Rapid exchange design",
+            "Low profile"
+          ],
+          "indications": [
+            "Pre-dilatation before stenting",
+            "Post-dilatation after stenting"
+          ],
+          "technical_tips": [
+            "Pre-dilate to facilitate EPD and stent passage",
+            "Use balloon 1-2mm smaller than vessel diameter for pre-dilatation",
+            "Post-dilate balloon same size as stent if underexpanded",
+            "Avoid high pressure (>12 atm) - increases embolization risk"
+          ]
+        },
+        {
+          "device_id": "balloon-armada",
+          "name": "Armada 35 Balloon Dilatation Catheter",
+          "manufacturer": "Abbott",
+          "fda_status": "FDA Approved",
+          "description": "Semi-compliant balloon with high burst pressure",
+          "specifications": {
+            "diameters_mm": [2, 3, 4, 5, 6, 7, 8],
+            "burst_pressure_atm": "16-20",
+            "material": "High-pressure nylon"
+          },
+          "indications": [
+            "Resistant lesions requiring higher pressure",
+            "Calcified lesions"
+          ]
+        }
+      ]
+    },
+    "coronary_stents": {
+      "description": "Drug-eluting stents for coronary interventions",
+      "devices": [
+        {
+          "device_id": "stent-xience",
+          "name": "Xience Sierra/Flex Stent",
+          "manufacturer": "Abbott",
+          "fda_status": "FDA Approved",
+          "drug": "Everolimus",
+          "polymer": "Fluoropolymer",
+          "strut_thickness": "0.0039 inches (very thin)",
+          "specifications": {
+            "diameters_mm": [2.25, 2.5, 2.75, 3.0, 3.25, 3.5, 4.0, 4.5],
+            "lengths_mm": [8, 12, 15, 18, 23, 26, 28, 33, 38]
+          },
+          "advantages": [
+            "Ultra-thin struts - excellent deliverability",
+            "Proven long-term safety and efficacy",
+            "Low restenosis rates",
+            "Wide range of sizes available"
+          ],
+          "indications": [
+            "Coronary artery disease (de novo lesions)",
+            "Diabetes (good outcomes in diabetic patients)"
+          ],
+          "dapt_duration": "Minimum 6 months (preferably 12 months)",
+          "pricing": {
+            "average_cost_usd": 2500
+          }
+        },
+        {
+          "device_id": "stent-synergy",
+          "name": "Synergy Bioabsorbable Polymer Stent",
+          "manufacturer": "Boston Scientific",
+          "fda_status": "FDA Approved",
+          "drug": "Everolimus",
+          "polymer": "Bioabsorbable (PLGA)",
+          "strut_thickness": "0.0041 inches",
+          "unique_feature": "Polymer completely absorbs within 3-4 months",
+          "specifications": {
+            "diameters_mm": [2.25, 2.5, 2.75, 3.0, 3.25, 3.5, 4.0, 4.5],
+            "lengths_mm": [12, 15, 18, 20, 24, 28, 32, 38]
+          },
+          "advantages": [
+            "Bioabsorbable polymer reduces late inflammation",
+            "Reduced late stent thrombosis",
+            "Potential for shorter DAPT (ongoing studies)"
+          ],
+          "indications": [
+            "High bleeding risk (may allow shorter DAPT)",
+            "Patients with high stent thrombosis risk"
+          ],
+          "pricing": {
+            "average_cost_usd": 2600
+          }
+        }
+      ]
+    }
+  },
+  "device_selection_algorithms": {
+    "carotid_stenting": {
+      "epd_selection": {
+        "first_line": "Distal filter (FilterWire EZ or Emboshield)",
+        "alternatives": {
+          "filter_failure": "Switch to proximal protection (MO.MA)",
+          "tortuous_anatomy": "Consider proximal protection initially",
+          "large_thrombus": "Proximal protection preferred"
+        }
+      },
+      "stent_selection": {
+        "tortuous_vessel": "Open-cell design (PRECISE)",
+        "ulcerated_plaque": "Closed-cell design (Wallstent or Xact)",
+        "large_ica": "Consider tapered stent (Cristallo Ideale - Europe)",
+        "restenosis": "Closed-cell or alternative stent"
+      }
+    },
+    "coronary_intervention": {
+      "stent_selection": {
+        "general_use": "Ultrathin strut DES (Xience, Synergy)",
+        "diabetes": "Xience (proven outcomes)",
+        "high_bleeding_risk": "Bioabsorbable polymer (Synergy) - consider shorter DAPT",
+        "small_vessels": "Thin struts critical",
+        "cto": "Specialized platforms not in this catalog"
+      }
+    }
+  },
+  "safety_considerations": {
+    "general_precautions": [
+      "Always check device integrity before use",
+      "Flush devices with heparinized saline",
+      "Use appropriate sizing (avoid oversizing)",
+      "Have rescue devices available",
+      "Be prepared to abort if unable to achieve safe position"
+    ],
+    "contraindications": {
+      "nickel_allergy": "Avoid nitinol devices (most stents, filters)",
+      "contrast_allergy": "Premedicate if procedure urgent",
+      "bleeding_disorder": "Correct before procedure, use radial access"
+    }
+  },
+  "reimbursement": {
+    "usa": {
+      "medicare": {
+        "cas": "CPT 37215 - includes stent, EPD, and balloons",
+        "pci": "CPT 92920-92944 - based on vessels treated and devices used",
+        "drug_eluting_stent": "Separate APC payment"
+      }
+    }
+  }
+}

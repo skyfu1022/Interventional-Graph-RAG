@@ -1,0 +1,442 @@
+{
+  "schema_version": "1.0.0",
+  "title": "ACC/AHA Guideline for Carotid Artery Stenting",
+  "organization": "American College of Cardiology / American Heart Association",
+  "year": 2021,
+  "version": "2021 Focused Update",
+  "guideline_id": "ACC-AHA-CAS-2021",
+  "metadata": {
+    "doi": "10.1161/CIR.0000000000001025",
+    "url": "https://www.acc.org/guidelines",
+    "committee": "ACC/AHA Guideline Committee",
+    "last_updated": "2021-07-01"
+  },
+  "indications": {
+    "class_i": [
+      {
+        "indication": "Symptomatic carotid stenosis >50% (NASCET)",
+        "description": "CAS is indicated for patients with recent TIA or ischemic stroke attributed to 50-99% stenosis of the internal carotid artery",
+        "evidence_level": "Level A",
+        "supporting_studies": ["CREST", "SAPPHIRE", "EVA-3S", "SPACE"],
+        "patient_selection": "High surgical risk or preferred endovascular approach",
+        "time_frame": "Symptoms within 6 months"
+      },
+      {
+        "indication": "Symptomatic carotid stenosis >70% (NASCET)",
+        "description": "CAS strongly indicated for symptomatic patients with >70% stenosis",
+        "evidence_level": "Level A",
+        "supporting_studies": ["NASCET", "ECST", "VA Cooperative Study"],
+        "comparison": "Similar efficacy to CEA in appropriate patients"
+      },
+      {
+        "indication": "Asymptomatic carotid stenosis >70% in high-risk patients",
+        "description": "CAS may be considered for asymptomatic patients >70% stenosis with high surgical risk",
+        "evidence_level": "Level B",
+        "supporting_studies": ["ACT I", "CREST - asymptomatic cohort"],
+        "considerations": "Life expectancy >3 years, low peri-procedural risk"
+      }
+    ],
+    "class_iia": [
+      {
+        "indication": "Asymptomatic carotid stenosis >60%",
+        "description": "CAS can be useful for asymptomatic patients 60-69% stenosis",
+        "evidence_level": "Level B",
+        "conditions": "Low peri-procedural risk, favorable anatomy"
+      },
+      {
+        "indication": "Carotid restenosis after CEA",
+        "description": "CAS is reasonable for patients with restenosis after prior endarterectomy",
+        "evidence_level": "Level B",
+        "rationale": "Avoids re-operation with potential nerve injury"
+      },
+      {
+        "indication": "Radiation-induced stenosis",
+        "description": "CAS is reasonable for radiation-induced carotid stenosis",
+        "evidence_level": "Level B",
+        "rationale": "High surgical risk with fibrotic tissue"
+      },
+      {
+        "indication": "Contralateral carotid occlusion",
+        "description": "CAS is reasonable in patients with contralateral ICA occlusion",
+        "evidence_level": "Level B",
+        "rationale": "CEA carries higher risk with no contralateral flow"
+      },
+      {
+        "indication": "High cervical ICA lesions (C2-C3)",
+        "description": "CAS may be preferred for lesions at or above C2 segment",
+        "evidence_level": "Level C",
+        "rationale": "Difficult surgical access"
+      }
+    ],
+    "class_iii": [
+      {
+        "indication": "Non-disabling stroke with poor functional status",
+        "description": "CAS not recommended for patients with modified Rankin score >2",
+        "class": "III (No Benefit)",
+        "evidence_level": "Level B",
+        "rationale": "Limited functional benefit, high peri-procedural risk"
+      },
+      {
+        "indication": "Chronic total occlusion of ICA",
+        "description": "CAS should not be performed for chronic ICA occlusion",
+        "class": "III (Harm)",
+        "evidence_level": "Level B",
+        "rationale": "High complication risk, low success rate"
+      },
+      {
+        "indication": "Severe dementia",
+        "description": "CAS not recommended for patients with severe dementia",
+        "class": "III (No Benefit)",
+        "evidence_level": "Level C",
+        "rationale": "Unable to consent, limited benefit"
+      }
+    ]
+  },
+  "contraindications": {
+    "absolute": [
+      {
+        "contraindication": "Non-correctable bleeding diathesis",
+        "description": "Active bleeding or inability to tolerate antiplatelet therapy",
+        "management": "Address bleeding risk before proceeding"
+      },
+      {
+        "contraindication": "Uncontrolled hypertension",
+        "description": "SBP >180 mmHg or DBP >110 mmHg",
+        "management": "Optimize BP control before procedure"
+      },
+      {
+        "contraindication": "Active infection or sepsis",
+        "description": "Systemic infection increases complication risk",
+        "management": "Treat infection before elective procedure"
+      }
+    ],
+    "relative": [
+      {
+        "contraindication": "Age >80",
+        "description": "Higher peri-procedural stroke risk in elderly",
+        "consideration": "CEA may be preferred for patients >70-80 years",
+        "evidence": "CREST age interaction"
+      },
+      {
+        "contraindication": "Complex aortic arch anatomy",
+        "description": "Type III arch, bovine arch, severe tortuosity",
+        "consideration": "Increased technical difficulty, higher embolic risk",
+        "management": "Consider experienced operator or CEA"
+      },
+      {
+        "contraindication": "Thrombus-containing lesion",
+        "description": "Visible thrombus on angiography",
+        "consideration": "High embolic risk",
+        "management": "Consider anticoagulation, delay procedure, or CEA"
+      },
+      {
+        "contraindication": "Tandem lesions (ICA + MCA)",
+        "description": "Significant intracranial stenosis in addition to ICA stenosis",
+        "consideration": "Outcomes depend on intracranial disease",
+        "management": "Address intracranial disease first or medical therapy"
+      }
+    ]
+  },
+  "procedural_recommendations": {
+    "pre_procedural": {
+      "imaging": {
+        "required": [
+          "Carotid duplex ultrasound - confirm stenosis severity",
+          "CT angiography - assess anatomy and plaque morphology",
+          "MRI brain - identify silent infarcts (if symptomatic)"
+        ],
+        "optional": [
+          "Digital subtraction angiography - if non-invasive studies discordant",
+          "Transcranial Doppler - assess collateral circulation"
+        ]
+      },
+      "medication": {
+        "dual_antiplatelet_therapy": {
+          "aspirin": {
+            "dose": "81-325 mg daily",
+            "duration": "Start at least 3 days before procedure",
+            "loading": "325 mg if not on aspirin (at least 24h before)"
+          },
+          "clopidogrel": {
+            "dose": "75 mg daily",
+            "duration": "Start at least 3-5 days before procedure",
+            "loading": "300-600 mg (at least 24h before, preferably 72h)"
+          },
+          "resistance_testing": {
+            "indication": "Consider if prior stent thrombosis or high-risk anatomy",
+            "method": "VerifyNow or platelet aggregation",
+            "alternative": "Ticagrelor or prasugrel if resistant"
+          }
+        },
+        "statin": {
+          "recommendation": "High-intensity statin pre-procedure",
+          "class": "Class I",
+          "evidence": "Level B"
+        }
+      }
+    },
+    "technical_aspects": {
+      "embolic_protection": {
+        "mandatory": {
+          "class": "Class I",
+          "evidence": "Level A",
+          "description": "Embolic protection device should be used in all CAS procedures"
+        },
+        "device_types": {
+          "distal_filter": {
+            "usage": "Most common, first-line",
+            "advantages": ["Continuous flow", "Familiar to operators"],
+            "limitations": ["Cannot cross in 2-5%", "May miss debris before deployment"]
+          },
+          "proximal_occlusion": {
+            "usage": "Alternative for tortuous anatomy or distal filter failure",
+            "advantages": ["Protection before lesion crossing", "Higher debris capture"],
+            "limitations": ["Requires flow reversal", "Patient discomfort"]
+          }
+        },
+        "positioning": "Deploy 2-3 cm distal to lesion, in straight ICA segment"
+      },
+      "access_site": {
+        "femoral": {
+          "class": "Class I",
+          "evidence": "Level A",
+          "sheath_size": "6-8 Fr (typically 7 Fr)",
+          "alternatives": "Radial or brachial if femoral not feasible"
+        }
+      },
+      "stent_selection": {
+        "closed_cell": {
+          "advantages": ["Better plaque coverage", "Lower embolization risk", "Better radial strength"],
+          "disadvantages": ["Less flexible", "Harder to track"],
+          "indication": "Preferred for most lesions, especially ulcerated plaques"
+        },
+        "open_cell": {
+          "advantages": ["More flexible", "Better conformability", "Easier to deliver"],
+          "disadvantages": ["Less plaque coverage", "Potential for plaque prolapse"],
+          "indication": "Tortuous vessels, difficult anatomy"
+        },
+        "sizing": {
+          "diameter": "1-2 mm larger than normal distal ICA",
+          "length": "Cover lesion with 5-10 mm margins proximal and distal"
+        }
+      },
+      "post_dilatation": {
+        "indication": "Suboptimal stent expansion",
+        "caution": "Avoid high-pressure (>12 atm) dilatation, risk of embolization",
+        "recommendation": "Use undersized balloon, check angiography before"
+      }
+    },
+    "intra_procedural": {
+      "anticoagulation": {
+        "heparin": {
+          "dosing": "70-100 U/kg bolus",
+          "target_act": ">250 seconds",
+          "monitoring": "ACT every 30 minutes",
+          "class": "Class I",
+          "evidence": "Level C"
+        }
+      },
+      "hemodynamic_management": {
+        "bradycardia": {
+          "cause": "Carotid sinus stimulation",
+          "prevention": "Atropine 0.5-1 mg available before balloon inflation",
+          "treatment": "Atropine 0.5-1 mg IV, may repeat"
+        },
+        "hypotension": {
+          "cause": "Carotid sinus reflex, vasovagal",
+          "prevention": "Gentile wire manipulation",
+          "treatment": "Phenylephrine 100-200 mcg IV, IV fluids"
+        }
+      }
+    }
+  },
+  "post_procedure_care": {
+    "immediate_post_procedure": {
+      "monitoring": {
+        "duration": "At least 18-24 hours observation",
+        "neurological_checks": "Every hour for first 6 hours, then every 4 hours",
+        "vital_signs": "Continuous cardiac monitoring, BP monitoring",
+        "hemodynamic": "Watch for hypotension or hypertension"
+      },
+      "blood_pressure_control": {
+        "target": "SBP <140 mmHg, DBP <90 mmHg",
+        "urgency": "Class I",
+        "evidence": "Level A",
+        "rationale": "Prevent hyperperfusion syndrome and hemorrhage"
+      }
+    },
+    "dual_antiplatelet_therapy": {
+      "duration": {
+        "minimum": "30 days",
+        "optimal": "4-6 weeks",
+        "aspirin": "Lifelong (81-325 mg daily)",
+        "clopidogrel": "75 mg daily for minimum 30 days"
+      },
+      "class": "Class I",
+      "evidence": "Level A"
+    },
+    "follow_up": {
+      "schedule": [
+        {
+          "timeframe": "30 days",
+          "assessments": ["Clinical evaluation", "Duplex ultrasound", "Medication adherence"]
+        },
+        {
+          "timeframe": "6 months",
+          "assessments": ["Clinical evaluation", "Duplex ultrasound", "Restenosis screening"]
+        },
+        {
+          "timeframe": "12 months and annually",
+          "assessments": ["Clinical evaluation", "Duplex ultrasound"]
+        }
+      ]
+    },
+    "secondary_prevention": {
+      "statin_therapy": {
+        "intensity": "High-intensity (atorvastatin 40-80mg or rosuvastatin 20-40mg)",
+        "target_ldl": "<70 mg/dL (preferably <55 mg/dL)",
+        "class": "Class I",
+        "evidence": "Level A"
+      },
+      "risk_factor_modification": {
+        "smoking": "Cessation counseling and support",
+        "diabetes": "HbA1c <7%",
+        "hypertension": "BP <140/90 mmHg",
+        "weight": "BMI 18.5-25 kg/m²",
+        "exercise": "150 minutes moderate activity per week"
+      }
+    }
+  },
+  "complications": {
+    "peri_procedural_stroke": {
+      "incidence": "3-5% overall",
+      "risk_factors": [
+        "Age >70",
+        "Symptomatic status",
+        "Complex anatomy",
+        "No EPD use",
+        "Long lesions (>15mm)",
+        "Tandem lesions"
+      ],
+      "prevention": [
+        "Universal EPD use",
+        "Careful technique",
+        "Pre-procedure DAPT",
+        "Operator experience"
+      ],
+      "types": {
+        "ischemic": "Embolic - 80% of strokes",
+        "hemorrhagic": "Hyperperfusion - 20% of strokes"
+      }
+    },
+    "hyperperfusion_syndrome": {
+      "incidence": "1-2%",
+      "onset": "Hours to days post-procedure",
+      "symptoms": [
+        " ipsilateral headache",
+        "Facial or eye pain",
+        "Seizures",
+        "Altered mental status",
+        "Focal neurological deficit"
+      ],
+      "risk_factors": [
+        "High-grade stenosis (>90%)",
+        "Poor collateral circulation",
+        "Poorly controlled hypertension",
+        "Contralateral ICA occlusion"
+      ],
+      "prevention": {
+        "bp_control": "Critical - SBP <140 mmHg",
+        "monitoring": "Neurological checks, educate patient on symptoms"
+      },
+      "treatment": {
+        "immediate": "Strict BP control (SBP <120-140 mmHg)",
+        "medications": ["Labetalol", "Nicardipine", "Clevidipine"],
+        "severe": "ICU monitoring, consider antiepileptic if seizures"
+      }
+    },
+    "access_site_complications": {
+      "incidence": "5-7%",
+      "types": [
+        {
+          "type": "Hematoma",
+          "treatment": "Compression, observation"
+        },
+        {
+          "type": "Pseudoaneurysm",
+          "treatment": "Thrombin injection, compression, or surgical repair"
+        },
+        {
+          "type": "Retroperitoneal bleed",
+          "treatment": "Resuscitation, stent graft or surgery if severe"
+        }
+      ],
+      "prevention": [
+        "Ultrasound-guided access",
+        "Micropuncture technique",
+        "Proper sheath management",
+        "Adequate hemostasis"
+      ]
+    },
+    "cranial_nerve_injury": {
+      "incidence": "<1% (vs 5-10% for CEA)",
+      "nerves": [
+        "Hypoglossal (XII) - tongue deviation",
+        "Recurrent laryngeal - hoarseness",
+        "Marginal mandibular - facial droop"
+      ],
+      "course": "Usually transient, resolves within weeks to months"
+    }
+  },
+  "operator_and_institutional_requirements": {
+    "minimum_case_volume": {
+      "operator": ">12 CAS procedures per year or >30 lifetime cases",
+      "institution": ">24 CAS procedures per year with good outcomes"
+    },
+    "training": {
+      "recommended": "Dedicated CAS training program, proctoring for early cases",
+      "requirements": ["Familiarity with EPD devices", "Experience in carotid and cerebral angiography"]
+    },
+    "outcomes_tracking": {
+      "benchmark_stroke_death": "<6% for symptomatic, <3% for asymptomatic",
+      "regular_review": "Quarterly morbidity and mortality review"
+    }
+  },
+  "comparison_with_cea": {
+    "crest_trial": {
+      "no_difference": "Overall periprocedural stroke/death/myocardial infarction similar",
+      "age_interaction": {
+        "under_70": "CAS better - lower MI risk",
+        "over_70": "CEA better - lower stroke risk"
+      },
+      "stroke_vs_mi": {
+        "cas": "Higher stroke risk (4.1% vs 2.3%)",
+        "cea": "Higher MI risk (2.3% vs 1.1%)"
+      }
+    },
+    "selection_considerations": {
+      "cas_preferred": [
+        "High surgical risk (prior neck surgery, radiation)",
+        "High cervical lesion",
+        "Contralateral carotid occlusion",
+        "Tracheostomy or high cervical spinal injury",
+        "Age <70 (based on CREST)"
+      ],
+      "cea_preferred": [
+        "Age >70-80",
+        "Type III aortic arch",
+        "Severe arch calcification",
+        "Tandem proximal common carotid disease",
+        "Long, tortuous ICA"
+      ]
+    }
+  },
+  "emerging_techniques": {
+    "transcarotid_revascularization": {
+      "description": "TCAR - hybrid approach with carotid cutdown and flow reversal",
+      "potential_advantages": ["Avoids aortic arch navigation", "Continuous embolic protection"],
+      "current_status": "Growing evidence, alternative to CAS and CEA",
+      "evidence": "ROADSTER trials"
+    }
+  }
+}

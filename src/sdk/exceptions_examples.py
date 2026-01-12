@@ -55,7 +55,7 @@ async def example_document_not_found():
     except DocumentNotFoundError as e:
         print(f"捕获文档未找到错误: {e}")
         print(f"文档 ID: {e.doc_id}")
-        print(f"建议: 请检查文档 ID 是否正确")
+        print("建议: 请检查文档 ID 是否正确")
     except MedGraphSDKError as e:
         print(f"捕获通用 SDK 错误: {e}")
     print()
@@ -72,7 +72,7 @@ async def example_validation_error():
             # 使用无效的查询模式
             result = await client.query(
                 "测试查询",
-                mode="invalid_mode"  # 无效的模式
+                mode="invalid_mode",  # 无效的模式
             )
             print(f"结果: {result}")
     except ValidationError as e:
@@ -80,7 +80,7 @@ async def example_validation_error():
         print(f"字段: {e.field}")
         print(f"值: {e.value}")
         print(f"约束: {e.constraint}")
-        print(f"建议: 请使用有效的查询模式")
+        print("建议: 请使用有效的查询模式")
     except MedGraphSDKError as e:
         print(f"捕获通用 SDK 错误: {e}")
     print()
@@ -105,7 +105,7 @@ async def example_connection_error():
         print(f"捕获连接错误: {e}")
         print(f"服务: {e.service}")
         print(f"脱敏 URI: {e.details.get('uri', 'N/A')}")
-        print(f"建议: 请检查服务是否运行")
+        print("建议: 请检查服务是否运行")
     except MedGraphSDKError as e:
         print(f"捕获通用 SDK 错误: {e}")
     print()
@@ -122,14 +122,14 @@ async def example_query_timeout():
             # 执行可能超时的查询
             result = await client.query(
                 "非常复杂的查询...",
-                timeout=0.001  # 极短超时
+                timeout=0.001,  # 极短超时
             )
             print(f"结果: {result}")
     except QueryTimeoutError as e:
         print(f"捕获查询超时错误: {e}")
         print(f"超时时间: {e.timeout_seconds} 秒")
         print(f"查询: {e.query}")
-        print(f"建议: 请简化查询或增加超时时间")
+        print("建议: 请简化查询或增加超时时间")
     except MedGraphSDKError as e:
         print(f"捕获通用 SDK 错误: {e}")
     print()
@@ -145,7 +145,7 @@ async def example_rate_limit():
         async with MedGraphClient(workspace="medical") as client:
             # 模拟频繁请求
             for i in range(1000):
-                result = await client.query(f"查询 {i}")
+                result = await client.query(f"查询 {i}")  # noqa: F841 - 示例代码，保留用于演示
                 print(f"查询 {i}: 完成")
     except RateLimitError as e:
         print(f"捕获速率限制错误: {e}")
@@ -179,7 +179,7 @@ async def example_comprehensive_error_handling():
                 "error_type": "validation",
                 "message": str(e),
                 "field": e.field,
-                "suggestion": f"请检查字段 {e.field} 的值"
+                "suggestion": f"请检查字段 {e.field} 的值",
             }
         except QueryTimeoutError as e:
             return {
@@ -187,7 +187,7 @@ async def example_comprehensive_error_handling():
                 "error_type": "timeout",
                 "message": str(e),
                 "timeout": e.timeout_seconds,
-                "suggestion": "请简化查询或增加超时时间"
+                "suggestion": "请简化查询或增加超时时间",
             }
         except RateLimitError as e:
             return {
@@ -195,7 +195,7 @@ async def example_comprehensive_error_handling():
                 "error_type": "rate_limit",
                 "message": str(e),
                 "retry_after": e.retry_after,
-                "suggestion": f"请等待 {e.retry_after} 秒后重试"
+                "suggestion": f"请等待 {e.retry_after} 秒后重试",
             }
         except MedGraphSDKError as e:
             return {
@@ -203,7 +203,7 @@ async def example_comprehensive_error_handling():
                 "error_type": "unknown",
                 "message": str(e),
                 "error_code": e.error_code,
-                "suggestion": "请查看日志了解详情"
+                "suggestion": "请查看日志了解详情",
             }
 
     # 使用安全查询函数
@@ -222,10 +222,7 @@ async def example_api_response_format():
     # 模拟 API 错误响应
     def handle_api_error(error: MedGraphSDKError) -> dict:
         """将 SDK 异常转换为 API 响应格式。"""
-        return {
-            "success": False,
-            "error": error.to_dict()
-        }
+        return {"success": False, "error": error.to_dict()}
 
     # 测试各种异常的 API 响应格式
     errors = [

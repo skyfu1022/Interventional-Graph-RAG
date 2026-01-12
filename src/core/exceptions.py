@@ -35,7 +35,7 @@ class MedGraphError(Exception):
         self,
         message: str,
         error_code: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None
+        details: Optional[Dict[str, Any]] = None,
     ):
         """初始化异常。
 
@@ -59,7 +59,7 @@ class MedGraphError(Exception):
             "error_type": self.__class__.__name__,
             "error_code": self.error_code,
             "message": self.message,
-            "details": self.details
+            "details": self.details,
         }
 
     def __str__(self) -> str:
@@ -89,7 +89,7 @@ class DocumentError(MedGraphError):
         self,
         message: str,
         doc_id: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None
+        details: Optional[Dict[str, Any]] = None,
     ):
         """初始化文档错误。
 
@@ -126,7 +126,7 @@ class QueryError(MedGraphError):
         message: str,
         query_id: Optional[str] = None,
         query_text: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None
+        details: Optional[Dict[str, Any]] = None,
     ):
         """初始化查询错误。
 
@@ -167,7 +167,7 @@ class GraphError(MedGraphError):
         message: str,
         graph_id: Optional[str] = None,
         entity_type: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None
+        details: Optional[Dict[str, Any]] = None,
     ):
         """初始化图谱错误。
 
@@ -208,7 +208,7 @@ class ConfigError(MedGraphError):
         message: str,
         config_key: Optional[str] = None,
         config_file: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None
+        details: Optional[Dict[str, Any]] = None,
     ):
         """初始化配置错误。
 
@@ -249,7 +249,7 @@ class AuthenticationError(MedGraphError):
         message: str,
         auth_method: Optional[str] = None,
         user_id: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None
+        details: Optional[Dict[str, Any]] = None,
     ):
         """初始化认证错误。
 
@@ -290,7 +290,7 @@ class StorageError(MedGraphError):
         message: str,
         storage_type: Optional[str] = None,
         operation: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None
+        details: Optional[Dict[str, Any]] = None,
     ):
         """初始化存储错误。
 
@@ -333,7 +333,7 @@ class ValidationError(MedGraphError):
         field: Optional[str] = None,
         value: Optional[Any] = None,
         constraint: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None
+        details: Optional[Dict[str, Any]] = None,
     ):
         """初始化验证错误。
 
@@ -378,7 +378,7 @@ class NotFoundError(MedGraphError):
         message: str,
         resource_type: Optional[str] = None,
         resource_id: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None
+        details: Optional[Dict[str, Any]] = None,
     ):
         """初始化资源未找到错误。
 
@@ -421,7 +421,7 @@ class RateLimitError(MedGraphError):
         limit: Optional[int] = None,
         window: Optional[int] = None,
         retry_after: Optional[int] = None,
-        details: Optional[Dict[str, Any]] = None
+        details: Optional[Dict[str, Any]] = None,
     ):
         """初始化速率限制错误。
 

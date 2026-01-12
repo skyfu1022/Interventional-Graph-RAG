@@ -4,10 +4,24 @@ LangGraph 智能体状态管理模块。
 该模块定义了用于 LangGraph 工作流的状态结构和状态转换。
 """
 
-from typing import TypedDict, List, Optional, Annotated, Dict
-from typing_extensions import Required
 from operator import add
-from langgraph.graph.message import add_messages, AnyMessage
+from typing import Annotated, Any, Dict, List, Optional, TypedDict, Union
+
+from langgraph.graph.message import AnyMessage, add_messages
+from typing_extensions import Required
+
+# 导入扩展数据模型
+from src.agents.models import (
+    DeviceSelectionModel,
+    GuidelineMatch,
+    PatientDataModel,
+    PostOpPlanModel,
+    ProcedurePlanModel,
+    ReasoningStepModel,
+    RetrievedEntity,
+    RetrievedRelationship,
+    RiskFactorModel,
+)
 
 
 class QueryState(TypedDict):
@@ -130,3 +144,74 @@ class RAGState(TypedDict):
     generation: str
     sources: List[str]
     error: Optional[str]
+
+
+class ExtendedInterventionalState(TypedDict):
+    """扩展的介入手术智能体工作流状态。
+
+    用于介入手术辅助决策智能体的状态管理，整合 GraphRAG 三层图谱检索、
+    LLM 分析结果和临床决策支持功能。
+
+    该状态类型继承并扩展了基础 InterventionalState，增加了：
+    - GraphRAG 检索结果（实体、关系、指南匹配）
+    - 三层图谱上下文（患者数据、文献指南、医学词典）
+    - LLM 分析结果（患者分析、器械推荐、风险评估、手术方案）
+    - 推理链追踪和术后计划
+
+    Attributes:
+        # === GraphRAG 检索结果（累加器） ===
+        retrieved_entities: 检索到的实体列表，支持累加
+        retrieved_relationships: 检索到的关系列表，支持累加
+        matched_guidelines: 匹配的指南列表，支持累加
+
+        # === 三层图谱上下文 ===
+        patient_graph_context: 患者数据图谱上下文字典
+        literature_graph_context: 文献指南图谱上下文字典
+        dictionary_graph_context: 医学词典图谱上下文字典
+
+        # === LLM 分析结果 ===
+        patient_analysis: 患者数据分析结果（PatientDataModel 或字典）
+        device_recommendations: 器械推荐列表（DeviceSelectionModel 列表）
+        risk_assessment: 风险评估列表（RiskFactorModel 列表）
+        procedure_plan: 手术方案（ProcedurePlanModel 或字典）
+        reasoning_steps: 推理步骤列表（ReasoningStepModel 列表）
+        post_op_plan: 术后管理计划（PostOpPlanModel 或字典）
+
+        # === 元数据 ===
+        retrieval_mode: 检索模式（如 "hybrid", "semantic", "keyword"）
+        sources: 数据来源列表
+        current_phase: 当前手术阶段（pre_op, intra_op, post_op）
+        error: 错误信息
+    """
+
+    # === GraphRAG 检索结果（使用累加器） ===
+    retrieved_entities: Annotated[List[Union[RetrievedEntity, Dict]], add]  # 支持累加
+    retrieved_relationships: Annotated[
+        List[Union[RetrievedRelationship, Dict]], add
+    ]  # 支持累加
+    matched_guidelines: Annotated[List[Union[GuidelineMatch, Dict]], add]  # 支持累加
+
+    # === 三层图谱上下文 ===
+    patient_graph_context: Dict[str, Any]  # 患者数据图谱上下文
+    literature_graph_context: Dict[str, Any]  # 文献指南图谱上下文
+    dictionary_graph_context: Dict[str, Any]  # 医学词典图谱上下文
+
+    # === LLM 分析结果 ===
+    patient_analysis: Optional[Union[PatientDataModel, Dict]]  # 患者数据分析结果
+    device_recommendations: List[Union[DeviceSelectionModel, Dict]]  # 器械推荐列表
+    risk_assessment: List[Union[RiskFactorModel, Dict]]  # 风险评估列表
+    procedure_plan: Optional[Union[ProcedurePlanModel, Dict]]  # 手术方案
+    reasoning_steps: List[Union[ReasoningStepModel, Dict]]  # 推理步骤列表
+    post_op_plan: Optional[Union[PostOpPlanModel, Dict]]  # 术后管理计划
+
+    # === 元数据 ===
+    retrieval_mode: Optional[str]  # 检索模式
+    sources: List[str]  # 数据来源列表
+    current_phase: Optional[str]  # 当前手术阶段
+    error: Optional[str]  # 错误信息
+    recommendations: Optional[str]  # 生成的推荐方案描述
+    patient_data: Required[Dict[str, Any]]  # 患者数据
+    procedure_type: Required[str]  # 手术类型
+    indications_met: bool  # 适应症评估结果
+    contraindications_found: bool  # 禁忌症评估结果
+    contraindications: List[str]  # 禁忌症列表

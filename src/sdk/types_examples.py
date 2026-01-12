@@ -11,7 +11,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from src.sdk.types import (
+from src.sdk.types import (  # noqa: E402 - 需要先设置 Python 路径
     QueryMode,
     QueryResult,
     DocumentInfo,
@@ -151,7 +151,7 @@ def example_4_graph_info():
 
     print(f"图谱 ID: {graph.graph_id}")
     print(f"工作空间: {graph.workspace}")
-    print(f"统计信息:")
+    print("统计信息:")
     print(f"  - 实体: {graph.entity_count:,}")
     print(f"  - 关系: {graph.relationship_count:,}")
     print(f"  - 文档: {graph.document_count:,}")
@@ -235,33 +235,33 @@ def example_7_validation():
     from pydantic import ValidationError
 
     # 有效数据
-    valid_source = SourceInfo(
+    valid_source = SourceInfo(  # noqa: F841 - 示例代码，保留用于演示数据验证
         doc_id="doc_001",
         chunk_id="chunk_001",
         content="有效内容",
         relevance=0.85,  # 在 [0, 1] 范围内
     )
-    print(f"✓ 有效的 SourceInfo 创建成功")
+    print("✓ 有效的 SourceInfo 创建成功")
 
     # 无效数据 - 相关性超出范围
     print("\n测试无效数据:")
     try:
-        invalid_source = SourceInfo(
+        invalid_source = SourceInfo(  # noqa: F841 - 示例代码，保留用于演示数据验证
             doc_id="doc_001",
             chunk_id="chunk_001",
             content="内容",
             relevance=1.5,  # 超出 [0, 1] 范围
         )
         print("✗ 应该抛出 ValidationError")
-    except ValidationError as e:
-        print(f"✓ 相关性验证: 正确拒绝超出范围的值")
+    except ValidationError:
+        print("✓ 相关性验证: 正确拒绝超出范围的值")
 
     # 无效数据 - 空的实体类型列表
     try:
-        invalid_config = GraphConfig(entity_types=[])
+        invalid_config = GraphConfig(entity_types=[])  # noqa: F841 - 示例代码，保留用于演示数据验证
         print("✗ 应该抛出 ValidationError")
-    except ValidationError as e:
-        print(f"✓ 实体类型验证: 正确拒绝空列表")
+    except ValidationError:
+        print("✓ 实体类型验证: 正确拒绝空列表")
 
     print()
 
@@ -303,18 +303,18 @@ def example_8_nested_operations():
     )
 
     # 访问嵌套对象
-    print(f"查询结果包含:")
+    print("查询结果包含:")
     print(f"  - {len(result.sources)} 个来源")
     print(f"  - {len(result.graph_context.entities)} 个实体")
     print(f"  - {len(result.graph_context.relationships)} 个关系")
 
     # 遍历来源
-    print(f"\n来源列表:")
+    print("\n来源列表:")
     for i, source in enumerate(result.sources, 1):
         print(f"  {i}. {source.doc_id} (相关性: {source.relevance:.2f})")
 
     # 遍历实体
-    print(f"\n实体列表:")
+    print("\n实体列表:")
     for entity in result.graph_context.entities:
         print(f"  - {entity}")
 

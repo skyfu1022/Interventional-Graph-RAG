@@ -204,9 +204,7 @@ class QueryResult(BaseModel):
             data["graph_context"] = GraphContext.model_validate(data["graph_context"])
         # 处理嵌套的 sources
         if "sources" in data:
-            data["sources"] = [
-                SourceInfo.model_validate(s) for s in data["sources"]
-            ]
+            data["sources"] = [SourceInfo.model_validate(s) for s in data["sources"]]
         return cls.model_validate(data)
 
 
@@ -237,9 +235,7 @@ class DocumentInfo(BaseModel):
     )
 
     entity_count: int = Field(default=0, ge=0, description="提取的实体数量")
-    relationship_count: int = Field(
-        default=0, ge=0, description="提取的关系数量"
-    )
+    relationship_count: int = Field(default=0, ge=0, description="提取的关系数量")
 
     created_at: str = Field(..., description="创建时间（ISO 8601）")
     updated_at: Optional[str] = Field(default=None, description="更新时间（ISO 8601）")

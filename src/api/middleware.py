@@ -287,9 +287,7 @@ class RateLimitMiddleware:
         # 检查是否超过速率限制
         if not self.limiter.is_allowed(client_ip):
             remaining = self.limiter.get_remaining_requests(client_ip)
-            logger.warning(
-                f"速率限制: IP={client_ip}, 剩余请求={remaining}"
-            )
+            logger.warning(f"速率限制: IP={client_ip}, 剩余请求={remaining}")
 
             return JSONResponse(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
@@ -305,7 +303,9 @@ class RateLimitMiddleware:
                 headers={
                     "X-RateLimit-Limit": str(self.limiter.requests_per_window),
                     "X-RateLimit-Remaining": str(remaining),
-                    "X-RateLimit-Reset": str(int(time.time()) + self.limiter.window_seconds),
+                    "X-RateLimit-Reset": str(
+                        int(time.time()) + self.limiter.window_seconds
+                    ),
                     "Retry-After": str(self.limiter.window_seconds),
                 },
             )

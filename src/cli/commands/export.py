@@ -11,11 +11,16 @@
 
 import asyncio
 from pathlib import Path
-from typing import Optional
 
 import typer
 from rich.console import Console
-from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
+from rich.progress import (
+    Progress,
+    SpinnerColumn,
+    TextColumn,
+    BarColumn,
+    TaskProgressColumn,
+)
 from rich.panel import Panel
 from rich.table import Table
 
@@ -51,10 +56,7 @@ def _validate_output_path(output_path: str) -> Path:
 
     # 检查父目录是否可写
     if path.parent.exists() and not path.parent.is_dir():
-        console.print(
-            f"[red]✗[/red] 父路径不是目录: {path.parent}",
-            style="red"
-        )
+        console.print(f"[red]✗[/red] 父路径不是目录: {path.parent}", style="red")
         raise typer.Exit(1)
 
     return path
@@ -154,23 +156,19 @@ async def _export_graph(
         console=console,
     ) as progress:
         # 初始化任务
-        init_task = progress.add_task(
-            "[cyan]初始化客户端...", total=1
-        )
+        init_task = progress.add_task("[cyan]初始化客户端...", total=1)
 
         # 使用 SDK 客户端
         async with MedGraphClient(workspace=workspace) as client:
             progress.update(init_task, completed=1)
 
             # 获取图谱信息
-            info_task = progress.add_task(
-                "[cyan]获取图谱信息...", total=1
-            )
+            info_task = progress.add_task("[cyan]获取图谱信息...", total=1)
 
             try:
                 graph_info = await client.get_graph(graph_id)
                 progress.update(info_task, completed=1)
-            except Exception as e:
+            except Exception:
                 progress.update(info_task, completed=1)
                 raise
 
@@ -186,7 +184,7 @@ async def _export_graph(
                     format=format,
                 )
                 progress.update(export_task, completed=1)
-            except Exception as e:
+            except Exception:
                 progress.update(export_task, completed=1)
                 raise
 
@@ -201,25 +199,29 @@ async def _export_graph(
 def export(
     graph_id: str = typer.Option(
         ...,
-        "--graph-id", "-g",
+        "--graph-id",
+        "-g",
         help="图谱 ID",
         rich_help_panel="必需参数",
     ),
     output: str = typer.Option(
         ...,
-        "--output", "-o",
+        "--output",
+        "-o",
         help="输出文件路径",
         rich_help_panel="必需参数",
     ),
     format: str = typer.Option(
         "json",
-        "--format", "-f",
+        "--format",
+        "-f",
         help="导出格式 (json, csv, mermaid)",
         rich_help_panel="可选参数",
     ),
     workspace: str = typer.Option(
         "medical",
-        "--workspace", "-w",
+        "--workspace",
+        "-w",
         help="工作空间名称",
         rich_help_panel="可选参数",
     ),
@@ -242,7 +244,7 @@ def export(
         console.print(
             f"[red]✗[/red] 无效的导出格式: {format}\n"
             f"支持的格式: {', '.join(valid_formats)}",
-            style="red"
+            style="red",
         )
         raise typer.Exit(1)
 
@@ -262,12 +264,14 @@ def export(
 
     try:
         # 执行导出
-        graph_info = asyncio.run(_export_graph(
-            graph_id=graph_id,
-            output_path=output_path,
-            format=format,
-            workspace=workspace,
-        ))
+        graph_info = asyncio.run(
+            _export_graph(
+                graph_id=graph_id,
+                output_path=output_path,
+                format=format,
+                workspace=workspace,
+            )
+        )
 
         # 显示摘要
         _display_export_summary(

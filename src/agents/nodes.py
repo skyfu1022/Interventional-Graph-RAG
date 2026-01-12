@@ -5,9 +5,8 @@ LangGraph 智能体节点实现模块。
 包括文档摄入、查询处理、图谱操作等节点。
 """
 
-from typing import Dict, Any, Optional, List
-from langchain_core.language_models import BaseChatModel
-from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
+from typing import Dict, Any, Optional
+from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.types import RunnableConfig
 
 from src.agents.states import QueryState, BuildState
@@ -15,7 +14,10 @@ from src.agents.states import QueryState, BuildState
 
 # ==================== 查询工作流节点 ====================
 
-def analyze_query_node(state: QueryState, config: Optional[RunnableConfig] = None) -> Dict[str, Any]:
+
+def analyze_query_node(
+    state: QueryState, config: Optional[RunnableConfig] = None
+) -> Dict[str, Any]:
     """分析查询复杂度节点。
 
     根据查询的长度、关键词数量、语义复杂度等特征，
@@ -37,14 +39,33 @@ def analyze_query_node(state: QueryState, config: Optional[RunnableConfig] = Non
 
     # 2. 检查复杂度指示词
     complex_indicators = [
-        "比较", "对比", "分析", "关系", "影响", "原因",
-        "为什么", "如何", "怎样", "机制", "原理",
-        "区别", "相同", "不同", "优缺点", "风险",
-        "评估", "探讨", "深入研究", "多种", "相互"
+        "比较",
+        "对比",
+        "分析",
+        "关系",
+        "影响",
+        "原因",
+        "为什么",
+        "如何",
+        "怎样",
+        "机制",
+        "原理",
+        "区别",
+        "相同",
+        "不同",
+        "优缺点",
+        "风险",
+        "评估",
+        "探讨",
+        "深入研究",
+        "多种",
+        "相互",
     ]
 
     has_complex_indicator = any(indicator in query for indicator in complex_indicators)
-    complex_indicator_count = sum(1 for indicator in complex_indicators if indicator in query)
+    complex_indicator_count = sum(
+        1 for indicator in complex_indicators if indicator in query
+    )
 
     # 3. 检查多实体查询
     entity_indicators = ["和", "与", "或", "以及", "还有"]
@@ -61,7 +82,9 @@ def analyze_query_node(state: QueryState, config: Optional[RunnableConfig] = Non
     else:
         complexity = "complex"
 
-    print(f"[分析查询] 复杂度: {complexity} (字符数: {char_count}, 复杂指示: {has_complex_indicator}({complex_indicator_count}), 实体数: {entity_count})")
+    print(
+        f"[分析查询] 复杂度: {complexity} (字符数: {char_count}, 复杂指示: {has_complex_indicator}({complex_indicator_count}), 实体数: {entity_count})"
+    )
 
     return {
         "query_complexity": complexity,
@@ -70,7 +93,9 @@ def analyze_query_node(state: QueryState, config: Optional[RunnableConfig] = Non
     }
 
 
-async def retrieve_node(state: QueryState, config: Optional[RunnableConfig] = None) -> Dict[str, Any]:
+async def retrieve_node(
+    state: QueryState, config: Optional[RunnableConfig] = None
+) -> Dict[str, Any]:
     """检索节点。
 
     调用 RAG-Anything 适配器从知识图谱中检索相关上下文。
@@ -103,7 +128,7 @@ async def retrieve_node(state: QueryState, config: Optional[RunnableConfig] = No
                 result = await rag_adapter.asearch(
                     query,
                     search_mode="hybrid",  # 混合检索模式
-                    result_count=5
+                    result_count=5,
                 )
 
                 # 提取上下文和来源
@@ -131,7 +156,9 @@ async def retrieve_node(state: QueryState, config: Optional[RunnableConfig] = No
     }
 
 
-async def grade_documents_node(state: QueryState, config: Optional[RunnableConfig] = None) -> Dict[str, Any]:
+async def grade_documents_node(
+    state: QueryState, config: Optional[RunnableConfig] = None
+) -> Dict[str, Any]:
     """评估文档相关性节点。
 
     评估检索到的文档与查询的相关性，决定是否需要优化查询重试。
@@ -159,7 +186,9 @@ async def grade_documents_node(state: QueryState, config: Optional[RunnableConfi
             llm = config["configurable"].get("llm")
             if llm and context:
                 # 使用 LLM 评估相关性
-                context_str = "\n".join([f"{i+1}. {ctx}" for i, ctx in enumerate(context[:3])])
+                context_str = "\n".join(
+                    [f"{i + 1}. {ctx}" for i, ctx in enumerate(context[:3])]
+                )
 
                 prompt = f"""请评估以下检索到的上下文与查询的相关性。
 
@@ -179,10 +208,12 @@ async def grade_documents_node(state: QueryState, config: Optional[RunnableConfi
 
 请只返回上述三个关键词之一。"""
 
-                response = await llm.ainvoke([
-                    SystemMessage(content="你是一个专业的文档相关性评估助手。"),
-                    HumanMessage(content=prompt)
-                ])
+                response = await llm.ainvoke(
+                    [
+                        SystemMessage(content="你是一个专业的文档相关性评估助手。"),
+                        HumanMessage(content=prompt),
+                    ]
+                )
 
                 response_text = response.content.strip().lower()
 
@@ -228,7 +259,9 @@ async def grade_documents_node(state: QueryState, config: Optional[RunnableConfi
     }
 
 
-async def generate_answer_node(state: QueryState, config: Optional[RunnableConfig] = None) -> Dict[str, Any]:
+async def generate_answer_node(
+    state: QueryState, config: Optional[RunnableConfig] = None
+) -> Dict[str, Any]:
     """生成答案节点。
 
     基于查询和检索到的上下文生成最终答案。
@@ -264,8 +297,17 @@ async def generate_answer_node(state: QueryState, config: Optional[RunnableConfi
 请提供简洁、准确的回答。"""
                 else:
                     # 使用检索到的上下文生成答案
-                    context_str = "\n\n".join([f"参考信息 {i+1}:\n{ctx}" for i, ctx in enumerate(context[:5])])
-                    sources_str = "\n".join([f"- {source}" for source in sources[:3]]) if sources else "未指定来源"
+                    context_str = "\n\n".join(
+                        [
+                            f"参考信息 {i + 1}:\n{ctx}"
+                            for i, ctx in enumerate(context[:5])
+                        ]
+                    )
+                    sources_str = (
+                        "\n".join([f"- {source}" for source in sources[:3]])
+                        if sources
+                        else "未指定来源"
+                    )
 
                     prompt = f"""请基于以下检索到的上下文回答用户问题。
 
@@ -283,10 +325,14 @@ async def generate_answer_node(state: QueryState, config: Optional[RunnableConfi
 3. 在适当的地方引用来源
 4. 回答要准确、清晰、有条理"""
 
-                response = await llm.ainvoke([
-                    SystemMessage(content="你是一个专业的医疗知识问答助手，擅长基于知识图谱检索结果回答问题。"),
-                    HumanMessage(content=prompt)
-                ])
+                response = await llm.ainvoke(
+                    [
+                        SystemMessage(
+                            content="你是一个专业的医疗知识问答助手，擅长基于知识图谱检索结果回答问题。"
+                        ),
+                        HumanMessage(content=prompt),
+                    ]
+                )
 
                 answer = response.content.strip()
                 print(f"[生成答案] 已生成答案 (长度: {len(answer)} 字符)")
@@ -322,7 +368,9 @@ async def generate_answer_node(state: QueryState, config: Optional[RunnableConfi
     }
 
 
-async def refine_query_node(state: QueryState, config: Optional[RunnableConfig] = None) -> Dict[str, Any]:
+async def refine_query_node(
+    state: QueryState, config: Optional[RunnableConfig] = None
+) -> Dict[str, Any]:
     """优化查询节点。
 
     当检索结果不理想时，优化查询表达式以便重新检索。
@@ -351,7 +399,12 @@ async def refine_query_node(state: QueryState, config: Optional[RunnableConfig] 
                 # 构建优化提示
                 if context:
                     # 有一些上下文，但不够好
-                    context_str = "\n".join([f"{i+1}. {ctx[:100]}..." for i, ctx in enumerate(context[:2])])
+                    context_str = "\n".join(
+                        [
+                            f"{i + 1}. {ctx[:100]}..."
+                            for i, ctx in enumerate(context[:2])
+                        ]
+                    )
                     prompt = f"""请优化以下查询，以获得更好的检索结果。
 
 原始查询: {original_query}
@@ -381,10 +434,14 @@ async def refine_query_node(state: QueryState, config: Optional[RunnableConfig] 
 
 请只返回优化后的查询，不要有其他内容。"""
 
-                response = await llm.ainvoke([
-                    SystemMessage(content="你是一个专业的查询优化助手，擅长改进医疗相关查询以提高检索效果。"),
-                    HumanMessage(content=prompt)
-                ])
+                response = await llm.ainvoke(
+                    [
+                        SystemMessage(
+                            content="你是一个专业的查询优化助手，擅长改进医疗相关查询以提高检索效果。"
+                        ),
+                        HumanMessage(content=prompt),
+                    ]
+                )
 
                 refined_query = response.content.strip()
                 print(f"[优化查询] LLM 优化结果: {refined_query}")
@@ -392,12 +449,12 @@ async def refine_query_node(state: QueryState, config: Optional[RunnableConfig] 
             else:
                 # 没有 LLM，使用简单策略
                 refined_query = _simple_refine_query(original_query, retrieval_count)
-                print(f"[优化查询] 使用简单策略优化")
+                print("[优化查询] 使用简单策略优化")
 
         else:
             # 没有 config，使用简单策略
             refined_query = _simple_refine_query(original_query, retrieval_count)
-            print(f"[优化查询] 使用简单策略优化")
+            print("[优化查询] 使用简单策略优化")
 
     except Exception as e:
         error = f"查询优化失败: {str(e)}"
@@ -438,7 +495,10 @@ def _simple_refine_query(query: str, retrieval_count: int) -> str:
 
 # ==================== 图谱构建工作流节点 ====================
 
-async def load_document_node(state: BuildState, config: Optional[RunnableConfig] = None) -> Dict[str, Any]:
+
+async def load_document_node(
+    state: BuildState, config: Optional[RunnableConfig] = None
+) -> Dict[str, Any]:
     """加载文档节点。
 
     负责从文件路径加载文档内容，并更新构建状态。
@@ -464,11 +524,11 @@ async def load_document_node(state: BuildState, config: Optional[RunnableConfig]
             if rag_adapter:
                 # 异步加载文档
                 await rag_adapter.afile_load(file_path)
-                print(f"[加载文档] 成功加载文档")
+                print("[加载文档] 成功加载文档")
             else:
-                print(f"[加载文档] 警告: 未配置 RAG 适配器")
+                print("[加载文档] 警告: 未配置 RAG 适配器")
         else:
-            print(f"[加载文档] 警告: 未提供 config")
+            print("[加载文档] 警告: 未提供 config")
 
     except Exception as e:
         error = f"文档加载失败: {str(e)}"
@@ -481,7 +541,9 @@ async def load_document_node(state: BuildState, config: Optional[RunnableConfig]
     }
 
 
-async def extract_entities_node(state: BuildState, config: Optional[RunnableConfig] = None) -> Dict[str, Any]:
+async def extract_entities_node(
+    state: BuildState, config: Optional[RunnableConfig] = None
+) -> Dict[str, Any]:
     """提取实体和关系节点。
 
     调用 RAG-Anything 适配器从文档中提取实体和关系。
@@ -510,7 +572,7 @@ async def extract_entities_node(state: BuildState, config: Optional[RunnableConf
                 # 异步提取实体
                 # 注意: lightrag 的具体 API 可能需要根据实际实现调整
                 # 这里展示基本的调用模式
-                print(f"[提取实体] 开始实体提取...")
+                print("[提取实体] 开始实体提取...")
 
                 # 实际实现可能类似于:
                 # result = await rag_adapter.aentity_extract(file_path)
@@ -521,11 +583,13 @@ async def extract_entities_node(state: BuildState, config: Optional[RunnableConf
                 entity_count = 100
                 relationship_count = 150
 
-                print(f"[提取实体] 提取到 {entity_count} 个实体, {relationship_count} 个关系")
+                print(
+                    f"[提取实体] 提取到 {entity_count} 个实体, {relationship_count} 个关系"
+                )
             else:
-                print(f"[提取实体] 警告: 未配置 RAG 适配器")
+                print("[提取实体] 警告: 未配置 RAG 适配器")
         else:
-            print(f"[提取实体] 警告: 未提供 config")
+            print("[提取实体] 警告: 未提供 config")
 
     except Exception as e:
         error = f"实体提取失败: {str(e)}"
@@ -539,7 +603,9 @@ async def extract_entities_node(state: BuildState, config: Optional[RunnableConf
     }
 
 
-async def build_graph_node(state: BuildState, config: Optional[RunnableConfig] = None) -> Dict[str, Any]:
+async def build_graph_node(
+    state: BuildState, config: Optional[RunnableConfig] = None
+) -> Dict[str, Any]:
     """构建图谱节点。
 
     在 Neo4j/Milvus 中创建节点和关系。
@@ -564,16 +630,16 @@ async def build_graph_node(state: BuildState, config: Optional[RunnableConfig] =
             rag_adapter = config["configurable"].get("rag_adapter")
             if rag_adapter:
                 # 异步构建图谱
-                print(f"[构建图谱] 开始图谱构建...")
+                print("[构建图谱] 开始图谱构建...")
 
                 # 实际实现可能类似于:
                 # await rag_adapter.abuild_graph()
 
-                print(f"[构建图谱] 图谱构建完成")
+                print("[构建图谱] 图谱构建完成")
             else:
-                print(f"[构建图谱] 警告: 未配置 RAG 适配器")
+                print("[构建图谱] 警告: 未配置 RAG 适配器")
         else:
-            print(f"[构建图谱] 警告: 未提供 config")
+            print("[构建图谱] 警告: 未提供 config")
 
     except Exception as e:
         error = f"图谱构建失败: {str(e)}"
@@ -584,7 +650,9 @@ async def build_graph_node(state: BuildState, config: Optional[RunnableConfig] =
     return {"status": "completed", "error": error}
 
 
-async def merge_nodes_node(state: BuildState, config: Optional[RunnableConfig] = None) -> Dict[str, Any]:
+async def merge_nodes_node(
+    state: BuildState, config: Optional[RunnableConfig] = None
+) -> Dict[str, Any]:
     """合并相似节点节点。
 
     合并图谱中的重复或相似节点，优化图谱结构。
@@ -608,16 +676,16 @@ async def merge_nodes_node(state: BuildState, config: Optional[RunnableConfig] =
             rag_adapter = config["configurable"].get("rag_adapter")
             if rag_adapter:
                 # 异步合并节点
-                print(f"[合并节点] 开始节点合并...")
+                print("[合并节点] 开始节点合并...")
 
                 # 实际实现可能类似于:
                 # await rag_adapter.amerge_nodes()
 
-                print(f"[合并节点] 节点合并完成")
+                print("[合并节点] 节点合并完成")
             else:
-                print(f"[合并节点] 警告: 未配置 RAG 适配器")
+                print("[合并节点] 警告: 未配置 RAG 适配器")
         else:
-            print(f"[合并节点] 警告: 未提供 config")
+            print("[合并节点] 警告: 未提供 config")
 
     except Exception as e:
         error = f"节点合并失败: {str(e)}"
@@ -629,7 +697,9 @@ async def merge_nodes_node(state: BuildState, config: Optional[RunnableConfig] =
     }
 
 
-async def create_summary_node(state: BuildState, config: Optional[RunnableConfig] = None) -> Dict[str, Any]:
+async def create_summary_node(
+    state: BuildState, config: Optional[RunnableConfig] = None
+) -> Dict[str, Any]:
     """创建社区摘要节点。
 
     为图谱中的社区生成摘要信息。
@@ -653,16 +723,16 @@ async def create_summary_node(state: BuildState, config: Optional[RunnableConfig
             rag_adapter = config["configurable"].get("rag_adapter")
             if rag_adapter:
                 # 异步创建社区摘要
-                print(f"[创建摘要] 开始创建社区摘要...")
+                print("[创建摘要] 开始创建社区摘要...")
 
                 # 实际实现可能类似于:
                 # await rag_adapter.acreate_summary()
 
-                print(f"[创建摘要] 社区摘要创建完成")
+                print("[创建摘要] 社区摘要创建完成")
             else:
-                print(f"[创建摘要] 警告: 未配置 RAG 适配器")
+                print("[创建摘要] 警告: 未配置 RAG 适配器")
         else:
-            print(f"[创建摘要] 警告: 未提供 config")
+            print("[创建摘要] 警告: 未提供 config")
 
     except Exception as e:
         error = f"社区摘要创建失败: {str(e)}"
@@ -676,7 +746,10 @@ async def create_summary_node(state: BuildState, config: Optional[RunnableConfig
 
 # ==================== 介入手术智能体节点（可选） ====================
 
-async def analyze_patient_node(state: Dict[str, Any], config: Optional[RunnableConfig] = None) -> Dict[str, Any]:
+
+async def analyze_patient_node(
+    state: Dict[str, Any], config: Optional[RunnableConfig] = None
+) -> Dict[str, Any]:
     """分析患者数据节点。
 
     分析患者的基本信息、病史、检查结果等。
@@ -700,7 +773,9 @@ async def analyze_patient_node(state: Dict[str, Any], config: Optional[RunnableC
     }
 
 
-async def recommend_devices_node(state: Dict[str, Any], config: Optional[RunnableConfig] = None) -> Dict[str, Any]:
+async def recommend_devices_node(
+    state: Dict[str, Any], config: Optional[RunnableConfig] = None
+) -> Dict[str, Any]:
     """推荐器械节点。
 
     基于患者数据和手术类型推荐合适的介入器械。
@@ -740,19 +815,21 @@ async def recommend_devices_node(state: Dict[str, Any], config: Optional[Runnabl
 
 请以结构化的方式输出推荐结果。"""
 
-                response = await llm.ainvoke([
-                    SystemMessage(content="你是一个专业的介入器械推荐专家。"),
-                    HumanMessage(content=prompt)
-                ])
+                response = await llm.ainvoke(
+                    [
+                        SystemMessage(content="你是一个专业的介入器械推荐专家。"),
+                        HumanMessage(content=prompt),
+                    ]
+                )
 
                 # 解析 LLM 返回的推荐结果
                 devices = [response.content.strip()]
-                print(f"[推荐器械] 已生成推荐")
+                print("[推荐器械] 已生成推荐")
 
             else:
-                print(f"[推荐器械] 警告: 未配置 LLM")
+                print("[推荐器械] 警告: 未配置 LLM")
         else:
-            print(f"[推荐器械] 警告: 未提供 config")
+            print("[推荐器械] 警告: 未提供 config")
 
     except Exception as e:
         error = f"器械推荐失败: {str(e)}"
@@ -764,7 +841,9 @@ async def recommend_devices_node(state: Dict[str, Any], config: Optional[Runnabl
     }
 
 
-async def assess_risks_node(state: Dict[str, Any], config: Optional[RunnableConfig] = None) -> Dict[str, Any]:
+async def assess_risks_node(
+    state: Dict[str, Any], config: Optional[RunnableConfig] = None
+) -> Dict[str, Any]:
     """评估风险节点。
 
     评估介入手术的潜在风险和并发症。
@@ -804,19 +883,21 @@ async def assess_risks_node(state: Dict[str, Any], config: Optional[RunnableConf
 
 请以结构化的方式输出风险评估结果。"""
 
-                response = await llm.ainvoke([
-                    SystemMessage(content="你是一个专业的介入手术风险评估专家。"),
-                    HumanMessage(content=prompt)
-                ])
+                response = await llm.ainvoke(
+                    [
+                        SystemMessage(content="你是一个专业的介入手术风险评估专家。"),
+                        HumanMessage(content=prompt),
+                    ]
+                )
 
                 # 解析 LLM 返回的风险评估
                 risks = [response.content.strip()]
-                print(f"[评估风险] 已完成风险评估")
+                print("[评估风险] 已完成风险评估")
 
             else:
-                print(f"[评估风险] 警告: 未配置 LLM")
+                print("[评估风险] 警告: 未配置 LLM")
         else:
-            print(f"[评估风险] 警告: 未提供 config")
+            print("[评估风险] 警告: 未提供 config")
 
     except Exception as e:
         error = f"风险评估失败: {str(e)}"
@@ -828,7 +909,9 @@ async def assess_risks_node(state: Dict[str, Any], config: Optional[RunnableConf
     }
 
 
-async def generate_recommendations_node(state: Dict[str, Any], config: Optional[RunnableConfig] = None) -> Dict[str, Any]:
+async def generate_recommendations_node(
+    state: Dict[str, Any], config: Optional[RunnableConfig] = None
+) -> Dict[str, Any]:
     """生成推荐方案节点。
 
     整合器械推荐和风险评估，生成完整的手术推荐方案。
@@ -880,18 +963,20 @@ async def generate_recommendations_node(state: Dict[str, Any], config: Optional[
 
 请以清晰、专业的医疗语言输出推荐方案。"""
 
-                response = await llm.ainvoke([
-                    SystemMessage(content="你是一个专业的介入手术方案制定专家。"),
-                    HumanMessage(content=prompt)
-                ])
+                response = await llm.ainvoke(
+                    [
+                        SystemMessage(content="你是一个专业的介入手术方案制定专家。"),
+                        HumanMessage(content=prompt),
+                    ]
+                )
 
                 recommendations = response.content.strip()
-                print(f"[生成方案] 已生成推荐方案")
+                print("[生成方案] 已生成推荐方案")
 
             else:
-                print(f"[生成方案] 警告: 未配置 LLM")
+                print("[生成方案] 警告: 未配置 LLM")
         else:
-            print(f"[生成方案] 警告: 未提供 config")
+            print("[生成方案] 警告: 未提供 config")
 
     except Exception as e:
         error = f"方案生成失败: {str(e)}"

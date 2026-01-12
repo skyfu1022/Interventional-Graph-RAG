@@ -4,19 +4,204 @@
 该模块实现了介入手术辅助决策智能体的工作流，整合患者数据分析、
 器械推荐、风险评估和方案推荐等功能。
 
-这是一个扩展点，为未来的介入手术智能体提供基础架构。
+工作流包括：
+1. 原有的简化版工作流（create_interventional_agent）- 向后兼容
+2. 新的术前评估工作流（create_preop_workflow）- 完整的 GraphRAG + LLM 实现
 """
 
-from typing import Optional, Dict, List
-from langgraph.graph import StateGraph, START, END
-from langchain_core.language_models import BaseLanguageModel
+from typing import Any, Dict, Optional
 
-from src.agents.states import InterventionalState
+from langchain_core.language_models import BaseLanguageModel
+from langgraph.graph import END, START, StateGraph
+
+from src.agents.states import ExtendedInterventionalState, InterventionalState
+
+# ==================== 新的术前评估工作流 ====================
+
+
+def create_preop_workflow(
+    rag_adapter: Optional[Any] = None, llm: Optional[BaseLanguageModel] = None
+) -> StateGraph:
+    """创建术前评估工作流。
+
+    这是完整的术前评估工作流，整合了 GraphRAG 三层图谱检索和 LLM 分析能力。
+    工作流按照以下步骤执行：
+    1. intent_recognition - 识别患者意图和手术类型
+    2. u_retrieval - 从 GraphRAG 三层图谱检索相关知识
+    3. assess_indications - 评估手术适应症
+    4. assess_contraindications - 评估手术禁忌症
+    5. assess_risks - 综合评估手术风险
+    6. match_procedure - 匹配手术器械和方案
+    7. generate_plan - 生成完整手术方案
+
+    工作流包含条件路由逻辑：
+    - route_indications: 如果不符合适应症，则跳转到方案生成（说明原因）
+    - route_contraindications: 如果发现禁忌症，则跳转到方案生成（说明原因）
+    - route_should_abort: 决定是否继续手术计划
+
+    Args:
+        rag_adapter: RAGAnythingAdapter 实例，用于检索医学知识
+        llm: LLM 实例（可选），用于生成分析结果
+
+    Returns:
+        编译后的 StateGraph 工作流
+
+    Raises:
+        ValueError: 如果既没有 rag_adapter 也没有 llm
+
+    Example:
+        >>> from src.agents.workflows.interventional import create_preop_workflow
+        >>> from src.core.config import get_settings
+        >>> settings = get_settings()
+        >>> # 配置 RAG 适配器和 LLM
+        >>> workflow = create_preop_workflow(rag_adapter, llm)
+        >>> result = await workflow.ainvoke({
+        ...     "patient_data": {
+        ...         "patient_id": "P001",
+        ...         "age": 65,
+        ...         "gender": "male",
+        ...         "chief_complaint": "胸痛",
+        ...         "diagnosis": ["冠心病"],
+        ...         "comorbidities": ["高血压", "糖尿病"]
+        ...     },
+        ...     "procedure_type": "PCI"
+        ... }, config={
+        ...     "configurable": {
+        ...         "rag_adapter": rag_adapter,
+        ...         "llm": llm
+        ...     }
+        ... })
+        >>> assert result["recommendations"] is not None
+        >>> assert len(result["reasoning_steps"]) > 0
+    """
+    # 导入术前评估节点
+    from src.agents.nodes.preop import (
+        assess_contraindications_node,
+        assess_indications_node,
+        assess_risks_node,
+        generate_plan_node,
+        intent_recognition_node,
+        match_procedure_node,
+        u_retrieval_node,
+    )
+
+    # 创建工作流构建器
+    workflow = StateGraph(ExtendedInterventionalState)
+
+    # 添加所有术前评估节点
+    workflow.add_node("intent_recognition", intent_recognition_node)
+    workflow.add_node("u_retrieval", u_retrieval_node)
+    workflow.add_node("assess_indications", assess_indications_node)
+    workflow.add_node("assess_contraindications", assess_contraindications_node)
+    workflow.add_node("assess_risks", assess_risks_node)
+    workflow.add_node("match_procedure", match_procedure_node)
+    workflow.add_node("generate_plan", generate_plan_node)
+
+    # 添加边连接节点（主流程）
+    workflow.add_edge(START, "intent_recognition")
+    workflow.add_edge("intent_recognition", "u_retrieval")
+    workflow.add_edge("u_retrieval", "assess_indications")
+
+    # 添加条件边：适应症评估
+    workflow.add_conditional_edges(
+        "assess_indications",
+        route_indications,
+        {"continue": "assess_contraindications", "abort": "generate_plan"},
+    )
+
+    # 添加条件边：禁忌症评估
+    workflow.add_conditional_edges(
+        "assess_contraindications",
+        route_contraindications,
+        {"continue": "assess_risks", "abort": "generate_plan"},
+    )
+
+    # 添加边：风险评估 -> 器械匹配
+    workflow.add_edge("assess_risks", "match_procedure")
+
+    # 添加条件边：决定是否继续
+    workflow.add_conditional_edges(
+        "match_procedure",
+        route_should_abort,
+        {"continue": "generate_plan", "abort": "generate_plan"},
+    )
+
+    # 添加边：方案生成 -> 结束
+    workflow.add_edge("generate_plan", END)
+
+    # 编译并返回工作流
+    return workflow.compile()
+
+
+# ==================== 条件路由函数 ====================
+
+
+def route_indications(state: ExtendedInterventionalState) -> str:
+    """路由函数：根据适应症评估结果决定下一步。
+
+    Args:
+        state: 当前工作流状态
+
+    Returns:
+        "continue": 如果符合适应症，继续禁忌症评估
+        "abort": 如果不符合适应症，跳转到方案生成（说明原因）
+    """
+    indications_met = state.get("indications_met", False)
+
+    if indications_met:
+        print("[路由] 适应症评估通过，继续禁忌症评估")
+        return "continue"
+    else:
+        print("[路由] 适应症评估未通过，生成替代方案")
+        return "abort"
+
+
+def route_contraindications(state: ExtendedInterventionalState) -> str:
+    """路由函数：根据禁忌症评估结果决定下一步。
+
+    Args:
+        state: 当前工作流状态
+
+    Returns:
+        "continue": 如果无禁忌症，继续风险评估
+        "abort": 如果发现禁忌症，跳转到方案生成（说明原因）
+    """
+    contraindications_found = state.get("contraindications_found", False)
+
+    if not contraindications_found:
+        print("[路由] 禁忌症评估通过，继续风险评估")
+        return "continue"
+    else:
+        print("[路由] 发现禁忌症，生成替代方案")
+        return "abort"
+
+
+def route_should_abort(state: ExtendedInterventionalState) -> str:
+    """路由函数：决定是否继续手术计划。
+
+    综合考虑适应症和禁忌症的评估结果，决定是否继续。
+
+    Args:
+        state: 当前工作流状态
+
+    Returns:
+        "continue": 继续生成手术方案
+        "abort": 生成替代方案（终止或推迟手术）
+    """
+    indications_met = state.get("indications_met", True)
+    contraindications_found = state.get("contraindications_found", False)
+
+    # 如果符合适应症且无禁忌症，继续
+    if indications_met and not contraindications_found:
+        print("[路由] 评估通过，继续生成手术方案")
+        return "continue"
+    else:
+        print("[路由] 评估未通过，生成替代方案")
+        return "abort"
 
 
 def create_interventional_agent(
-    rag_adapter,
-    llm: Optional[BaseLanguageModel] = None
+    rag_adapter, llm: Optional[BaseLanguageModel] = None
 ) -> StateGraph:
     """创建介入手术智能体工作流。
 
@@ -114,9 +299,7 @@ def analyze_patient_node(state: InterventionalState) -> Dict:
     if procedure_type:
         context.append(f"拟行手术：{procedure_type}")
 
-    return {
-        "context": context
-    }
+    return {"context": context}
 
 
 def select_devices_node(state: InterventionalState) -> Dict:
@@ -164,9 +347,7 @@ def select_devices_node(state: InterventionalState) -> Dict:
         # 通用器械
         devices.append("标准介入器械包")
 
-    return {
-        "devices": devices
-    }
+    return {"devices": devices}
 
 
 def assess_risks_node(state: InterventionalState) -> Dict:
@@ -214,9 +395,7 @@ def assess_risks_node(state: InterventionalState) -> Dict:
     # 通用风险
     risks.append("介入手术通用风险：出血、感染、麻醉并发症")
 
-    return {
-        "risks": risks
-    }
+    return {"risks": risks}
 
 
 def generate_plan_node(state: InterventionalState) -> Dict:
@@ -238,32 +417,32 @@ def generate_plan_node(state: InterventionalState) -> Dict:
     procedure_type = state.get("procedure_type", "")
     devices = state.get("devices", [])
     risks = state.get("risks", [])
-    context = state.get("context", [])
+    context = state.get("context", [])  # noqa: F841 - 保留用于未来扩展和日志记录
 
     # 占位符实现：生成结构化方案
     recommendations_parts = []
 
     # 1. 手术概述
     recommendations_parts.append(f"## {procedure_type} 手术方案\n")
-    recommendations_parts.append(f"### 患者信息")
+    recommendations_parts.append("### 患者信息")
     recommendations_parts.append(f"- 年龄：{patient_data.get('age', '未知')}岁")
     recommendations_parts.append(f"- 性别：{patient_data.get('gender', '未知')}")
     recommendations_parts.append(f"- 诊断：{patient_data.get('diagnosis', '未知')}\n")
 
     # 2. 推荐器械
-    recommendations_parts.append(f"### 推荐器械")
+    recommendations_parts.append("### 推荐器械")
     for i, device in enumerate(devices, 1):
         recommendations_parts.append(f"{i}. {device}")
     recommendations_parts.append("")
 
     # 3. 风险评估
-    recommendations_parts.append(f"### 风险评估")
+    recommendations_parts.append("### 风险评估")
     for i, risk in enumerate(risks, 1):
         recommendations_parts.append(f"{i}. {risk}")
     recommendations_parts.append("")
 
     # 4. 手术步骤建议
-    recommendations_parts.append(f"### 手术步骤建议")
+    recommendations_parts.append("### 手术步骤建议")
     if procedure_type == "PCI":
         recommendations_parts.append("1. 术前评估：冠状动脉造影明确病变位置")
         recommendations_parts.append("2. 器械准备：准备导引导管、指引导丝、球囊和支架")
@@ -286,7 +465,7 @@ def generate_plan_node(state: InterventionalState) -> Dict:
     recommendations_parts.append("")
 
     # 5. 注意事项
-    recommendations_parts.append(f"### 注意事项")
+    recommendations_parts.append("### 注意事项")
     recommendations_parts.append("- 术中持续监测生命体征")
     recommendations_parts.append("- 准备好急救设备和药物")
     recommendations_parts.append("- 严格执行无菌操作")
@@ -294,6 +473,4 @@ def generate_plan_node(state: InterventionalState) -> Dict:
 
     recommendations = "\n".join(recommendations_parts)
 
-    return {
-        "recommendations": recommendations
-    }
+    return {"recommendations": recommendations}

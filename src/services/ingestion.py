@@ -245,7 +245,8 @@ class IngestionService:
             # 更新状态为失败
             self._status_cache[doc_id].status = "failed"
             self._status_cache[doc_id].error = str(
-                self._status_cache.get(doc_id, DocumentStatus(doc_id)).error)
+                self._status_cache.get(doc_id, DocumentStatus(doc_id)).error
+            )
             self._status_cache[doc_id].updated_at = time.time()
             raise
 
@@ -294,6 +295,7 @@ class IngestionService:
         # 生成默认 doc_id
         if doc_id is None:
             import hashlib
+
             doc_id = f"text_{hashlib.md5(text.encode()).hexdigest()[:8]}"
 
         self._logger.debug(f"开始摄入文本 | ID: {doc_id} | 长度: {len(text)}")
@@ -497,7 +499,11 @@ class IngestionService:
             if not continue_on_error:
                 raise DocumentError(
                     f"批量摄入失败: {e}",
-                    details={"total": total, "succeeded": result.succeeded, "failed": result.failed},
+                    details={
+                        "total": total,
+                        "succeeded": result.succeeded,
+                        "failed": result.failed,
+                    },
                 ) from e
 
         # 计算总耗时
@@ -532,6 +538,7 @@ class IngestionService:
         """
         if doc_id not in self._status_cache:
             from src.core.exceptions import NotFoundError
+
             raise NotFoundError(
                 f"文档状态不存在: {doc_id}",
                 resource_type="document_status",

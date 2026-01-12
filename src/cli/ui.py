@@ -65,7 +65,9 @@ class UIConsole:
         )
         self.console.print(panel)
 
-    def print_error(self, message: str, title: str = "错误", subtitle: Optional[str] = None) -> None:
+    def print_error(
+        self, message: str, title: str = "错误", subtitle: Optional[str] = None
+    ) -> None:
         """
         打印错误消息。
 
@@ -383,7 +385,9 @@ def print_success(message: str, title: str = "成功") -> None:
     console_instance.print_success(message, title)
 
 
-def print_error(message: str, title: str = "错误", subtitle: Optional[str] = None) -> None:
+def print_error(
+    message: str, title: str = "错误", subtitle: Optional[str] = None
+) -> None:
     """
     打印错误消息的便捷函数。
 
@@ -435,7 +439,9 @@ def create_result_table(
     Returns:
         Rich Table 对象
     """
-    return console_instance.create_result_table(columns, title, show_header, header_style)
+    return console_instance.create_result_table(
+        columns, title, show_header, header_style
+    )
 
 
 @contextmanager

@@ -30,7 +30,7 @@ def load_document_node(state: BuildState) -> Dict[str, Any]:
 
     return {
         "status": "extracting",
-        "document_count": state.get("document_count", 0) + 1
+        "document_count": state.get("document_count", 0) + 1,
     }
 
 
@@ -53,7 +53,7 @@ def extract_entities_node(state: BuildState) -> Dict[str, Any]:
     return {
         "status": "building",
         "entity_count": 100,  # 示例值
-        "relationship_count": 150  # 示例值
+        "relationship_count": 150,  # 示例值
     }
 
 
@@ -130,9 +130,7 @@ def should_merge(state: BuildState) -> Literal["merge", "summary"]:
 
 
 def create_build_workflow(
-    rag_adapter: Any,
-    merge_enabled: bool = False,
-    checkpointer: Optional[Any] = None
+    rag_adapter: Any, merge_enabled: bool = False, checkpointer: Optional[Any] = None
 ) -> CompiledStateGraph:
     """创建图谱构建工作流（支持检查点）。
 
@@ -201,10 +199,7 @@ def create_build_workflow(
     workflow.add_conditional_edges(
         "build_graph",
         should_merge,
-        {
-            "merge": "merge_nodes",
-            "summary": "create_summary"
-        }
+        {"merge": "merge_nodes", "summary": "create_summary"},
     )
 
     # 编译并返回工作流（添加检查点支持）

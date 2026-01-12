@@ -13,5 +13,15 @@ __pycache__
 # Jupyter Notebook
 .ipynb_checkpoints
 
+# Coverage reports
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+
+# Log files
+logs/
+*.log
+
 # ignore special files or folds
 .DS_Store

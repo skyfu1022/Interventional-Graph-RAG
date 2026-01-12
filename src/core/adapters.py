@@ -255,7 +255,7 @@ def _create_llm_func(config: Settings):
         prompt: str,
         system_prompt: Optional[str] = None,
         history_messages: List[Dict[str, str]] = None,
-        **kwargs
+        **kwargs,
     ) -> str:
         """LLM 函数实现。"""
         try:
@@ -695,10 +695,7 @@ class RAGAnythingAdapter:
             ) from e
 
     async def query(
-        self,
-        question: str,
-        mode: QueryMode = "hybrid",
-        **kwargs
+        self, question: str, mode: QueryMode = "hybrid", **kwargs
     ) -> QueryResult:
         """查询知识图谱。
 
@@ -767,10 +764,7 @@ class RAGAnythingAdapter:
             ) from e
 
     async def query_stream(
-        self,
-        question: str,
-        mode: QueryMode = "hybrid",
-        **kwargs
+        self, question: str, mode: QueryMode = "hybrid", **kwargs
     ) -> AsyncIterator[str]:
         """流式查询知识图谱。
 
@@ -1042,7 +1036,9 @@ class RAGAnythingAdapter:
                     )
 
                     entity_count += len(batch)
-                    logger.debug(f"已创建实体节点 | 批次: {i//batch_size + 1} | 数量: {len(batch)}")
+                    logger.debug(
+                        f"已创建实体节点 | 批次: {i // batch_size + 1} | 数量: {len(batch)}"
+                    )
 
             # 批量创建关系
             if relationships:
@@ -1099,7 +1095,9 @@ class RAGAnythingAdapter:
                         )
 
                     relationship_count += len(batch)
-                    logger.debug(f"已创建关系 | 批次: {i//batch_size + 1} | 数量: {len(batch)}")
+                    logger.debug(
+                        f"已创建关系 | 批次: {i // batch_size + 1} | 数量: {len(batch)}"
+                    )
 
             result = {
                 "entity_count": entity_count,
@@ -1212,7 +1210,11 @@ class RAGAnythingAdapter:
                         results_list.append(record.data())
                     else:
                         # 尝试转换为字典
-                        results_list.append(dict(record) if hasattr(record, "__iter__") else {"value": record})
+                        results_list.append(
+                            dict(record)
+                            if hasattr(record, "__iter__")
+                            else {"value": record}
+                        )
             else:
                 results_list = [result] if result is not None else []
 

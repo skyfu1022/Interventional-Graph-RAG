@@ -57,7 +57,9 @@ async def get_client() -> AsyncGenerator[MedGraphClient, None]:
             # 初始化客户端
             await _client.initialize()
 
-            logger.info(f"MedGraphClient 初始化成功 | 工作空间: {settings.rag_workspace}")
+            logger.info(
+                f"MedGraphClient 初始化成功 | 工作空间: {settings.rag_workspace}"
+            )
 
         except Exception as e:
             logger.error(f"MedGraphClient 初始化失败: {e}", exc_info=True)

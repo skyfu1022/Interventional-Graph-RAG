@@ -26,9 +26,8 @@ Build 命令 - 从文件或目录构建知识图谱。
 """
 
 from pathlib import Path
-from typing import Optional, List, Any
+from typing import List, Any
 import asyncio
-import sys
 
 import typer
 from rich.progress import (
@@ -45,7 +44,7 @@ from rich.panel import Panel
 from rich.table import Table
 
 from src.sdk import MedGraphClient
-from src.sdk.exceptions import MedGraphSDKError, DocumentNotFoundError, ValidationError
+from src.sdk.exceptions import MedGraphSDKError
 
 # 创建 Typer 应用
 app = typer.Typer(
@@ -71,9 +70,15 @@ def _collect_files(path: Path) -> List[Path]:
         typer.Exit: 路径无效或无支持的文件
     """
     supported_extensions = {
-        ".txt", ".md", ".json", ".csv",
-        ".pdf", ".docx", ".doc",
-        ".html", ".htm",
+        ".txt",
+        ".md",
+        ".json",
+        ".csv",
+        ".pdf",
+        ".docx",
+        ".doc",
+        ".html",
+        ".htm",
     }
 
     if path.is_file():
@@ -93,12 +98,8 @@ def _collect_files(path: Path) -> List[Path]:
             files.extend(path.rglob(f"*{ext.upper()}"))
 
         if not files:
-            console.print(
-                f"[red]错误: 在目录 '{path}' 中未找到支持的文件。[/red]"
-            )
-            console.print(
-                f"支持的格式: {', '.join(sorted(supported_extensions))}"
-            )
+            console.print(f"[red]错误: 在目录 '{path}' 中未找到支持的文件。[/red]")
+            console.print(f"支持的格式: {', '.join(sorted(supported_extensions))}")
             raise typer.Exit(1)
 
         return sorted(files)
@@ -232,9 +233,7 @@ def build(
     files = _collect_files(path)
 
     if verbose:
-        console.print(
-            f"[dim]找到 {len(files)} 个文件待处理[/dim]"
-        )
+        console.print(f"[dim]找到 {len(files)} 个文件待处理[/dim]")
 
     # 运行异步构建
     try:
@@ -256,6 +255,7 @@ def build(
         console.print(f"\n[red]构建失败: {e}[/red]")
         if verbose:
             import traceback
+
             console.print(traceback.format_exc())
         raise typer.Exit(1)
 
@@ -297,7 +297,6 @@ async def _run_build(
             TimeRemainingColumn(),
             console=console,
         ) as progress:
-
             # 添加主任务
             task = progress.add_task(
                 f"构建图谱 '{graph_id}'",
@@ -325,10 +324,15 @@ async def _run_build(
                         succeeded += 1
                     else:
                         failed += 1
-                        errors.append((Path(result.file_path or "unknown"), result.error or "Unknown error"))
+                        errors.append(
+                            (
+                                Path(result.file_path or "unknown"),
+                                result.error or "Unknown error",
+                            )
+                        )
 
                 # 获取图谱统计信息
-                graph_info = await client.get_graph(graph_id)
+                graph_info = await client.get_graph(graph_id)  # noqa: F841 - 保留用于调试和统计展示
 
                 # 执行节点合并（如果启用）
                 if merge_enabled and succeeded > 0:
@@ -404,12 +408,8 @@ async def _auto_merge_nodes(
     # 实际应用中可以结合 embedding 相似度进行分析
 
     if verbose:
-        console.print(
-            "[dim]自动节点合并功能需要显式指定实体列表。[/dim]"
-        )
-        console.print(
-            "[dim]可以使用 SDK 的 merge_graph_nodes 方法手动合并。[/dim]"
-        )
+        console.print("[dim]自动节点合并功能需要显式指定实体列表。[/dim]")
+        console.print("[dim]可以使用 SDK 的 merge_graph_nodes 方法手动合并。[/dim]")
 
     return 0
 

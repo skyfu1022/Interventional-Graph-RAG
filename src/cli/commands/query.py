@@ -9,7 +9,7 @@ Query 命令实现。
 """
 
 import asyncio
-from typing import Optional, List
+from typing import Optional
 from datetime import datetime
 
 import typer
@@ -19,9 +19,8 @@ from rich.table import Table
 from rich.markdown import Markdown
 from rich.prompt import Prompt
 from rich import box
-from rich.syntax import Syntax
 
-from src.sdk import MedGraphClient, QueryMode
+from src.sdk import MedGraphClient
 from src.core.exceptions import QueryError, ValidationError, MedGraphError
 
 # 创建 Typer 应用和 Rich 控制台
@@ -34,7 +33,9 @@ query_app = typer.Typer(
 console = Console()
 
 
-def format_query_result(result, show_sources: bool = True, show_context: bool = False) -> None:
+def format_query_result(
+    result, show_sources: bool = True, show_context: bool = False
+) -> None:
     """使用 Rich 格式化输出查询结果。
 
     Args:
@@ -70,11 +71,13 @@ def format_query_result(result, show_sources: bool = True, show_context: bool = 
     metadata_table.add_row("延迟", f"{result.latency_ms} ms")
 
     console.print()
-    console.print(Panel(
-        metadata_table,
-        title="[bold blue]查询信息[/bold blue]",
-        border_style="blue",
-    ))
+    console.print(
+        Panel(
+            metadata_table,
+            title="[bold blue]查询信息[/bold blue]",
+            border_style="blue",
+        )
+    )
 
     # 3. 显示来源（如果请求）
     if show_sources and result.sources:
@@ -94,7 +97,11 @@ def format_query_result(result, show_sources: bool = True, show_context: bool = 
 
         for source in result.sources[:5]:  # 最多显示 5 个来源
             # 截断过长内容
-            content = source.content[:80] + "..." if len(source.content) > 80 else source.content
+            content = (
+                source.content[:80] + "..."
+                if len(source.content) > 80
+                else source.content
+            )
             relevance_score = f"{source.relevance:.2f}"
             sources_table.add_row(
                 source.doc_id[:20],
@@ -176,9 +183,7 @@ async def execute_query(
     try:
         # 显示查询信息
         console.print()
-        console.print(
-            f"[cyan]正在查询: [/cyan][bold yellow]{query_text}[/bold yellow]"
-        )
+        console.print(f"[cyan]正在查询: [/cyan][bold yellow]{query_text}[/bold yellow]")
         console.print(f"[dim]模式: {mode} | 图谱: {graph_id}[/dim]")
 
         # 创建客户端并执行查询
@@ -261,7 +266,9 @@ def run_interactive_mode(
             # 执行查询
             query_count += 1
             console.print(f"\n[dim]{'=' * 60}[/dim]")
-            console.print(f"[dim]查询 #{query_count} | {datetime.now().strftime('%H:%M:%S')}[/dim]")
+            console.print(
+                f"[dim]查询 #{query_count} | {datetime.now().strftime('%H:%M:%S')}[/dim]"
+            )
             console.print(f"[dim]{'=' * 60}[/dim]")
 
             asyncio.run(execute_query(query_text, mode, graph_id, workspace))
@@ -337,9 +344,7 @@ def query_command(
     valid_modes = ["naive", "local", "global", "hybrid", "mix", "bypass"]
     if mode.lower() not in valid_modes:
         console.print()
-        console.print(
-            f"[red]无效的查询模式: {mode}[/red]"
-        )
+        console.print(f"[red]无效的查询模式: {mode}[/red]")
         console.print(f"[dim]有效模式: {', '.join(valid_modes)}[/dim]")
         raise typer.Exit(code=1)
 

@@ -57,9 +57,7 @@ class QueryRequest(BaseModel):
     query_text: str = Field(..., min_length=1, description="查询文本")
     mode: QueryMode = Field(default=QueryMode.HYBRID, description="查询模式")
     graph_id: Optional[str] = Field(default=None, description="图谱 ID（可选）")
-    top_k: Optional[int] = Field(
-        default=5, gt=0, le=20, description="返回结果数量"
-    )
+    top_k: Optional[int] = Field(default=5, gt=0, le=20, description="返回结果数量")
 
     @field_validator("query_text")
     @classmethod

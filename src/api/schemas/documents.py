@@ -58,9 +58,7 @@ class DocumentUploadRequest(BaseModel):
     file_type: Literal["txt", "pdf", "md", "json", "csv"] = Field(
         ..., description="文件类型"
     )
-    graph_id: Optional[str] = Field(
-        default=None, description="目标图谱 ID（可选）"
-    )
+    graph_id: Optional[str] = Field(default=None, description="目标图谱 ID（可选）")
     chunk_size: Optional[int] = Field(
         default=None, gt=0, description="文本块大小（可选）"
     )

@@ -38,7 +38,6 @@ from dataclasses import dataclass, field
 import json
 import csv
 import shutil
-import asyncio
 
 from src.core.adapters import RAGAnythingAdapter, GraphStats
 from src.core.exceptions import GraphError, NotFoundError, ValidationError
@@ -576,7 +575,7 @@ class GraphService:
         # 添加元数据头部（作为注释）
         metadata_file = output_path.with_suffix(".meta.txt")
         with open(metadata_file, "w", encoding="utf-8") as f:
-            f.write(f"# 图谱导出元数据\n")
+            f.write("# 图谱导出元数据\n")
             f.write(f"# 图谱 ID: {graph_id}\n")
             f.write(f"# 导出时间: {self._get_current_timestamp()}\n")
             f.write(f"# 实体数量: {stats.entity_count}\n")
@@ -640,7 +639,7 @@ class GraphService:
                     for entity in type_entities[:20]:  # 限制每种类型数量
                         node_id = self._sanitize_node_id(entity.entity_name)
                         label = self._escape_mermaid_label(entity.entity_name)
-                        mermaid_lines.append(f"        {node_id}[\"{label}\"]")
+                        mermaid_lines.append(f'        {node_id}["{label}"]')
                     mermaid_lines.append("    end")
                     mermaid_lines.append("")
 
@@ -657,9 +656,9 @@ class GraphService:
                 elif entity.entity_type == "MEDICINE":
                     mermaid_lines.append(f'    {node_id}["{label}"]')
                 elif entity.entity_type == "SYMPTOM":
-                    mermaid_lines.append(f'    {node_id}[{label}]')
+                    mermaid_lines.append(f"    {node_id}[{label}]")
                 else:
-                    mermaid_lines.append(f'    {node_id}[{label}]')
+                    mermaid_lines.append(f"    {node_id}[{label}]")
 
                 entity_count += 1
 
@@ -674,12 +673,14 @@ class GraphService:
                 target_id = self._sanitize_node_id(rel.target_entity)
 
                 # 转义标签
-                label = self._escape_mermaid_label(rel.description[:30] if rel.description else "")
+                label = self._escape_mermaid_label(
+                    rel.description[:30] if rel.description else ""
+                )
 
                 if label:
                     mermaid_lines.append(f'    {source_id} -->|"{label}"| {target_id}')
                 else:
-                    mermaid_lines.append(f'    {source_id} --> {target_id}')
+                    mermaid_lines.append(f"    {source_id} --> {target_id}")
 
                 relation_count += 1
 
@@ -689,22 +690,26 @@ class GraphService:
         except Exception as e:
             self._logger.warning(f"无法获取实体关系，生成基础图表: {e}")
             # 生成基础占位图
-            mermaid_lines.extend([
-                "    START([开始])",
-                "    END([结束])",
-                "    START --> END",
-            ])
+            mermaid_lines.extend(
+                [
+                    "    START([开始])",
+                    "    END([结束])",
+                    "    START --> END",
+                ]
+            )
 
         # 添加样式定义
-        mermaid_lines.extend([
-            "",
-            "    %% 样式定义",
-            "    classDef disease fill:#ffcccc,stroke:#ff0000,stroke-width:2px;",
-            "    classDef medicine fill:#ccffcc,stroke:#00ff00,stroke-width:2px;",
-            "    classDef symptom fill:#ccccff,stroke:#0000ff,stroke-width:2px;",
-            "    classDef default fill:#f9f9f9,stroke:#666666,stroke-width:1px;",
-            "```",
-        ])
+        mermaid_lines.extend(
+            [
+                "",
+                "    %% 样式定义",
+                "    classDef disease fill:#ffcccc,stroke:#ff0000,stroke-width:2px;",
+                "    classDef medicine fill:#ccffcc,stroke:#00ff00,stroke-width:2px;",
+                "    classDef symptom fill:#ccccff,stroke:#0000ff,stroke-width:2px;",
+                "    classDef default fill:#f9f9f9,stroke:#666666,stroke-width:1px;",
+                "```",
+            ]
+        )
 
         # 写入文件
         with open(output_path, "w", encoding="utf-8") as f:
@@ -841,9 +846,7 @@ class GraphService:
             rag = self._adapter._rag
 
             if not hasattr(rag, "amerge_entities"):
-                self._logger.warning(
-                    "LightRAG 不支持 amerge_entities API，跳过合并"
-                )
+                self._logger.warning("LightRAG 不支持 amerge_entities API，跳过合并")
                 return 0
 
             # 记录合并前的实体数量（用于验证）
@@ -1044,7 +1047,7 @@ class GraphService:
             ...     threshold=0.9,
             ...     dry_run=False
             ... )
-            """
+        """
         self._logger.info(
             f"自动合并相似实体 | 图谱: {graph_id} | "
             f"类型: {entity_type or '全部'} | 阈值: {threshold} | "
@@ -1085,8 +1088,7 @@ class GraphService:
             # 按类型过滤
             if entity_type:
                 filtered_entities = [
-                    e for e in all_entities
-                    if e.get("entity_type") == entity_type
+                    e for e in all_entities if e.get("entity_type") == entity_type
                 ]
             else:
                 filtered_entities = all_entities
@@ -1117,14 +1119,17 @@ class GraphService:
 
                 # 过滤已处理的实体
                 similar_entities = [
-                    e for e in similar_entities
+                    e
+                    for e in similar_entities
                     if e["entity_name"] not in processed
                     and e["entity_name"] != entity_name
                 ]
 
                 if similar_entities:
                     # 选择目标实体（保留名称最短的）
-                    candidates = [entity_name] + [e["entity_name"] for e in similar_entities]
+                    candidates = [entity_name] + [
+                        e["entity_name"] for e in similar_entities
+                    ]
                     target_entity = min(candidates, key=len)
 
                     # 准备源实体列表（排除目标实体）
@@ -1137,17 +1142,19 @@ class GraphService:
 
                     if dry_run:
                         # 试运行模式，只记录不执行
-                        merged_entities.append({
-                            "target_entity": target_entity,
-                            "source_entities": source_entities,
-                            "similarities": [
-                                {
-                                    "entity": e["entity_name"],
-                                    "similarity": e["similarity"]
-                                }
-                                for e in similar_entities
-                            ]
-                        })
+                        merged_entities.append(
+                            {
+                                "target_entity": target_entity,
+                                "source_entities": source_entities,
+                                "similarities": [
+                                    {
+                                        "entity": e["entity_name"],
+                                        "similarity": e["similarity"],
+                                    }
+                                    for e in similar_entities
+                                ],
+                            }
+                        )
                         merged_count += 1
                     else:
                         # 执行实际合并
@@ -1160,11 +1167,13 @@ class GraphService:
                                 merge_strategy=merge_strategy,
                             )
 
-                            merged_entities.append({
-                                "target_entity": target_entity,
-                                "source_entities": source_entities,
-                                "status": "merged"
-                            })
+                            merged_entities.append(
+                                {
+                                    "target_entity": target_entity,
+                                    "source_entities": source_entities,
+                                    "status": "merged",
+                                }
+                            )
                             merged_count += 1
 
                         except Exception as e:
@@ -1279,9 +1288,7 @@ class GraphService:
         Note:
             使用 LightRAG 的 adelete_by_relation API。
         """
-        self._logger.info(
-            f"删除关系: {graph_id}/{source_entity} -> {target_entity}"
-        )
+        self._logger.info(f"删除关系: {graph_id}/{source_entity} -> {target_entity}")
 
         try:
             # 验证图谱存在
@@ -1326,12 +1333,8 @@ class GraphService:
             stat = graph_path.stat()
             import datetime
 
-            created_at = datetime.datetime.fromtimestamp(
-                stat.st_ctime
-            ).isoformat()
-            updated_at = datetime.datetime.fromtimestamp(
-                stat.st_mtime
-            ).isoformat()
+            created_at = datetime.datetime.fromtimestamp(stat.st_ctime).isoformat()
+            updated_at = datetime.datetime.fromtimestamp(stat.st_mtime).isoformat()
         except Exception as e:
             self._logger.warning(f"无法获取时间戳: {e}")
 
@@ -1435,9 +1438,7 @@ class GraphService:
                         relationships.append(relationship)
 
                     except Exception as e:
-                        self._logger.warning(
-                            f"解析 CSV 第 {row_idx + 1} 行失败: {e}"
-                        )
+                        self._logger.warning(f"解析 CSV 第 {row_idx + 1} 行失败: {e}")
                         continue
 
             entities = list(entities_dict.values())
@@ -1499,7 +1500,7 @@ class GraphService:
         """
         # Mermaid 中需要转义的字符
         label = label.replace("\\", "\\\\")
-        label = label.replace("\"", "&quot;")
+        label = label.replace('"', "&quot;")
         label = label.replace("<", "&lt;")
         label = label.replace(">", "&gt;")
         return label

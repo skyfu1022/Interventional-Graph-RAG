@@ -652,9 +652,7 @@ def create_ranker(
     method: str = "score",
     dedup: bool = True,
     top_n: int = 5,
-    rerank_func: Optional[
-        Callable[[List[Dict[str, Any]], str], List[float]]
-    ] = None,
+    rerank_func: Optional[Callable[[List[Dict[str, Any]], str], List[float]]] = None,
 ) -> ResultRanker:
     """创建结果排序器的便捷函数。
 

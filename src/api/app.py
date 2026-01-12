@@ -151,7 +151,6 @@ def custom_openapi() -> dict[str, object]:
     return app.openapi_schema
 
 
-
 def create_app() -> FastAPI:
     """
     创建并配置 FastAPI 应用实例。

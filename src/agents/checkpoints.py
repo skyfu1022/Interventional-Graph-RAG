@@ -12,6 +12,7 @@ from langgraph.checkpoint.memory import MemorySaver
 # SqliteSaver 可能在某些版本中不可用
 try:
     from langgraph.checkpoint.sqlite import SqliteSaver
+
     SQLITE_AVAILABLE = True
 except ImportError:
     SqliteSaver = None  # type: ignore
@@ -100,9 +101,7 @@ def create_sqlite_checkpointer(db_path: str) -> Any:
 
 
 def get_checkpoint_state(
-    workflow: CompiledStateGraph,
-    thread_id: str,
-    checkpoint_id: Optional[str] = None
+    workflow: CompiledStateGraph, thread_id: str, checkpoint_id: Optional[str] = None
 ) -> Optional[Any]:
     """获取指定线程的检查点状态。
 
@@ -146,9 +145,7 @@ def get_checkpoint_state(
 
 
 def list_checkpoints(
-    workflow: CompiledStateGraph,
-    thread_id: str,
-    limit: Optional[int] = None
+    workflow: CompiledStateGraph, thread_id: str, limit: Optional[int] = None
 ) -> List[Dict[str, Any]]:
     """列出指定线程的所有检查点。
 
@@ -190,11 +187,15 @@ def list_checkpoints(
     try:
         for i, snapshot in enumerate(workflow.get_state_history(config)):
             checkpoint_info = {
-                "checkpoint_id": snapshot.config.get("configurable", {}).get("checkpoint_id"),
+                "checkpoint_id": snapshot.config.get("configurable", {}).get(
+                    "checkpoint_id"
+                ),
                 "step": i,
                 "values": snapshot.values,
                 "next": snapshot.next,
-                "timestamp": snapshot.metadata.get("source", "unknown") if hasattr(snapshot, "metadata") else None
+                "timestamp": snapshot.metadata.get("source", "unknown")
+                if hasattr(snapshot, "metadata")
+                else None,
             }
             checkpoints.append(checkpoint_info)
 
@@ -209,7 +210,7 @@ def list_checkpoints(
 def resume_from_checkpoint(
     workflow: CompiledStateGraph,
     thread_id: str,
-    new_input: Optional[Dict[str, Any]] = None
+    new_input: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """从检查点恢复工作流执行。
 
@@ -251,10 +252,7 @@ def resume_from_checkpoint(
         return {"error": str(e)}
 
 
-def clear_checkpoints(
-    workflow: CompiledStateGraph,
-    thread_id: str
-) -> bool:
+def clear_checkpoints(workflow: CompiledStateGraph, thread_id: str) -> bool:
     """清除指定线程的所有检查点。
 
     Args:
@@ -285,10 +283,7 @@ def clear_checkpoints(
         return False
 
 
-def get_thread_stats(
-    workflow: CompiledStateGraph,
-    thread_id: str
-) -> Dict[str, Any]:
+def get_thread_stats(workflow: CompiledStateGraph, thread_id: str) -> Dict[str, Any]:
     """获取指定线程的统计信息。
 
     Args:
@@ -316,5 +311,5 @@ def get_thread_stats(
         "total_checkpoints": len(checkpoints),
         "current_step": len(checkpoints),
         "is_completed": current_state.next == () if current_state else False,
-        "last_checkpoint_id": checkpoints[-1]["checkpoint_id"] if checkpoints else None
+        "last_checkpoint_id": checkpoints[-1]["checkpoint_id"] if checkpoints else None,
     }

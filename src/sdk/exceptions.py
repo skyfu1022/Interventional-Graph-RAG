@@ -30,7 +30,7 @@ class MedGraphSDKError(Exception):
         self,
         message: str,
         error_code: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None
+        details: Optional[Dict[str, Any]] = None,
     ):
         """初始化 SDK 异常。
 
@@ -54,7 +54,7 @@ class MedGraphSDKError(Exception):
             "error_type": self.__class__.__name__,
             "error_code": self.error_code,
             "message": self.message,
-            "details": self.details
+            "details": self.details,
         }
 
     def __str__(self) -> str:
@@ -84,7 +84,7 @@ class ConfigError(MedGraphSDKError):
         self,
         message: str,
         config_key: Optional[str] = None,
-        config_file: Optional[str] = None
+        config_file: Optional[str] = None,
     ):
         """初始化配置错误。
 
@@ -99,11 +99,7 @@ class ConfigError(MedGraphSDKError):
         if config_file:
             details["config_file"] = config_file
 
-        super().__init__(
-            message=message,
-            error_code="CONFIG_ERROR",
-            details=details
-        )
+        super().__init__(message=message, error_code="CONFIG_ERROR", details=details)
         self.config_key = config_key
         self.config_file = config_file
 
@@ -121,11 +117,7 @@ class DocumentNotFoundError(MedGraphSDKError):
         >>> raise DocumentNotFoundError("文档不存在", doc_id="doc-123")
     """
 
-    def __init__(
-        self,
-        message: str,
-        doc_id: Optional[str] = None
-    ):
+    def __init__(self, message: str, doc_id: Optional[str] = None):
         """初始化文档未找到错误。
 
         Args:
@@ -137,9 +129,7 @@ class DocumentNotFoundError(MedGraphSDKError):
             details["doc_id"] = doc_id
 
         super().__init__(
-            message=message,
-            error_code="DOCUMENT_NOT_FOUND",
-            details=details
+            message=message, error_code="DOCUMENT_NOT_FOUND", details=details
         )
         self.doc_id = doc_id
 
@@ -159,10 +149,7 @@ class ConnectionError(MedGraphSDKError):
     """
 
     def __init__(
-        self,
-        message: str,
-        service: Optional[str] = None,
-        uri: Optional[str] = None
+        self, message: str, service: Optional[str] = None, uri: Optional[str] = None
     ):
         """初始化连接错误。
 
@@ -179,9 +166,7 @@ class ConnectionError(MedGraphSDKError):
             details["uri"] = self._sanitize_uri(uri)
 
         super().__init__(
-            message=message,
-            error_code="CONNECTION_ERROR",
-            details=details
+            message=message, error_code="CONNECTION_ERROR", details=details
         )
         self.service = service
         self.uri = uri
@@ -201,7 +186,7 @@ class ConnectionError(MedGraphSDKError):
             'bolt://neo4j:****@localhost:7687'
         """
         # 移除 password 部分
-        return re.sub(r':([^:@]+)@', ':****@', uri)
+        return re.sub(r":([^:@]+)@", ":****@", uri)
 
 
 class ValidationError(MedGraphSDKError):
@@ -229,7 +214,7 @@ class ValidationError(MedGraphSDKError):
         message: str,
         field: Optional[str] = None,
         value: Optional[Any] = None,
-        constraint: Optional[str] = None
+        constraint: Optional[str] = None,
     ):
         """初始化验证错误。
 
@@ -248,9 +233,7 @@ class ValidationError(MedGraphSDKError):
             details["constraint"] = constraint
 
         super().__init__(
-            message=message,
-            error_code="VALIDATION_ERROR",
-            details=details
+            message=message, error_code="VALIDATION_ERROR", details=details
         )
         self.field = field
         self.value = value
@@ -275,7 +258,7 @@ class QueryTimeoutError(MedGraphSDKError):
         self,
         message: str,
         timeout_seconds: Optional[float] = None,
-        query: Optional[str] = None
+        query: Optional[str] = None,
     ):
         """初始化查询超时错误。
 
@@ -290,11 +273,7 @@ class QueryTimeoutError(MedGraphSDKError):
         if query:
             details["query"] = query[:100]  # 限制长度
 
-        super().__init__(
-            message=message,
-            error_code="QUERY_TIMEOUT",
-            details=details
-        )
+        super().__init__(message=message, error_code="QUERY_TIMEOUT", details=details)
         self.timeout_seconds = timeout_seconds
         self.query = query
 
@@ -319,7 +298,7 @@ class RateLimitError(MedGraphSDKError):
         message: str,
         limit: Optional[int] = None,
         window: Optional[int] = None,
-        retry_after: Optional[int] = None
+        retry_after: Optional[int] = None,
     ):
         """初始化速率限制错误。
 
@@ -338,9 +317,7 @@ class RateLimitError(MedGraphSDKError):
             details["retry_after_seconds"] = retry_after
 
         super().__init__(
-            message=message,
-            error_code="RATE_LIMIT_ERROR",
-            details=details
+            message=message, error_code="RATE_LIMIT_ERROR", details=details
         )
         self.limit = limit
         self.window = window
@@ -396,36 +373,36 @@ def convert_core_exception(e: Exception) -> MedGraphSDKError:
         if isinstance(e, core_exc):
             # 尝试从核心异常中提取详细信息
             kwargs = {}
-            if hasattr(e, 'message'):
-                kwargs['message'] = str(e.message)
+            if hasattr(e, "message"):
+                kwargs["message"] = str(e.message)
             else:
-                kwargs['message'] = str(e)
+                kwargs["message"] = str(e)
 
             # 根据不同的异常类型添加特定参数
-            if isinstance(e, CoreDocumentError) and hasattr(e, 'doc_id'):
-                kwargs['doc_id'] = e.doc_id
+            if isinstance(e, CoreDocumentError) and hasattr(e, "doc_id"):
+                kwargs["doc_id"] = e.doc_id
             elif isinstance(e, CoreConfigError):
-                if hasattr(e, 'config_key'):
-                    kwargs['config_key'] = e.config_key
-                if hasattr(e, 'config_file'):
-                    kwargs['config_file'] = e.config_file
+                if hasattr(e, "config_key"):
+                    kwargs["config_key"] = e.config_key
+                if hasattr(e, "config_file"):
+                    kwargs["config_file"] = e.config_file
             elif isinstance(e, CoreValidationError):
-                if hasattr(e, 'field'):
-                    kwargs['field'] = e.field
-                if hasattr(e, 'value'):
-                    kwargs['value'] = e.value
-                if hasattr(e, 'constraint'):
-                    kwargs['constraint'] = e.constraint
+                if hasattr(e, "field"):
+                    kwargs["field"] = e.field
+                if hasattr(e, "value"):
+                    kwargs["value"] = e.value
+                if hasattr(e, "constraint"):
+                    kwargs["constraint"] = e.constraint
             elif isinstance(e, CoreStorageError):
-                if hasattr(e, 'storage_type'):
-                    kwargs['service'] = e.storage_type
+                if hasattr(e, "storage_type"):
+                    kwargs["service"] = e.storage_type
             elif isinstance(e, CoreRateLimitError):
-                if hasattr(e, 'limit'):
-                    kwargs['limit'] = e.limit
-                if hasattr(e, 'window'):
-                    kwargs['window'] = e.window
-                if hasattr(e, 'retry_after'):
-                    kwargs['retry_after'] = e.retry_after
+                if hasattr(e, "limit"):
+                    kwargs["limit"] = e.limit
+                if hasattr(e, "window"):
+                    kwargs["window"] = e.window
+                if hasattr(e, "retry_after"):
+                    kwargs["retry_after"] = e.retry_after
 
             return sdk_exc_class(**kwargs)
 

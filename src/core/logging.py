@@ -16,7 +16,7 @@ import uuid
 import time
 import json
 from pathlib import Path
-from typing import Optional, Any, Dict, Callable
+from typing import Optional, Callable
 from contextvars import ContextVar
 from functools import wraps
 from loguru import logger
@@ -44,7 +44,7 @@ class LoggingConfig:
         enable_console: bool = True,
         enable_file: bool = True,
         console_level: str = "INFO",
-        file_level: str = "DEBUG"
+        file_level: str = "DEBUG",
     ):
         """初始化日志配置
 
@@ -93,7 +93,7 @@ class LoggingConfig:
             enable_console=os.getenv("LOG_CONSOLE", "true").lower() == "true",
             enable_file=os.getenv("LOG_FILE_ENABLED", "true").lower() == "true",
             console_level=os.getenv("LOG_CONSOLE_LEVEL", "INFO"),
-            file_level=os.getenv("LOG_FILE_LEVEL", "DEBUG")
+            file_level=os.getenv("LOG_FILE_LEVEL", "DEBUG"),
         )
 
 
@@ -213,7 +213,7 @@ def setup_logging(config: Optional[LoggingConfig] = None, **kwargs) -> None:
             colorize=True,
             backtrace=True,
             diagnose=True,
-            filter=request_filter
+            filter=request_filter,
         )
 
     # 添加文件处理器
@@ -234,7 +234,7 @@ def setup_logging(config: Optional[LoggingConfig] = None, **kwargs) -> None:
             backtrace=True,
             diagnose=True,
             encoding="utf-8",
-            filter=request_filter
+            filter=request_filter,
         )
 
         # 添加错误日志文件（单独存储 ERROR 和 CRITICAL）
@@ -250,10 +250,12 @@ def setup_logging(config: Optional[LoggingConfig] = None, **kwargs) -> None:
             backtrace=True,
             diagnose=True,
             encoding="utf-8",
-            filter=request_filter
+            filter=request_filter,
         )
 
-    logger.info(f"日志系统初始化完成 | 级别: {config.log_level} | 目录: {config.log_dir}")
+    logger.info(
+        f"日志系统初始化完成 | 级别: {config.log_level} | 目录: {config.log_dir}"
+    )
 
 
 def get_logger(name: str, **extra):
@@ -379,7 +381,9 @@ def intercept_standard_logging(level: int = logging.INFO) -> None:
         logging_logger.propagate = False
 
 
-def log_execution_time(func: Optional[Callable] = None, *, level: str = "DEBUG") -> Callable:
+def log_execution_time(
+    func: Optional[Callable] = None, *, level: str = "DEBUG"
+) -> Callable:
     """装饰器：记录函数执行时间
 
     Args:
@@ -398,6 +402,7 @@ def log_execution_time(func: Optional[Callable] = None, *, level: str = "DEBUG")
         >>> def slow_function():
         ...     time.sleep(1)
     """
+
     def decorator(f: Callable) -> Callable:
         @wraps(f)
         def wrapper(*args, **kwargs):
@@ -409,8 +414,7 @@ def log_execution_time(func: Optional[Callable] = None, *, level: str = "DEBUG")
                 execution_time = time.time() - start_time
 
                 logger_local.opt(depth=1).log(
-                    level,
-                    f"函数执行完成 | 耗时: {execution_time:.4f}秒"
+                    level, f"函数执行完成 | 耗时: {execution_time:.4f}秒"
                 )
 
                 return result
@@ -431,7 +435,9 @@ def log_execution_time(func: Optional[Callable] = None, *, level: str = "DEBUG")
         return decorator(func)
 
 
-def log_async_execution_time(func: Optional[Callable] = None, *, level: str = "DEBUG") -> Callable:
+def log_async_execution_time(
+    func: Optional[Callable] = None, *, level: str = "DEBUG"
+) -> Callable:
     """装饰器：记录异步函数执行时间
 
     Args:
@@ -446,6 +452,7 @@ def log_async_execution_time(func: Optional[Callable] = None, *, level: str = "D
         >>> async def my_async_function():
         ...     await asyncio.sleep(1)
     """
+
     def decorator(f: Callable) -> Callable:
         @wraps(f)
         async def wrapper(*args, **kwargs):
@@ -457,8 +464,7 @@ def log_async_execution_time(func: Optional[Callable] = None, *, level: str = "D
                 execution_time = time.time() - start_time
 
                 logger_local.opt(depth=1).log(
-                    level,
-                    f"异步函数执行完成 | 耗时: {execution_time:.4f}秒"
+                    level, f"异步函数执行完成 | 耗时: {execution_time:.4f}秒"
                 )
 
                 return result
@@ -493,7 +499,7 @@ class LogContext:
         self,
         request_id: Optional[str] = None,
         session_id: Optional[str] = None,
-        **extra
+        **extra,
     ):
         """初始化日志上下文
 

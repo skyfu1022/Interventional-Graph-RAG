@@ -367,7 +367,9 @@ async def multimodal_query(
             }
             image_type = image_type_map.get(file_ext, "jpg")
 
-            logger.info(f"图像处理成功 | 类型: {image_type} | 大小: {len(content)} 字节")
+            logger.info(
+                f"图像处理成功 | 类型: {image_type} | 大小: {len(content)} 字节"
+            )
 
         except HTTPException:
             raise

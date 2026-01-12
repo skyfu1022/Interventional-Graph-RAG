@@ -132,12 +132,7 @@ class PerformanceMonitor:
         self._metrics = PerformanceMetrics()
         self._query_times: List[float] = []
 
-    def record_query(
-        self,
-        mode: str,
-        latency_ms: int,
-        success: bool = True
-    ) -> None:
+    def record_query(self, mode: str, latency_ms: int, success: bool = True) -> None:
         """记录查询指标。
 
         Args:
@@ -233,7 +228,9 @@ class PerformanceMonitor:
 
         # 计算延迟统计（不依赖 numpy）
         if self._query_times:
-            stats["avg_latency_ms"] = int(sum(self._query_times) / len(self._query_times))
+            stats["avg_latency_ms"] = int(
+                sum(self._query_times) / len(self._query_times)
+            )
             stats["p50_latency_ms"] = int(_calculate_percentile(self._query_times, 50))
             stats["p95_latency_ms"] = int(_calculate_percentile(self._query_times, 95))
             stats["p99_latency_ms"] = int(_calculate_percentile(self._query_times, 99))
@@ -283,24 +280,28 @@ class PerformanceMonitor:
         ]
 
         # 添加延迟统计（如果有）
-        if 'avg_latency_ms' in stats:
-            summary_parts.extend([
-                f"- 平均延迟: {stats['avg_latency_ms']}ms",
-                f"- P50 延迟: {stats.get('p50_latency_ms', 0)}ms",
-                f"- P95 延迟: {stats.get('p95_latency_ms', 0)}ms",
-                f"- P99 延迟: {stats.get('p99_latency_ms', 0)}ms",
-            ])
+        if "avg_latency_ms" in stats:
+            summary_parts.extend(
+                [
+                    f"- 平均延迟: {stats['avg_latency_ms']}ms",
+                    f"- P50 延迟: {stats.get('p50_latency_ms', 0)}ms",
+                    f"- P95 延迟: {stats.get('p95_latency_ms', 0)}ms",
+                    f"- P99 延迟: {stats.get('p99_latency_ms', 0)}ms",
+                ]
+            )
 
         # 添加 Token 统计（如果有）
-        if 'total_tokens' in stats:
+        if "total_tokens" in stats:
             summary_parts.append(f"- 总 Token 数: {stats['total_tokens']}")
 
         # 添加错误统计
-        summary_parts.extend([
-            f"- 错误次数: {stats['errors']}",
-            f"- 错误率: {stats['error_rate']:.2%}",
-            f"- 查询分布: {stats['queries_by_mode']}",
-        ])
+        summary_parts.extend(
+            [
+                f"- 错误次数: {stats['errors']}",
+                f"- 错误率: {stats['error_rate']:.2%}",
+                f"- 查询分布: {stats['queries_by_mode']}",
+            ]
+        )
 
         return "\n".join(summary_parts)
 
@@ -322,10 +323,7 @@ class QueryPerformanceTimer:
     """
 
     def __init__(
-        self,
-        monitor: PerformanceMonitor,
-        mode: str,
-        logger: Optional[Any] = None
+        self, monitor: PerformanceMonitor, mode: str, logger: Optional[Any] = None
     ):
         """初始化计时器。
 

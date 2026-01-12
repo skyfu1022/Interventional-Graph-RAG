@@ -6,7 +6,7 @@ Ingest 命令 - 文档摄入到知识图谱。
 
 import asyncio
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 
 import typer
 from rich.console import Console
@@ -115,7 +115,7 @@ def _display_ingest_results(results: List, total_files: int, graph_id: str) -> N
 
     # 显示统计信息
     console.print()
-    console.print(f"[bold]统计信息:[/bold]")
+    console.print("[bold]统计信息:[/bold]")
     console.print(f"  总文件数: {total_files}")
     console.print(f"  [green]成功: {success_count}[/green]")
     if failed_count > 0:
@@ -156,7 +156,6 @@ async def _ingest_files(
                 TimeRemainingColumn(),
                 console=console,
             ) as progress:
-
                 # 创建总任务
                 total_task = progress.add_task(
                     f"[cyan]摄入文档到图谱 '{graph_id}'...",
@@ -178,14 +177,16 @@ async def _ingest_files(
 
                 # 转换结果为字典列表
                 for idx, result in enumerate(batch_result.results):
-                    results.append({
-                        "file_path": str(file_paths[idx]),
-                        "status": result.status,
-                        "doc_id": result.doc_id or "N/A",
-                        "chunks_count": result.chunks_count,
-                        "entities_count": result.entities_count,
-                        "error": result.error,
-                    })
+                    results.append(
+                        {
+                            "file_path": str(file_paths[idx]),
+                            "status": result.status,
+                            "doc_id": result.doc_id or "N/A",
+                            "chunks_count": result.chunks_count,
+                            "entities_count": result.entities_count,
+                            "error": result.error,
+                        }
+                    )
 
     except MedGraphSDKError as e:
         console.print(f"[red]✗ SDK 错误: {e}[/red]")
@@ -244,7 +245,7 @@ def ingest_command(
     """
     # 显示开始信息
     console.print()
-    console.print(f"[bold cyan]Medical Graph RAG - 文档摄入[/bold cyan]")
+    console.print("[bold cyan]Medical Graph RAG - 文档摄入[/bold cyan]")
     console.print()
 
     # 验证文件路径
@@ -262,12 +263,14 @@ def ingest_command(
 
     # 异步执行摄入
     try:
-        results = asyncio.run(_ingest_files(
-            file_paths=valid_files,
-            graph_id=graph_id,
-            workspace=workspace,
-            max_concurrency=max_concurrency,
-        ))
+        results = asyncio.run(
+            _ingest_files(
+                file_paths=valid_files,
+                graph_id=graph_id,
+                workspace=workspace,
+                max_concurrency=max_concurrency,
+            )
+        )
 
         # 显示结果
         _display_ingest_results(results, file_count, graph_id)

@@ -17,7 +17,7 @@ from src.agents.states import QueryState
 def create_query_workflow(
     rag_adapter: Any,
     llm: Optional[BaseChatModel] = None,
-    checkpointer: Optional[Any] = None
+    checkpointer: Optional[Any] = None,
 ) -> CompiledStateGraph:
     """创建查询工作流（支持检查点）。
 
@@ -79,7 +79,7 @@ def create_query_workflow(
         {
             "simple": "generate_answer",
             "retrieve": "retrieve",
-        }
+        },
     )
 
     # 添加条件边：根据检索结果评估相关性
@@ -90,7 +90,7 @@ def create_query_workflow(
             "relevant": "generate_answer",
             "refine": "refine_query",
             "end": END,
-        }
+        },
     )
 
     # 添加普通边
@@ -106,7 +106,10 @@ def create_query_workflow(
 
 # ==================== 节点函数 ====================
 
-def analyze_query_node(state: QueryState, config: Optional[RunnableConfig] = None) -> dict:
+
+def analyze_query_node(
+    state: QueryState, config: Optional[RunnableConfig] = None
+) -> dict:
     """分析查询复杂度节点。
 
     根据查询的长度、关键词数量、语义复杂度等特征，
@@ -128,14 +131,33 @@ def analyze_query_node(state: QueryState, config: Optional[RunnableConfig] = Non
 
     # 2. 检查复杂度指示词
     complex_indicators = [
-        "比较", "对比", "分析", "关系", "影响", "原因",
-        "为什么", "如何", "怎样", "机制", "原理",
-        "区别", "相同", "不同", "优缺点", "风险",
-        "评估", "探讨", "深入研究", "多种", "相互"
+        "比较",
+        "对比",
+        "分析",
+        "关系",
+        "影响",
+        "原因",
+        "为什么",
+        "如何",
+        "怎样",
+        "机制",
+        "原理",
+        "区别",
+        "相同",
+        "不同",
+        "优缺点",
+        "风险",
+        "评估",
+        "探讨",
+        "深入研究",
+        "多种",
+        "相互",
     ]
 
     has_complex_indicator = any(indicator in query for indicator in complex_indicators)
-    complex_indicator_count = sum(1 for indicator in complex_indicators if indicator in query)
+    complex_indicator_count = sum(
+        1 for indicator in complex_indicators if indicator in query
+    )
 
     # 3. 检查多实体查询
     entity_indicators = ["和", "与", "或", "以及", "还有"]
@@ -152,7 +174,9 @@ def analyze_query_node(state: QueryState, config: Optional[RunnableConfig] = Non
     else:
         complexity = "complex"
 
-    print(f"[分析查询] 复杂度: {complexity} (字符数: {char_count}, 复杂指示: {has_complex_indicator}({complex_indicator_count}), 实体数: {entity_count})")
+    print(
+        f"[分析查询] 复杂度: {complexity} (字符数: {char_count}, 复杂指示: {has_complex_indicator}({complex_indicator_count}), 实体数: {entity_count})"
+    )
 
     return {
         "query_complexity": complexity,
@@ -173,8 +197,8 @@ def retrieve_node(state: QueryState, config: Optional[RunnableConfig] = None) ->
     Returns:
         更新后的状态字典，包含检索到的 context 和 sources
     """
-    query = state.get("query", "")
-    graph_id = state.get("graph_id", "")
+    query = state.get("query", "")  # noqa: F841 - 保留用于日志记录和未来 RAG 调用
+    graph_id = state.get("graph_id", "")  # noqa: F841 - 保留用于多图谱支持和未来扩展
     retrieval_count = state.get("retrieval_count", 0) + 1
 
     print(f"[检索上下文] 第 {retrieval_count} 次检索")
@@ -200,7 +224,9 @@ def retrieve_node(state: QueryState, config: Optional[RunnableConfig] = None) ->
     }
 
 
-def grade_documents_node(state: QueryState, config: Optional[RunnableConfig] = None) -> dict:
+def grade_documents_node(
+    state: QueryState, config: Optional[RunnableConfig] = None
+) -> dict:
     """评估文档相关性节点。
 
     评估检索到的文档与查询的相关性，决定是否需要优化查询重试。
@@ -241,7 +267,9 @@ def grade_documents_node(state: QueryState, config: Optional[RunnableConfig] = N
     }
 
 
-def generate_answer_node(state: QueryState, config: Optional[RunnableConfig] = None) -> dict:
+def generate_answer_node(
+    state: QueryState, config: Optional[RunnableConfig] = None
+) -> dict:
     """生成答案节点。
 
     基于查询和检索到的上下文生成最终答案。
@@ -269,14 +297,16 @@ def generate_answer_node(state: QueryState, config: Optional[RunnableConfig] = N
         context_str = "\n".join(context[:3])  # 使用前3个上下文
         answer = f"关于问题「{query}」的回答：\n\n基于知识图谱的检索结果，{context_str}"
 
-    print(f"[生成答案] 已生成答案")
+    print("[生成答案] 已生成答案")
 
     return {
         "answer": answer,
     }
 
 
-def refine_query_node(state: QueryState, config: Optional[RunnableConfig] = None) -> dict:
+def refine_query_node(
+    state: QueryState, config: Optional[RunnableConfig] = None
+) -> dict:
     """优化查询节点。
 
     当检索结果不理想时，优化查询表达式以便重新检索。
@@ -310,7 +340,7 @@ def refine_query_node(state: QueryState, config: Optional[RunnableConfig] = None
     #     # 第二次优化：更具体的查询
     #     refined_query = f"{original_query} 临床表现 诊断 治疗"
 
-    print(f"[优化查询] 保持原查询（实际应用中应使用 LLM 优化）")
+    print("[优化查询] 保持原查询（实际应用中应使用 LLM 优化）")
 
     return {
         "query": refined_query,
@@ -318,6 +348,7 @@ def refine_query_node(state: QueryState, config: Optional[RunnableConfig] = None
 
 
 # ==================== 条件边函数 ====================
+
 
 def should_retrieve(state: QueryState) -> Literal["simple", "retrieve"]:
     """判断是否需要检索。
@@ -335,7 +366,7 @@ def should_retrieve(state: QueryState) -> Literal["simple", "retrieve"]:
     complexity = state.get("query_complexity", "simple")
 
     if complexity == "simple":
-        print(f"[路由决策] 简单查询，直接生成答案")
+        print("[路由决策] 简单查询，直接生成答案")
         return "simple"
     else:
         print(f"[路由决策] 复杂查询({complexity})，执行检索")
@@ -361,10 +392,10 @@ def check_relevance(state: QueryState) -> Literal["relevant", "refine", "end"]:
     max_retries = state.get("max_retries", 3)
 
     if relevance == "relevant":
-        print(f"[相关性检查] 检索结果相关，生成答案")
+        print("[相关性检查] 检索结果相关，生成答案")
         return "relevant"
     elif retrieval_count >= max_retries:
-        print(f"[相关性检查] 达到最大重试次数，结束流程")
+        print("[相关性检查] 达到最大重试次数，结束流程")
         return "end"
     else:
         print(f"[相关性检查] 优化查询后重试 (当前: {retrieval_count}/{max_retries})")

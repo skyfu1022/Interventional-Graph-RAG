@@ -96,9 +96,7 @@ async def list_graphs(
         graphs = await client.list_graphs()
 
         # 过滤和转换
-        filtered_graphs = [
-            g for g in graphs if g.entity_count >= min_entity_count
-        ]
+        filtered_graphs = [g for g in graphs if g.entity_count >= min_entity_count]
 
         graph_items = [
             GraphInfoItem(
@@ -601,4 +599,3 @@ async def export_graph_visualization(
 # ========== 导出 ==========
 
 __all__ = ["router"]
-

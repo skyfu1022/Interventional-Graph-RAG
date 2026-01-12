@@ -325,7 +325,9 @@ async def execute_intelligent_query(
         >>>     ]
         >>> }
     """
-    history_count = len(request.conversation_history) if request.conversation_history else 0
+    history_count = (
+        len(request.conversation_history) if request.conversation_history else 0
+    )
     logger.info(
         f"收到智能查询请求 | 模式: {request.mode} | "
         f"图谱: {request.graph_id} | 对话历史: {history_count} 条"

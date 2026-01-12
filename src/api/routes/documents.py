@@ -22,7 +22,6 @@ from typing import Optional
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status
-from fastapi.responses import JSONResponse
 
 from src.sdk.client import MedGraphClient
 from src.sdk.exceptions import (
@@ -33,7 +32,6 @@ from src.sdk.exceptions import (
 )
 from src.core.exceptions import (
     DocumentError,
-    ValidationError,
     NotFoundError,
 )
 from src.core.logging import get_logger
@@ -41,7 +39,6 @@ from src.api.schemas import (
     DocumentUploadResponse,
     DocumentDetailResponse,
     DocumentDeleteResponse,
-    ErrorResponse,
 )
 
 
@@ -74,7 +71,7 @@ async def get_client() -> MedGraphClient:
         logger.error(f"客户端初始化失败: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="服务初始化失败，请稍后重试"
+            detail="服务初始化失败，请稍后重试",
         )
 
 
@@ -118,18 +115,19 @@ async def upload_document(
         >>>      -F "file=@medical.txt" \\
         >>>      -F "doc_id=doc-001"
     """
-    logger.info(f"收到文档上传请求 | 文件名: {file.filename} | ID: {doc_id or '自动生成'}")
+    logger.info(
+        f"收到文档上传请求 | 文件名: {file.filename} | ID: {doc_id or '自动生成'}"
+    )
 
     # 验证文件名
     if not file.filename:
         logger.warning("上传文件名为空")
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="文件名不能为空"
+            status_code=status.HTTP_400_BAD_REQUEST, detail="文件名不能为空"
         )
 
     # 验证文件扩展名（可选）
-    allowed_extensions = {'.txt', '.md', '.json', '.csv', '.pdf'}
+    allowed_extensions = {".txt", ".md", ".json", ".csv", ".pdf"}
     file_ext = Path(file.filename).suffix.lower()
     if file_ext not in allowed_extensions:
         logger.warning(f"不支持的文件类型: {file_ext}")
@@ -140,22 +138,21 @@ async def upload_document(
     try:
         # 创建临时文件
         with tempfile.NamedTemporaryFile(
-            delete=False,
-            suffix=file_ext or '.txt',
-            mode='wb'
+            delete=False, suffix=file_ext or ".txt", mode="wb"
         ) as temp_file:
             # 读取上传文件内容并写入临时文件
             content = await file.read()
             temp_file.write(content)
             temp_file_path = temp_file.name
 
-        logger.debug(f"临时文件创建成功 | 路径: {temp_file_path} | 大小: {len(content)} 字节")
+        logger.debug(
+            f"临时文件创建成功 | 路径: {temp_file_path} | 大小: {len(content)} 字节"
+        )
 
         # 调用 SDK 摄入文档
         try:
             doc_info = await client.ingest_document(
-                file_path=temp_file_path,
-                doc_id=doc_id
+                file_path=temp_file_path, doc_id=doc_id
             )
 
             logger.info(
@@ -169,38 +166,37 @@ async def upload_document(
                 file_name=file.filename,
                 message="文档上传成功",
                 entity_count=doc_info.entities_count,
-                relationship_count=doc_info.metadata.get('relationship_count', 0),
+                relationship_count=doc_info.metadata.get("relationship_count", 0),
             )
 
         except DocumentNotFoundError as e:
             logger.error(f"文档未找到: {e}")
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"文档未找到: {e.message}"
+                status_code=status.HTTP_404_NOT_FOUND, detail=f"文档未找到: {e.message}"
             )
         except SDKValidationError as e:
             logger.error(f"数据验证失败: {e}")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"数据验证失败: {e.message}"
+                detail=f"数据验证失败: {e.message}",
             )
         except SDKConfigError as e:
             logger.error(f"配置错误: {e}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"服务配置错误: {e.message}"
+                detail=f"服务配置错误: {e.message}",
             )
         except DocumentError as e:
             logger.error(f"文档处理失败: {e}")
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                detail=f"文档处理失败: {e.message}"
+                detail=f"文档处理失败: {e.message}",
             )
         except MedGraphSDKError as e:
             logger.error(f"SDK 错误: {e}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"处理失败: {e.message}"
+                detail=f"处理失败: {e.message}",
             )
 
     except HTTPException:
@@ -210,7 +206,7 @@ async def upload_document(
         logger.error(f"上传文档时发生未预期错误: {e}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"上传文档失败: {str(e)}"
+            detail=f"上传文档失败: {str(e)}",
         )
     finally:
         # 清理临时文件
@@ -286,17 +282,16 @@ async def get_document(
             updated_at=doc_info.updated_at,
         )
 
-    except NotFoundError as e:
+    except NotFoundError:
         logger.error(f"文档不存在: {doc_id}")
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"文档不存在: {doc_id}"
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"文档不存在: {doc_id}"
         )
     except Exception as e:
         logger.error(f"获取文档详情失败 | ID: {doc_id} | 错误: {e}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"获取文档详情失败: {str(e)}"
+            detail=f"获取文档详情失败: {str(e)}",
         )
 
 
@@ -337,34 +332,32 @@ async def delete_document(
         if success:
             logger.info(f"文档删除成功 | ID: {doc_id}")
             return DocumentDeleteResponse(
-                doc_id=doc_id,
-                success=True,
-                message="文档删除成功"
+                doc_id=doc_id, success=True, message="文档删除成功"
             )
         else:
             logger.warning(f"文档删除失败 | ID: {doc_id}")
             raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="文档删除失败"
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="文档删除失败"
             )
 
-    except NotFoundError as e:
+    except NotFoundError:
         logger.error(f"文档不存在: {doc_id}")
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"文档不存在: {doc_id}"
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"文档不存在: {doc_id}"
         )
     except DocumentError as e:
         logger.error(f"删除文档失败 | ID: {doc_id} | 错误: {e}")
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail=f"删除文档失败: {e.message}"
+            detail=f"删除文档失败: {e.message}",
         )
     except Exception as e:
-        logger.error(f"删除文档时发生未预期错误 | ID: {doc_id} | 错误: {e}", exc_info=True)
+        logger.error(
+            f"删除文档时发生未预期错误 | ID: {doc_id} | 错误: {e}", exc_info=True
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"删除文档失败: {str(e)}"
+            detail=f"删除文档失败: {str(e)}",
         )
 
 

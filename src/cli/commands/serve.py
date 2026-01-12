@@ -20,7 +20,6 @@ Medical Graph RAG - Serve 命令模块
 from __future__ import annotations
 
 import socket
-from typing import Optional
 
 import typer
 import uvicorn
@@ -193,7 +192,7 @@ def serve(
             style="red",
         )
         console.print(
-            f"[dim]提示: 请尝试其他端口或检查是否有其他服务正在使用该端口[/]",
+            "[dim]提示: 请尝试其他端口或检查是否有其他服务正在使用该端口[/]",
         )
         raise typer.Exit(code=1)
 

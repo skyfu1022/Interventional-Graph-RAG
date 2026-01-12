@@ -36,21 +36,17 @@ Medical Graph RAG CLI 主入口。
 from __future__ import annotations
 
 import asyncio
-import sys
 from pathlib import Path
-from typing import Optional, List
+from typing import Optional
 
 import typer
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
-from rich import print as rprint
 
 # 导入 SDK
 from src.sdk import (
     MedGraphClient,
-    QueryMode,
-    __version__,
     get_info,
 )
 from src.sdk.exceptions import (
@@ -248,6 +244,7 @@ def build(
     初始化或重建知识图谱，配置文本处理参数。
     如果图谱已存在且未指定 --force，则跳过构建。
     """
+
     async def _build() -> None:
         try:
             client = await create_client_from_ctx(ctx)
@@ -328,6 +325,7 @@ def query(
     使用自然语言问题查询医学知识图谱，
     返回相关的答案和来源信息。
     """
+
     async def _query() -> None:
         try:
             client = await create_client_from_ctx(ctx)
@@ -370,14 +368,19 @@ def query(
                         console.print_json(result.to_json())
                     else:
                         # 文本输出
-                        console.print(f"[bold cyan]答案:[/bold cyan]\n{result.answer}\n")
+                        console.print(
+                            f"[bold cyan]答案:[/bold cyan]\n{result.answer}\n"
+                        )
 
                         # 显示来源信息
                         if result.sources:
                             console.print(f"[bold]来源 ({len(result.sources)}):[/bold]")
                             for i, source in enumerate(result.sources, 1):
-                                preview = source.content[:100] + "..." \
-                                    if len(source.content) > 100 else source.content
+                                preview = (
+                                    source.content[:100] + "..."
+                                    if len(source.content) > 100
+                                    else source.content
+                                )
                                 console.print(
                                     f"  {i}. [dim]{preview}[/dim] "
                                     f"[cyan](相关度: {source.relevance:.2f})[/cyan]"
@@ -433,6 +436,7 @@ def ingest(
     支持单文档和批量文档摄入，自动进行文本切分、
     实体提取和关系构建。
     """
+
     async def _ingest() -> None:
         try:
             client = await create_client_from_ctx(ctx)
@@ -450,7 +454,8 @@ def ingest(
                     # 查找所有支持的文件
                     supported_extensions = {".txt", ".md", ".json", ".csv"}
                     files = [
-                        str(f) for f in file_path_obj.rglob("*")
+                        str(f)
+                        for f in file_path_obj.rglob("*")
                         if f.is_file() and f.suffix in supported_extensions
                     ]
 
@@ -479,9 +484,7 @@ def ingest(
                     )
 
                     if result.failed > 0:
-                        console.print(
-                            f"[yellow]失败: {result.failed} 个文档[/yellow]"
-                        )
+                        console.print(f"[yellow]失败: {result.failed} 个文档[/yellow]")
                         for failed_result in result.results:
                             if failed_result.status == "failed":
                                 console.print(
@@ -491,9 +494,7 @@ def ingest(
 
                 else:
                     # 单文档摄入
-                    console.print(
-                        f"[bold cyan]摄入文档:[/bold cyan] {file_path}"
-                    )
+                    console.print(f"[bold cyan]摄入文档:[/bold cyan] {file_path}")
 
                     doc_info = await client.ingest_document(
                         file_path=file_path,
@@ -578,9 +579,7 @@ def serve(
 
     # 验证端口范围
     if not (1 <= port <= 65535):
-        console.print(
-            f"[bold red]✗[/] 错误: 端口必须在 1-65535 范围内,当前值: {port}"
-        )
+        console.print(f"[bold red]✗[/] 错误: 端口必须在 1-65535 范围内,当前值: {port}")
         raise typer.Exit(code=1)
 
     # 检查端口可用性
@@ -589,12 +588,8 @@ def serve(
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             s.bind((host, port))
     except OSError:
-        console.print(
-            f"[bold red]✗[/] 错误: 端口 {port} 已被占用"
-        )
-        console.print(
-            f"[dim]提示: 请尝试其他端口或检查是否有其他服务正在使用该端口[/]"
-        )
+        console.print(f"[bold red]✗[/] 错误: 端口 {port} 已被占用")
+        console.print("[dim]提示: 请尝试其他端口或检查是否有其他服务正在使用该端口[/]")
         raise typer.Exit(code=1)
 
     # 打印服务器信息
@@ -683,6 +678,7 @@ def export(
     将知识图谱数据导出为指定格式的文件，
     支持结构化数据和可视化格式。
     """
+
     async def _export() -> None:
         try:
             client = await create_client_from_ctx(ctx)
@@ -711,9 +707,7 @@ def export(
                     format=format,
                 )
 
-                console.print(
-                    f"\n[bold green]✓[/bold green] 图谱导出成功: {output}"
-                )
+                console.print(f"\n[bold green]✓[/bold green] 图谱导出成功: {output}")
 
         except MedGraphSDKError as e:
             handle_sdk_error(e)
@@ -742,6 +736,7 @@ def info(
 
     列出所有图谱或显示特定图谱的详细统计信息。
     """
+
     async def _info() -> None:
         try:
             client = await create_client_from_ctx(ctx)

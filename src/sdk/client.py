@@ -44,18 +44,20 @@ from dataclasses import dataclass, field
 
 from src.core.config import Settings, get_settings
 from src.core.logging import setup_logging, get_logger
-from src.core.exceptions import QueryError, DocumentError, ValidationError, ConfigError, NotFoundError
+from src.core.exceptions import (
+    QueryError,
+    DocumentError,
+    ValidationError,
+    NotFoundError,
+)
 from src.core.adapters import (
     RAGAnythingAdapter,
     IngestResult,
-    QueryResult as AdapterQueryResult,
-    GraphStats,
-    QueryMode as AdapterQueryMode,
 )
 
 # 导入服务层
 from src.services.ingestion import IngestionService, BatchIngestResult
-from src.services.query import QueryService as ServiceQueryService, QueryContext
+from src.services.query import QueryService as ServiceQueryService
 from src.services.graph import GraphService
 
 # 导入 SDK 层类型
@@ -64,18 +66,12 @@ from src.sdk.types import (
     QueryResult,
     DocumentInfo,
     GraphInfo,
-    GraphConfig,
     SourceInfo,
-    GraphContext,
 )
 from src.sdk.exceptions import (
-    MedGraphSDKError,
     ConfigError as SDKConfigError,
-    DocumentNotFoundError,
-    ConnectionError as SDKConnectionError,
-    ValidationError as SDKValidationError,
 )
-from src.sdk.monitoring import PerformanceMonitor, QueryPerformanceTimer
+from src.sdk.monitoring import PerformanceMonitor
 
 
 # ========== 配置文件解析函数 ==========
@@ -83,13 +79,13 @@ from src.sdk.monitoring import PerformanceMonitor, QueryPerformanceTimer
 
 def _load_yaml_config(path: str) -> Dict[str, Any]:
     """加载 YAML 配置文件。
-    
+
     Args:
         path: YAML 文件路径
-        
+
     Returns:
         配置字典
-        
+
     Raises:
         SDKConfigError: 文件读取失败或格式错误
     """
@@ -97,72 +93,53 @@ def _load_yaml_config(path: str) -> Dict[str, Any]:
         import yaml
     except ImportError:
         raise SDKConfigError(
-            "缺少 YAML 依赖，请安装: pip install pyyaml",
-            config_file=path
+            "缺少 YAML 依赖，请安装: pip install pyyaml", config_file=path
         )
-    
+
     try:
-        with open(path, 'r', encoding='utf-8') as f:
+        with open(path, "r", encoding="utf-8") as f:
             config = yaml.safe_load(f)
             if config is None:
                 return {}
             return config
     except FileNotFoundError:
-        raise SDKConfigError(
-            f"配置文件不存在: {path}",
-            config_file=path
-        )
+        raise SDKConfigError(f"配置文件不存在: {path}", config_file=path)
     except yaml.YAMLError as e:
-        raise SDKConfigError(
-            f"YAML 格式错误: {str(e)}",
-            config_file=path
-        )
+        raise SDKConfigError(f"YAML 格式错误: {str(e)}", config_file=path)
     except Exception as e:
-        raise SDKConfigError(
-            f"读取配置文件失败: {str(e)}",
-            config_file=path
-        )
+        raise SDKConfigError(f"读取配置文件失败: {str(e)}", config_file=path)
 
 
 def _load_json_config(path: str) -> Dict[str, Any]:
     """加载 JSON 配置文件。
-    
+
     Args:
         path: JSON 文件路径
-        
+
     Returns:
         配置字典
-        
+
     Raises:
         SDKConfigError: 文件读取失败或格式错误
     """
     try:
-        with open(path, 'r', encoding='utf-8') as f:
+        with open(path, "r", encoding="utf-8") as f:
             config = json.load(f)
             return config
     except FileNotFoundError:
-        raise SDKConfigError(
-            f"配置文件不存在: {path}",
-            config_file=path
-        )
+        raise SDKConfigError(f"配置文件不存在: {path}", config_file=path)
     except json.JSONDecodeError as e:
-        raise SDKConfigError(
-            f"JSON 格式错误: {str(e)}",
-            config_file=path
-        )
+        raise SDKConfigError(f"JSON 格式错误: {str(e)}", config_file=path)
     except Exception as e:
-        raise SDKConfigError(
-            f"读取配置文件失败: {str(e)}",
-            config_file=path
-        )
+        raise SDKConfigError(f"读取配置文件失败: {str(e)}", config_file=path)
 
 
 # ========== SDK 结果数据类 ==========
 
 
 @dataclass
-class DocumentInfo:
-    """文档信息。
+class ClientDocumentInfo:  # 重命名以避免与导入的 DocumentInfo 冲突
+    """客户端文档信息。
 
     Attributes:
         doc_id: 文档 ID
@@ -183,7 +160,9 @@ class DocumentInfo:
     metadata: Dict[str, Any] = field(default_factory=dict)
 
     @classmethod
-    def from_ingest_result(cls, result: IngestResult, file_path: Optional[str] = None) -> "DocumentInfo":
+    def from_ingest_result(
+        cls, result: IngestResult, file_path: Optional[str] = None
+    ) -> "ClientDocumentInfo":
         """从适配器摄入结果创建文档信息。
 
         Args:
@@ -257,14 +236,14 @@ class MedGraphClient:
         ...     stats = client.get_stats()
         ...     print(f"平均延迟: {stats['avg_latency_ms']}ms")
     """
-    
+
     def __init__(
         self,
         workspace: str = "medical",
         log_level: str = "INFO",
         config: Optional[Settings] = None,
         enable_metrics: bool = True,
-        **kwargs
+        **kwargs,
     ):
         """初始化 SDK 客户端。
 
@@ -281,17 +260,17 @@ class MedGraphClient:
         # 设置日志
         setup_logging(log_level=log_level)
         self.logger = get_logger("MedGraphClient")
-        
+
         self.workspace = workspace
         self._config = config
         self._config_overrides = kwargs
         self._adapter: Optional[RAGAnythingAdapter] = None
         self._initialized = False
-        
+
         # 性能监控
         self._enable_metrics = enable_metrics
         self._performance_monitor = PerformanceMonitor(enable_metrics=enable_metrics)
-        
+
         # 服务层实例（延迟初始化）
         self._ingestion_service: Optional[IngestionService] = None
         self._query_service: Optional[ServiceQueryService] = None
@@ -344,12 +323,12 @@ class MedGraphClient:
         """初始化服务层实例。"""
         if self._adapter is None:
             return
-        
+
         # 创建服务层实例
         self._ingestion_service = IngestionService(self._adapter)
         self._query_service = ServiceQueryService(self._adapter)
         self._graph_service = GraphService(self._adapter)
-        
+
         self.logger.debug("服务层初始化完成")
 
     async def __aenter__(self) -> "MedGraphClient":
@@ -374,7 +353,7 @@ class MedGraphClient:
             # 使用超时确保初始化不会无限等待
             await asyncio.wait_for(
                 self._ensure_initialized(),
-                timeout=30.0  # 30 秒超时
+                timeout=30.0,  # 30 秒超时
             )
 
             self.logger.info(f"SDK 客户端上下文就绪 | 工作空间: {self.workspace}")
@@ -394,7 +373,7 @@ class MedGraphClient:
         self,
         exc_type: Optional[type],
         exc_val: Optional[Exception],
-        exc_tb: Optional[Any]
+        exc_tb: Optional[Any],
     ) -> None:
         """退出异步上下文。
 
@@ -424,9 +403,7 @@ class MedGraphClient:
 
         # 记录原始异常信息
         if exc_val:
-            self.logger.error(
-                f"上下文退出时发生异常: {exc_type.__name__}: {exc_val}"
-            )
+            self.logger.error(f"上下文退出时发生异常: {exc_type.__name__}: {exc_val}")
 
     async def _ensure_initialized(self) -> None:
         """确保客户端已初始化。
@@ -448,7 +425,7 @@ class MedGraphClient:
 
             # 初始化适配器（包括存储和管道状态）
             await self._adapter.initialize()
-            
+
             # 初始化服务层
             self._init_services()
 
@@ -517,7 +494,7 @@ class MedGraphClient:
         self,
         file_path: str,
         doc_id: Optional[str] = None,
-    ) -> DocumentInfo:
+    ) -> ClientDocumentInfo:
         """摄入文档到知识图谱。
 
         支持各种文本格式（txt, md, json, csv 等）。
@@ -549,12 +526,14 @@ class MedGraphClient:
             result = await self._ingestion_service.ingest_document(file_path, doc_id)
 
             # 转换为 SDK 格式
-            doc_info = DocumentInfo.from_ingest_result(result, file_path=file_path)
-            
+            doc_info = ClientDocumentInfo.from_ingest_result(result, file_path=file_path)
+
             # 记录性能指标
             self._performance_monitor.record_document(success=True)
 
-            self.logger.info(f"文档摄入成功 | ID: {doc_info.doc_id} | 状态: {doc_info.status}")
+            self.logger.info(
+                f"文档摄入成功 | ID: {doc_info.doc_id} | 状态: {doc_info.status}"
+            )
 
             return doc_info
 
@@ -575,7 +554,7 @@ class MedGraphClient:
         self,
         text: str,
         doc_id: Optional[str] = None,
-    ) -> DocumentInfo:
+    ) -> ClientDocumentInfo:
         """摄入文本到知识图谱。
 
         适合处理程序生成的文本或 API 获取的文本内容。
@@ -603,8 +582,8 @@ class MedGraphClient:
 
         try:
             result = await self._ingestion_service.ingest_text(text, doc_id)
-            doc_info = DocumentInfo.from_ingest_result(result)
-            
+            doc_info = ClientDocumentInfo.from_ingest_result(result)
+
             # 记录性能指标
             self._performance_monitor.record_document(success=True)
 
@@ -652,7 +631,7 @@ class MedGraphClient:
             >>> async with MedGraphClient() as client:
             ...     def on_progress(cur, total, doc_id):
             ...         print(f"进度: {cur}/{total} - {doc_id}")
-            ...     
+            ...
             ...     result = await client.ingest_batch(
             ...         ["doc1.txt", "doc2.txt", "doc3.txt"],
             ...         progress_callback=on_progress
@@ -678,7 +657,9 @@ class MedGraphClient:
                 else:
                     self._performance_monitor.record_document(success=False)
 
-            self.logger.info(f"批量摄入成功 | 文档数: {results.succeeded}/{results.total}")
+            self.logger.info(
+                f"批量摄入成功 | 文档数: {results.succeeded}/{results.total}"
+            )
 
             return results
 
@@ -695,7 +676,7 @@ class MedGraphClient:
         self,
         content_list: List[Dict[str, Any]],
         file_path: Optional[str] = None,
-    ) -> DocumentInfo:
+    ) -> ClientDocumentInfo:
         """摄入多模态内容（文本、图片、表格等）。
 
         支持处理包含多种内容类型的复杂文档。
@@ -726,8 +707,8 @@ class MedGraphClient:
 
         try:
             result = await self._adapter.ingest_multimodal(content_list, file_path)
-            doc_info = DocumentInfo.from_ingest_result(result, file_path=file_path)
-            
+            doc_info = ClientDocumentInfo.from_ingest_result(result, file_path=file_path)
+
             self._performance_monitor.record_document(success=True)
 
             self.logger.info(f"多模态摄入成功 | ID: {doc_info.doc_id}")
@@ -748,11 +729,7 @@ class MedGraphClient:
     # ========== 查询方法 ==========
 
     async def query(
-        self,
-        query_text: str,
-        mode: str = "hybrid",
-        graph_id: str = "default",
-        **kwargs
+        self, query_text: str, mode: str = "hybrid", graph_id: str = "default", **kwargs
     ) -> QueryResult:
         """执行知识图谱查询。
 
@@ -778,7 +755,7 @@ class MedGraphClient:
             ...     # 混合模式查询（推荐）
             ...     result = await client.query("什么是糖尿病?")
             ...     print(result.answer)
-            ...     
+            ...
             ...     # 局部模式查询（关注实体关系）
             ...     result = await client.query(
             ...         "糖尿病和高血压有什么关系?",
@@ -800,14 +777,10 @@ class MedGraphClient:
 
         try:
             # 调用服务层查询
-            from src.services.query import QueryResult as ServiceQueryResult
             service_result = await self._query_service.query(
-                query_text=query_text,
-                mode=mode,
-                graph_id=graph_id,
-                **kwargs
+                query_text=query_text, mode=mode, graph_id=graph_id, **kwargs
             )
-            
+
             # 计算延迟
             latency_ms = int((time.time() - start_time) * 1000)
 
@@ -854,11 +827,7 @@ class MedGraphClient:
             ) from e
 
     async def query_stream(
-        self,
-        query_text: str,
-        mode: str = "hybrid",
-        graph_id: str = "default",
-        **kwargs
+        self, query_text: str, mode: str = "hybrid", graph_id: str = "default", **kwargs
     ) -> AsyncIterator[str]:
         """流式查询知识图谱。
 
@@ -895,10 +864,7 @@ class MedGraphClient:
 
         try:
             async for chunk in self._query_service.query_stream(
-                query_text=query_text,
-                mode=mode,
-                graph_id=graph_id,
-                **kwargs
+                query_text=query_text, mode=mode, graph_id=graph_id, **kwargs
             ):
                 yield chunk
 
@@ -1264,8 +1230,7 @@ class MedGraphClient:
         await self._ensure_initialized()
 
         self.logger.debug(
-            f"查找相似实体 | 图谱: {graph_id} | "
-            f"实体: {entity_name} | 阈值: {threshold}"
+            f"查找相似实体 | 图谱: {graph_id} | 实体: {entity_name} | 阈值: {threshold}"
         )
 
         try:
@@ -1277,8 +1242,7 @@ class MedGraphClient:
             )
 
             self.logger.info(
-                f"找到 {len(similar_entities)} 个相似实体 | "
-                f"参考: {entity_name}"
+                f"找到 {len(similar_entities)} 个相似实体 | 参考: {entity_name}"
             )
 
             return similar_entities
@@ -1501,9 +1465,9 @@ class MedGraphClient:
         path = Path(config_path)
 
         # 检测文件格式
-        if path.suffix in ['.yaml', '.yml']:
+        if path.suffix in [".yaml", ".yml"]:
             config_data = _load_yaml_config(config_path)
-        elif path.suffix == '.json':
+        elif path.suffix == ".json":
             config_data = _load_json_config(config_path)
         else:
             raise SDKConfigError(
@@ -1520,7 +1484,7 @@ class MedGraphClient:
             workspace=config_data.get("rag_workspace", "medical"),
             log_level=log_level,
             enable_metrics=enable_metrics,
-            **config_data
+            **config_data,
         )
 
     # ========== 便捷方法 ==========
@@ -1569,10 +1533,7 @@ class MedGraphClient:
 # ========== 便捷函数 ==========
 
 
-async def create_client(
-    workspace: str = "default",
-    **kwargs
-) -> MedGraphClient:
+async def create_client(workspace: str = "default", **kwargs) -> MedGraphClient:
     """创建并初始化客户端的便捷函数。
 
     Args:

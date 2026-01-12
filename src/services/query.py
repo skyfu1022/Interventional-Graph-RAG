@@ -107,10 +107,7 @@ class QueryMode(str, Enum):
             return cls(mode.lower())
         except ValueError:
             valid_modes = ", ".join([m.value for m in cls])
-            raise ValueError(
-                f"无效的查询模式: {mode}. "
-                f"支持的模式: {valid_modes}"
-            )
+            raise ValueError(f"无效的查询模式: {mode}. 支持的模式: {valid_modes}")
 
     def description(self) -> str:
         """获取查询模式描述。"""
@@ -184,6 +181,7 @@ class QueryResult:
             JSON 字符串
         """
         import json
+
         return json.dumps(self.to_dict(), ensure_ascii=False, indent=2)
 
     def __str__(self) -> str:
@@ -389,11 +387,7 @@ class QueryService:
             return f"未知模式: {mode}"
 
     async def query(
-        self,
-        query_text: str,
-        mode: str = "hybrid",
-        graph_id: str = "default",
-        **kwargs
+        self, query_text: str, mode: str = "hybrid", graph_id: str = "default", **kwargs
     ) -> QueryResult:
         """执行查询。
 
@@ -446,8 +440,7 @@ class QueryService:
             ) from e
 
         self._logger.info(
-            f"执行查询 | 模式: {mode} | 图谱: {graph_id} | "
-            f"查询: {query_text[:100]}..."
+            f"执行查询 | 模式: {mode} | 图谱: {graph_id} | 查询: {query_text[:100]}..."
         )
 
         # 检查工作流是否可用
@@ -456,7 +449,7 @@ class QueryService:
                 "查询工作流未初始化，无法执行查询。"
                 "请确保 langgraph.checkpoint.sqlite 已安装。",
                 query_text=query_text,
-                details={"reason": "workflow_not_initialized"}
+                details={"reason": "workflow_not_initialized"},
             )
 
         start_time = time.time()
@@ -467,7 +460,7 @@ class QueryService:
                 "query": query_text,
                 "graph_id": graph_id,
                 "query_mode": mode,
-                **kwargs
+                **kwargs,
             }
 
             # 调用 LangGraph 工作流（使用 ainvoke）
@@ -491,7 +484,7 @@ class QueryService:
                 metadata={
                     "workflow_input": workflow_input,
                     "raw_result": result,
-                }
+                },
             )
 
             self._logger.info(
@@ -508,8 +501,7 @@ class QueryService:
         except Exception as e:
             latency_ms = int((time.time() - start_time) * 1000)
             self._logger.error(
-                f"查询失败 | 错误: {e} | 耗时: {latency_ms}ms",
-                exc_info=True
+                f"查询失败 | 错误: {e} | 耗时: {latency_ms}ms", exc_info=True
             )
             raise QueryError(
                 f"查询执行失败: {e}",
@@ -518,15 +510,11 @@ class QueryService:
                     "mode": mode,
                     "graph_id": graph_id,
                     "latency_ms": latency_ms,
-                }
+                },
             ) from e
 
     async def query_stream(
-        self,
-        query_text: str,
-        mode: str = "hybrid",
-        graph_id: str = "default",
-        **kwargs
+        self, query_text: str, mode: str = "hybrid", graph_id: str = "default", **kwargs
     ) -> AsyncIterator[str]:
         """流式查询。
 
@@ -584,7 +572,7 @@ class QueryService:
                 "查询工作流未初始化，无法执行查询。"
                 "请确保 langgraph.checkpoint.sqlite 已安装。",
                 query_text=query_text,
-                details={"reason": "workflow_not_initialized"}
+                details={"reason": "workflow_not_initialized"},
             )
 
         try:
@@ -593,20 +581,21 @@ class QueryService:
                 "query": query_text,
                 "graph_id": graph_id,
                 "query_mode": mode,
-                **kwargs
+                **kwargs,
             }
 
             # 使用 LangGraph 的 astream 进行流式输出
             # 参考：LangGraph best practice for streaming
             # stream_mode="updates" 用于获取每个节点的输出更新
             async for chunk in self._workflow.astream(
-                workflow_input,
-                stream_mode="updates"
+                workflow_input, stream_mode="updates"
             ):
                 # 提取答案片段
                 if isinstance(chunk, dict):
                     for node_name, node_output in chunk.items():
-                        if node_name == "generate_answer" and isinstance(node_output, dict):
+                        if node_name == "generate_answer" and isinstance(
+                            node_output, dict
+                        ):
                             answer = node_output.get("answer", "")
                             if answer:
                                 yield answer
@@ -618,14 +607,11 @@ class QueryService:
         except ValidationError:
             raise
         except Exception as e:
-            self._logger.error(
-                f"流式查询失败 | 错误: {e}",
-                exc_info=True
-            )
+            self._logger.error(f"流式查询失败 | 错误: {e}", exc_info=True)
             raise QueryError(
                 f"流式查询执行失败: {e}",
                 query_text=query_text,
-                details={"mode": mode, "graph_id": graph_id}
+                details={"mode": mode, "graph_id": graph_id},
             ) from e
 
     async def query_with_context(
@@ -634,7 +620,7 @@ class QueryService:
         mode: str = "hybrid",
         context: Optional[QueryContext] = None,
         graph_id: str = "default",
-        **kwargs
+        **kwargs,
     ) -> QueryResult:
         """带上下文的查询。
 
@@ -688,8 +674,7 @@ class QueryService:
             ) from e
 
         self._logger.info(
-            f"执行带上下文查询 | 模式: {mode} | "
-            f"上下文: {context is not None}"
+            f"执行带上下文查询 | 模式: {mode} | 上下文: {context is not None}"
         )
 
         # 准备工作流输入
@@ -697,7 +682,7 @@ class QueryService:
             "query": query_text,
             "graph_id": graph_id,
             "query_mode": mode,
-            **kwargs
+            **kwargs,
         }
 
         # 添加上下文信息
@@ -717,7 +702,7 @@ class QueryService:
                 "查询工作流未初始化，无法执行查询。"
                 "请确保 langgraph.checkpoint.sqlite 已安装。",
                 query_text=query_text,
-                details={"reason": "workflow_not_initialized"}
+                details={"reason": "workflow_not_initialized"},
             )
 
         start_time = time.time()
@@ -744,7 +729,7 @@ class QueryService:
                     "workflow_input": workflow_input,
                     "raw_result": result,
                     "context_used": context is not None,
-                }
+                },
             )
 
             self._logger.info(
@@ -759,8 +744,7 @@ class QueryService:
         except Exception as e:
             latency_ms = int((time.time() - start_time) * 1000)
             self._logger.error(
-                f"带上下文查询失败 | 错误: {e} | 耗时: {latency_ms}ms",
-                exc_info=True
+                f"带上下文查询失败 | 错误: {e} | 耗时: {latency_ms}ms", exc_info=True
             )
             raise QueryError(
                 f"带上下文查询执行失败: {e}",
@@ -770,7 +754,7 @@ class QueryService:
                     "graph_id": graph_id,
                     "has_context": context is not None,
                     "latency_ms": latency_ms,
-                }
+                },
             ) from e
 
     async def batch_query(
@@ -778,7 +762,7 @@ class QueryService:
         queries: List[str],
         mode: str = "hybrid",
         graph_id: str = "default",
-        **kwargs
+        **kwargs,
     ) -> List[QueryResult]:
         """批量查询。
 
@@ -814,9 +798,7 @@ class QueryService:
                 value=queries,
             )
 
-        self._logger.info(
-            f"执行批量查询 | 数量: {len(queries)} | 模式: {mode}"
-        )
+        self._logger.info(f"执行批量查询 | 数量: {len(queries)} | 模式: {mode}")
 
         import asyncio
 
@@ -838,17 +820,14 @@ class QueryService:
         except ValidationError:
             raise
         except Exception as e:
-            self._logger.error(
-                f"批量查询失败 | 错误: {e}",
-                exc_info=True
-            )
+            self._logger.error(f"批量查询失败 | 错误: {e}", exc_info=True)
             raise QueryError(
                 f"批量查询执行失败: {e}",
                 details={
                     "mode": mode,
                     "graph_id": graph_id,
                     "query_count": len(queries),
-                }
+                },
             ) from e
 
     async def assemble_graph_context(
@@ -856,7 +835,7 @@ class QueryService:
         graph_id: str,
         entity_names: Optional[List[str]] = None,
         max_tokens: int = 3000,
-        **kwargs
+        **kwargs,
     ) -> GraphContextData:
         """组装图上下文（实体和关系）。
 
@@ -912,6 +891,7 @@ class QueryService:
             # 调用 LightRAG 查询获取图上下文
             # 注意：这里使用 local 模式以获取更精确的图结构信息
             from lightrag.base import QueryParam
+
             param = QueryParam(**query_param)
 
             result = await self._adapter._rag.aquery(query_text, param=param)
@@ -935,21 +915,25 @@ class QueryService:
                     if entity_names:
                         for entity_name in entity_names:
                             if entity_name in line:
-                                entities.append({
-                                    "name": entity_name,
-                                    "description": line,
-                                    "type": "UNKNOWN",  # 可以进一步解析
-                                })
+                                entities.append(
+                                    {
+                                        "name": entity_name,
+                                        "description": line,
+                                        "type": "UNKNOWN",  # 可以进一步解析
+                                    }
+                                )
                                 break
 
                 # 如果指定了实体但没有找到，创建占位符
                 if entity_names and not entities:
                     for entity_name in entity_names[:10]:  # 限制数量
-                        entities.append({
-                            "name": entity_name,
-                            "description": f"实体: {entity_name}",
-                            "type": "UNKNOWN",
-                        })
+                        entities.append(
+                            {
+                                "name": entity_name,
+                                "description": f"实体: {entity_name}",
+                                "type": "UNKNOWN",
+                            }
+                        )
 
             # 包含社区信息（如果请求）
             if kwargs.get("include_communities", False):
@@ -957,8 +941,8 @@ class QueryService:
 
             # 计算 token 数量（简单估算：中文约 1.5 字符/token，英文约 4 字符/token）
             total_tokens = self._estimate_tokens(
-                [e["description"] for e in entities] +
-                [r.get("description", "") for r in relationships]
+                [e["description"] for e in entities]
+                + [r.get("description", "") for r in relationships]
             )
 
             # 如果超过限制，截断到最相关的实体
@@ -995,15 +979,11 @@ class QueryService:
                     "graph_id": graph_id,
                     "entity_names": entity_names,
                     "max_tokens": max_tokens,
-                }
+                },
             ) from e
 
     async def assemble_vector_context(
-        self,
-        query: str,
-        top_k: int = 5,
-        max_tokens: int = 2000,
-        **kwargs
+        self, query: str, top_k: int = 5, max_tokens: int = 2000, **kwargs
     ) -> VectorContextData:
         """组装向量上下文（文本块）。
 
@@ -1076,34 +1056,40 @@ class QueryService:
                         # 空行表示文本块结束
                         chunk_text = " ".join(current_chunk)
                         if len(chunk_text) > 20:  # 过滤太短的块
-                            chunks.append({
-                                "content": chunk_text,
-                                "relevance": 0.8,  # 默认相关性
-                            })
+                            chunks.append(
+                                {
+                                    "content": chunk_text,
+                                    "relevance": 0.8,  # 默认相关性
+                                }
+                            )
                         current_chunk = []
 
                 # 添加最后一个块
                 if current_chunk:
                     chunk_text = " ".join(current_chunk)
                     if len(chunk_text) > 20:
-                        chunks.append({
-                            "content": chunk_text,
-                            "relevance": 0.8,
-                        })
+                        chunks.append(
+                            {
+                                "content": chunk_text,
+                                "relevance": 0.8,
+                            }
+                        )
 
                 # 如果没有解析到块，将整个结果作为一个块
                 if not chunks and result.strip():
-                    chunks.append({
-                        "content": result.strip(),
-                        "relevance": 0.8,
-                    })
+                    chunks.append(
+                        {
+                            "content": result.strip(),
+                            "relevance": 0.8,
+                        }
+                    )
 
             # 如果仍然没有块，创建占位符
             if not chunks:
                 placeholder: Dict[str, Any]
                 for i in range(min(top_k, 3)):
                     placeholder = {
-                        "content": f"文本块 {i+1}: 查询 '{query}' 的相关内容",
+                        "content": f"文本块 {i + 1}: 查询 '{query}' 的相关内容",
                         "relevance": 0.5 - i * 0.1,
                     }
                     chunks.append(placeholder)
@@ -1122,9 +1108,7 @@ class QueryService:
             )
 
             self._logger.info(
-                f"向量上下文组装完成 | "
-                f"块数: {len(chunks)} | "
-                f"tokens: {total_tokens}"
+                f"向量上下文组装完成 | 块数: {len(chunks)} | tokens: {total_tokens}"
             )
 
             return vector_context
@@ -1139,7 +1123,7 @@ class QueryService:
                     "query": query,
                     "top_k": top_k,
                     "max_tokens": max_tokens,
-                }
+                },
             ) from e
 
     def combine_contexts(
@@ -1147,7 +1131,7 @@ class QueryService:
         graph_context: Optional[GraphContextData] = None,
         vector_context: Optional[VectorContextData] = None,
         max_total_tokens: int = 5000,
-        **kwargs
+        **kwargs,
     ) -> CombinedContext:
         """智能组合多种上下文来源。
 
@@ -1231,8 +1215,7 @@ class QueryService:
             for r in combined.relationships
         )
         total_tokens += sum(
-            self._estimate_tokens([c.get("content", "")])
-            for c in combined.chunks
+            self._estimate_tokens([c.get("content", "")]) for c in combined.chunks
         )
 
         # 如果超过限制，按权重截断
@@ -1276,10 +1259,7 @@ class QueryService:
         return max(1, total_chars // 2)
 
     def _truncate_by_tokens(
-        self,
-        items: List[Dict[str, Any]],
-        max_tokens: int,
-        key: str = "description"
+        self, items: List[Dict[str, Any]], max_tokens: int, key: str = "description"
     ) -> List[Dict[str, Any]]:
         """按 token 限制截断列表。
 
@@ -1330,11 +1310,7 @@ class QueryService:
         seen.clear()
         unique_relationships = []
         for rel in context.relationships:
-            key = (
-                rel.get("source", ""),
-                rel.get("target", ""),
-                rel.get("type", "")
-            )
+            key = (rel.get("source", ""), rel.get("target", ""), rel.get("type", ""))
             if key not in seen:
                 seen[key] = True
                 unique_relationships.append(rel)
@@ -1356,10 +1332,7 @@ class QueryService:
 
         return context
 
-    def _sort_context_by_relevance(
-        self,
-        context: CombinedContext
-    ) -> CombinedContext:
+    def _sort_context_by_relevance(self, context: CombinedContext) -> CombinedContext:
         """按相关性排序上下文。
 
         Args:
@@ -1370,17 +1343,11 @@ class QueryService:
         """
         # 排序实体（如果有相关性评分）
         if "relevance" in context.entities[0] if context.entities else False:
-            context.entities.sort(
-                key=lambda x: x.get("relevance", 0),
-                reverse=True
-            )
+            context.entities.sort(key=lambda x: x.get("relevance", 0), reverse=True)
 
         # 排序文本块
         if context.chunks:
-            context.chunks.sort(
-                key=lambda x: x.get("relevance", 0),
-                reverse=True
-            )
+            context.chunks.sort(key=lambda x: x.get("relevance", 0), reverse=True)
 
         return context
 
@@ -1411,22 +1378,20 @@ class QueryService:
             context.entities = self._truncate_by_tokens(
                 context.entities,
                 graph_quota // 2,  # 实体占一半
-                "description"
+                "description",
             )
 
         if context.relationships:
             context.relationships = self._truncate_by_tokens(
                 context.relationships,
                 graph_quota // 2,  # 关系占一半
-                "description"
+                "description",
             )
 
         # 截断向量上下文
         if context.chunks:
             context.chunks = self._truncate_by_tokens(
-                context.chunks,
-                vector_quota,
-                "content"
+                context.chunks, vector_quota, "content"
             )
 
         # 重新计算总 token 数
@@ -1440,8 +1405,7 @@ class QueryService:
             for r in context.relationships
         )
         total_tokens += sum(
-            self._estimate_tokens([c.get("content", "")])
-            for c in context.chunks
+            self._estimate_tokens([c.get("content", "")]) for c in context.chunks
         )
 
         context.total_tokens = total_tokens

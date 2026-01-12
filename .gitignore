@@ -10,6 +10,12 @@ app.sh
 # Byte-compiled / optimized / DLL files
 __pycache__
 
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
 # Jupyter Notebook
 .ipynb_checkpoints
 

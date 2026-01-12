@@ -10,7 +10,7 @@ from creat_graph import creat_metagraph
 from summerize import process_chunks
 from retrieve import seq_ret
 from utils import *
-from nano_graphrag import GraphRAG, QueryParam
+from medical_rag import GraphRAG, QueryParam
 
 # %% set up parser
 parser = argparse.ArgumentParser()

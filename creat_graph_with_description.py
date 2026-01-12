@@ -10,7 +10,8 @@ import asyncio
 from typing import List, Dict
 from collections import defaultdict
 
-# Import nano_graphrag components
+# Import nano_graphrag components (保持兼容性，这些内部模块仍使用 nano_graphrag)
+# TODO: 未来可能需要迁移到 medical_rag 的对应模块
 from nano_graphrag.prompt import PROMPTS
 from nano_graphrag._utils import compute_mdhash_id
 from nano_graphrag._llm import openai_complete_if_cache
